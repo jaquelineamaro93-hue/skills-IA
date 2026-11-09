@@ -25,11 +25,36 @@ Num vídeo real de 30 s (avatar gerado no Seedance 2.5 + voz da ElevenLabs): sin
 conferência final rodando só com os scripts do pacote. Cada defeito encontrado nos testes virou regra e está
 documentado em `references/licoes-aprendidas.md`.
 
-## Requisitos
-- Claude Code (ou Codex) com acesso a terminal.
-- `ffmpeg`, `rubberband` (CLI), Python 3.10+.
-- Conta num gerador de vídeo com referência de imagem + áudio (testado com Seedance 2.5 via Artlist ou Manus; Kling/Veo via API também servem). **Os créditos do gerador e da ElevenLabs são pagos à parte.**
-- Voz clonada na ElevenLabs (ou outra) — da própria pessoa ou autorizada.
+## Antes de começar: checklist
+Marque tudo antes de rodar a skill. Contas e créditos de terceiros são pagos à parte, direto com cada fornecedor.
+
+### Contas
+- [ ] **Claude Code** (app desktop, terminal ou claude.ai/code) — ou **Codex**. Precisa poder rodar comandos no computador.
+- [ ] **ElevenLabs** com plano que permita **clonar voz** (clonagem instantânea). A voz é sua ou de quem autorizou por escrito.
+- [ ] **Gerador de vídeo com referência de imagem + áudio**, com créditos. Escolha um:
+  - [ ] **Artlist** com assinatura que inclua créditos de IA (o teste grátis não libera o Seedance 2.5). Conecte no Claude:
+        Configurações → Conectores → Adicionar conector personalizado → `https://mcp.artlist.io/mcp`.
+  - [ ] **Manus** (Video Editor), se preferir gerar lá e trazer o MP4.
+  - [ ] **OpenRouter** (ou outro provedor) com chave de API para Kling/Veo/Seedance R2V.
+- [ ] (Opcional) Imagem: ChatGPT, Gemini ou o próprio Artlist, para a ficha de personagem e a imagem-base.
+
+### Programas no computador
+- [ ] **Python 3.10+**
+- [ ] **ffmpeg** — `brew install ffmpeg` (Mac) · `sudo apt install ffmpeg` (Linux) · `winget install ffmpeg` (Windows)
+- [ ] **Rubber Band** (linha de comando) — `brew install rubberband` · `sudo apt install rubberband-cli`
+- [ ] **Fontes Noto** (opcional; sem elas a skill usa uma fonte reserva) — `sudo apt install fonts-noto-core`
+- [ ] **Pacotes Python** — `pip install -r ai-avatar-video/requirements.txt`
+- [ ] **~2 GB livres** (modelo de transcrição de ~460 MB, baixado uma vez, e os vídeos de trabalho)
+- [ ] Rodar `python3 ai-avatar-video/scripts/check_env.py --download-model` e ver **READY**
+
+### Materiais da pessoa
+- [ ] **4 a 10 fotos reais** e recentes do rosto: frente, 3/4 dos dois lados, perfil, sorrindo e séria, luz natural, sem filtro
+- [ ] **1 vídeo real de 8 a 15 s** falando para a câmera (para gestos e jeito de falar)
+- [ ] **Roupa e cenário** escolhidos (foto ou descrição); o cenário de preferência numa foto vertical 9:16
+- [ ] **Roteiros** de 30 a 60 s, com gancho no início e CTA no fim
+- [ ] **Um áudio da ElevenLabs por roteiro**, com o número no nome (`R01.mp3`, `R02.mp3`…)
+- [ ] **Marca:** URL, CTA padrão, cores (opcional) e uma **música** com licença de uso (ex.: catálogo da Artlist)
+- [ ] **Autorização por escrito** se o rosto ou a voz não forem seus; autorização para mostrar prints de conversas reais
 
 ## Instalação
 ```bash
