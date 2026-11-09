@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.2 — 2026-11-09
+- `voice_sync.py`: corrige trecho fora de sincronia ("conseguido um emprego" atrasado 0,5 s, "Mas" adiantado 0,7 s).
+  Frases também quebram onde a boca pausa mais que a voz; início e fim de frase medidos pelo som (o Whisper erra a
+  borda da palavra depois de um silêncio); cada frase é renderizada separada e as pausas viram silêncio real.
+- Novo relatório automático: "sync check" compara voz e boca a cada 3 s e aponta o trecho se passar de 0,2 s.
+
 ## 1.0.1 — 2026-11-09
 - `voice_sync.py`: ritmo natural. Cada frase da voz original tem UMA velocidade constante (0,85–1,15x) e frases vizinhas mudam no máximo 0,10x; as pausas absorvem a diferença. Corrige a voz "lenta e do nada acelera" da 1.0.0 (variação real de até 2x por palavra). O relatório mostra a faixa de velocidades e o maior salto.
 - Pausas detectadas pelo volume real da voz (≥ 30 ms a -24 dB), não pelos tempos do Whisper.

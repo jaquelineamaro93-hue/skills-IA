@@ -12,11 +12,13 @@ python3 scripts/voice_sync.py out/B.mp4 R01.mp3 out/B_fit.wav --ranges 28.4-55.0
   `--ranges 0-12.5,30.2-41.0` (cada um vira o range 0, 1… do `plan.json`).
 - Saída: `A_fit.wav` (exatamente a duração do vídeo) + `A_fit.wav.cuts.json`.
 - Como funciona: transcreve os dois áudios, casa as palavras, divide a voz original em frases nas pausas reais
-  (≥ 30 ms de silêncio) e dá a cada frase UMA velocidade constante entre 0,85x e 1,15x, centrada na boca; frases
-  vizinhas mudam no máximo 0,10x. As pausas absorvem a diferença. Tudo num mapa contínuo do Rubber Band (sem cliques).
-- Leia a linha do relatório: `phrase speeds 0.85x-1.15x, biggest jump 0.10x`. Se aparecer velocidade fora disso,
-  o `--ranges` está errado.
-- Medido num vídeo real de 30 s: voz a ~0,12 s da boca em média, sem cliques, ritmo natural.
+  (≥ 30 ms de silêncio) e onde a boca pausa mais que a voz; cada frase tem UMA velocidade constante entre 0,85x e
+  1,15x (vizinhas mudam no máximo 0,10x), é cortada no ponto mais silencioso e começa junto com a boca (início medido
+  pelo som, não pela transcrição). As pausas são silêncio de verdade. Fade de 10 ms em cada frase (sem cliques).
+- Leia as duas linhas do relatório: `phrase speeds 0.85x-1.15x, biggest jump 0.10x` e
+  `sync check … OK, all within 0.2 s`. Se o sync check disser "LOOK AT 15-18s +430 ms", assista esse trecho:
+  quase sempre é `--ranges` errado ou uma palavra que o gerador inventou/pulou ali.
+- Medido num vídeo real de 30 s: todos os trechos a menos de 0,2 s da boca, ritmo natural, texto intacto.
 - NÃO aumente `--rate` ou `--jump` para "grudar" mais na boca: a voz passa a ficar lenta e acelerar do nada
   (testado e reprovado num projeto real). Boca melhor se resolve na geração, não esticando a voz.
 - Ajustes: `--lead 0.04` (voz levemente antes da boca soa natural; 0,02–0,08).

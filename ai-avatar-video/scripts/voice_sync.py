@@ -9,10 +9,11 @@ Output:   out_fit.wav (48 kHz mono, exactly as long as the video) and out_fit.wa
           {"cuts": [0, ..., video_len], "firsts": {"j": [video_t, voice_t]}} (first matched word of each range).
 
 Method (why): both audios are transcribed with word timestamps (words.py) and matched in order (difflib).
-The original is split into phrases at its real pauses; each phrase keeps one steady speed (0.85x-1.15x) and is
-centred on the mouth's phrase, and the pauses absorb the rest. It is ONE continuous Rubber Band time map per range
-(no pieces = no clicks; no global DTW = no drift). Word-by-word speed changes were tried and rejected: the voice
-went slow and then sped up, which sounds fake. Hallucinated words in the generated speech are simply skipped.
+The original is split into phrases at its real pauses AND where the mouth pauses longer than the voice. Each phrase
+keeps ONE steady speed (0.85x-1.15x, max 0.10x change between neighbours), is cut at the quietest point around it,
+and placed so its first word lands on the mouth (start found from the sound, not Whisper's often-wrong word edges).
+Pauses are real silence. Rejected on purpose: word-by-word speed (sounds slow-then-fast), global DTW (drifts),
+one time map with stretched pauses (smears a word into the silence before the mouth opens).
 Requires the `rubberband` CLI (apt install rubberband-cli / brew install rubberband).
 """
 import sys, os, json, re, argparse, difflib, subprocess, unicodedata, shutil, tempfile, wave
@@ -64,6 +65,22 @@ print(f'matched {len(pairs)} words (generated {len(G)}, original {len(O)})')
 _y = pcm(A.voice)[::3]  # 16 kHz is plenty for loudness
 _e = np.sqrt((np.pad(_y, (0, -len(_y) % 160)).reshape(-1, 160) ** 2).mean(1))   # 10 ms frames
 _q = _e < np.percentile(_e, 90) * 10 ** (-24 / 20)   # quiet = 24 dB below speech
+def _db(path):  # loudness in dB relative to the speech level, 10 ms frames
+    y = pcm(path)[::3]; e = np.sqrt((np.pad(y, (0, -len(y) % 160)).reshape(-1, 160) ** 2).mean(1))
+    return 20 * np.log10(e / (np.percentile(e, 90) + 1e-9) + 1e-9)
+DB_O, DB_G = _db(A.voice), _db(A.gen)
+def snap_on(db, t, back=0.35, fwd=0.6):
+    # Whisper often puts the first word after a silence too early/late; use where the sound really starts
+    a, b = max(0, int((t - back) * 100)), min(len(db) - 1, int((t + fwd) * 100))
+    for i in range(a, b):
+        if db[i] > -18 and (db[max(0, i - 6):i] < -26).all(): return i / 100
+    return t
+def snap_off(db, t, back=0.4, fwd=0.4):
+    a, b = max(0, int((t - back) * 100)), min(len(db) - 7, int((t + fwd) * 100))
+    for i in range(b, a, -1):
+        if db[i] > -18 and (db[i + 1:i + 7] < -26).all(): return (i + 1) / 100
+    return t
+
 def paused(t0, t1):  # is there >= A.pause of silence between the end of one word and the start of the next?
     a, b = int(max(0, t0 - 0.1) * 100), int((t1 + 0.05) * 100); need = max(1, int(A.pause * 100)); run = 0
     for v in _q[a:b]:
@@ -82,24 +99,32 @@ for j, (ra, rb) in enumerate(av):
     # source span: a breath before the first word .. end of the range (the CTA tail is never trimmed)
     o0 = max(0.0, ra - 0.05, P[0][1]['s'] - 0.15); o1 = min(VD, max(rb, P[-1][1]['e']) + 0.12)
     g0 = max(0.0, P[0][0]['s'] - A.lead - (P[0][1]['s'] - o0))
-    # PHRASES (runs of speech between real pauses of the original voice) keep ONE steady speed each, limited to
-    # --rate (default 0.85x-1.15x): a voice that slows down and speeds up word by word sounds fake, even when it
-    # matches the lips better. Each phrase is centred on the mouth's phrase; the pauses absorb the difference
-    # (they are silence/breath, so they can stretch or shrink freely). Key frames only at phrase edges.
+    # PHRASES (runs of speech between pauses) keep ONE steady speed each, limited to --rate (0.85x-1.15x): a voice
+    # that slows down and speeds up word by word sounds fake, even when it matches the lips better.
     lo, hi = map(float, A.rate.split(','))
     phrases, cur = [], [P[0]]
-    for (_, wa), pb in zip(P[:-1], P[1:]):
-        if paused(wa['e'], pb[1]['s']): phrases.append(cur); cur = []
+    for (ga, wa), pb in zip(P[:-1], P[1:]):
+        # a new phrase where the ORIGINAL voice pauses, or where the MOUTH pauses clearly longer than the voice
+        # does (the generated video often holds a 1-2 s pause where the original only breathes: without this
+        # split, the words before the pause come late and the words after it come early)
+        mouth_gap, voice_gap = pb[0]['s'] - ga['e'], pb[1]['s'] - wa['e']
+        if paused(wa['e'], pb[1]['s']) or (mouth_gap >= 0.25 and mouth_gap - voice_gap >= 0.2):
+            phrases.append(cur); cur = []
         cur.append(pb)
     phrases.append(cur)
-    # place every phrase: steady speed r in [lo, hi], centred on the mouth; then resolve overlaps in order
+    # place every phrase: steady speed r in [lo, hi], starting with the mouth; then resolve overlaps in order
     L, prev = [], None  # [o_start, o_end, g_start, duration]
     for ph in phrases:
-        os_, oe = ph[0][1]['s'], ph[-1][1]['e']; gs, ge = ph[0][0]['s'], ph[-1][0]['e']
+        os_, oe = snap_on(DB_O, ph[0][1]['s']), snap_off(DB_O, ph[-1][1]['e'])
+        gs, ge = snap_on(DB_G, ph[0][0]['s']), snap_off(DB_G, ph[-1][0]['e'])
+        if oe - os_ < 0.1 or ge - gs < 0.1: os_, oe, gs, ge = ph[0][1]['s'], ph[-1][1]['e'], ph[0][0]['s'], ph[-1][0]['e']
         r = max(lo, min(hi, (oe - os_) / max(ge - gs, 0.05)))
         if prev is not None: r = max(prev - A.jump, min(prev + A.jump, r))   # no sudden speed change between phrases
         prev = r; d = (oe - os_) / r
-        L.append([os_, oe, (gs + ge) / 2 - d / 2 - A.lead, d])
+        # start of the phrase ~ the mouth opening (voice a hair early looks natural; voice before the mouth opens,
+        # or long after, is what viewers notice). Within that window, centre the phrase on the mouth.
+        a = min(gs - A.lead + 0.05, max(gs - A.lead - 0.08, (gs + ge) / 2 - d / 2 - A.lead))
+        L.append([os_, oe, a, d])
     L[0][2] = max(L[0][2], g0 + (L[0][0] - o0) / 1.5)            # room for the breath before the first word
     for i in range(1, len(L)):                                     # a pause may shrink, never below 1/3 of it
         L[i][2] = max(L[i][2], L[i - 1][2] + L[i - 1][3] + (L[i][0] - L[i - 1][1]) / 3)
@@ -112,29 +137,48 @@ for j, (ra, rb) in enumerate(av):
         if tot > room:
             k = room / tot
             for p in L: p[2] = L[0][2] + (p[2] - L[0][2]) * k; p[3] *= k
-    KK = [(o0, g0)] + [kf for p in L for kf in ((p[0], p[2]), (p[1], p[2] + p[3]))]
     rates = [round((p[1] - p[0]) / p[3], 2) for p in L]
-    KK = [kf for i, kf in enumerate(KK) if i == 0 or (kf[0] > KK[i - 1][0] + 0.005 and kf[1] > KK[i - 1][1] + 0.005)]
-    rest = o1 - KK[-1][0]                                   # tail after the last key frame plays at natural speed
-    g1 = min(g_cap, KK[-1][1] + rest)
-    if rest / max(g1 - KK[-1][1], 1e-3) > 1.3:              # no room: speed the tail up a little, never cut it
-        g1 = min(g_cap, KK[-1][1] + rest / 1.3)
-    src = pcm(A.voice, o0, o1)
-    fi, fo, fm = f'{tmp}/in{j}.wav', f'{tmp}/out{j}.wav', f'{tmp}/map{j}.txt'
-    wav_write(fi, src)
-    with open(fm, 'w') as m:
-        for o, g in KK[1:]: m.write(f'{int(round((o - o0) * SR))} {int(round((g - g0) * SR))}\n')
-    subprocess.run(['rubberband', '-q', '-3', '--formant', '-D', f'{g1 - g0:.5f}', '--timemap', fm, fi, fo],
-                   check=True, capture_output=True)
-    y = pcm(fo).copy(); s0 = int(g0 * SR); n = min(len(y), len(out) - s0)
-    f = min(int(0.008 * SR), n // 2); y[:f] *= np.linspace(0, 1, f); y[n - f:n] *= np.linspace(1, 0, f)
-    out[s0:s0 + n] += y[:n]
+    # Render phrase by phrase: each piece of the original runs from the quietest point before the phrase to the
+    # quietest point after it, at the phrase's ONE speed, placed so its first word lands on the mouth. Pauses
+    # between pieces are real silence. (A single time map stretched the pauses too, and a word whose start
+    # Whisper marked late got smeared 10x into the silence before the mouth opened.)
+    def quietest(t0, t1):
+        i0, i1 = int(max(0, t0) * 100), max(int(max(0, t0) * 100) + 1, int(t1 * 100))
+        return (i0 + int(np.argmin(DB_O[i0:i1]))) / 100
+    C = [o0] + [quietest(L[i - 1][1] - 0.05, L[i][0] + 0.05) for i in range(1, len(L))] + [o1]
+    g1 = 0.0
+    for i, p in enumerate(L):
+        c0, c1 = C[i], C[i + 1]
+        if c1 - c0 < 0.02: continue
+        r = (p[1] - p[0]) / p[3]
+        t0 = p[2] - (p[0] - c0) / r
+        dur = (c1 - c0) / r
+        if i == len(L) - 1 and t0 + dur > g_cap:                     # the CTA tail must fit: speed it up a bit
+            r = min(1.3, (c1 - c0) / max(g_cap - t0, 0.05)); dur = (c1 - c0) / r
+        fi, fo = f'{tmp}/in{j}_{i}.wav', f'{tmp}/out{j}_{i}.wav'
+        wav_write(fi, pcm(A.voice, c0, c1))
+        if abs(r - 1) > 0.005:
+            subprocess.run(['rubberband', '-q', '-3', '--formant', '-D', f'{dur:.5f}', fi, fo], check=True, capture_output=True)
+        else: fo = fi
+        y = pcm(fo).copy(); s0 = max(0, int(round(t0 * SR))); n = min(len(y), len(out) - s0)
+        if n <= 0: continue
+        f = min(int(0.01 * SR), n // 2); y[:f] *= np.linspace(0, 1, f); y[n - f:n] *= np.linspace(1, 0, f)
+        out[s0:s0 + n] += y[:n]; g1 = max(g1, (s0 + n) / SR)
     print(f'range {j}: {len(P)} words, {len(phrases)} phrases, voice {o0:.2f}-{o1:.2f}s -> video {g0:.2f}-{g1:.2f}s, '
           f'phrase speeds {min(rates, default=1)}x-{max(rates, default=1)}x, '
           f'biggest jump {max((abs(a - b) for a, b in zip(rates, rates[1:])), default=0):.2f}x')
     if nxt_g is not None: cuts.append(round((P[-1][0]['e'] + nxt_g) / 2, 3))
 cuts.append(round(GD, 3))
 wav_write(A.out, out[:int(round(GD * SR))])
+# SYNC REPORT: the generated audio follows the mouth, so compare when each one is speaking, 3 s at a time
+F = _db(A.out); n = min(len(F), len(DB_G)); sg, sf = (DB_G[:n] > -20).astype(float), (F[:n] > -20).astype(float)
+bad = []
+for t in range(0, max(1, n // 100 - 2), 2):
+    a_, b_ = sg[t * 100:(t + 3) * 100], sf[t * 100:(t + 3) * 100]
+    if a_.sum() < 30: continue
+    c = [np.sum(a_ * np.roll(b_, -l)) for l in range(-50, 51)]; lag = (int(np.argmax(c)) - 50) * 10
+    if abs(lag) > 200: bad.append(f'{t}-{t + 3}s {lag:+d} ms')
+print('sync check (voice vs mouth, 3 s windows):', 'OK, all within 0.2 s' if not bad else 'LOOK AT ' + ', '.join(bad))
 json.dump({'cuts': cuts, 'firsts': firsts}, open(A.out + '.cuts.json', 'w'))
 shutil.rmtree(tmp, ignore_errors=True)
 print('cuts', cuts); print('saved', A.out)
