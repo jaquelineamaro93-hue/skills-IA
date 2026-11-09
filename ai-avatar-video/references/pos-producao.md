@@ -14,10 +14,11 @@ python3 scripts/voice_sync.py out/B.mp4 R01.mp3 out/B_fit.wav --ranges 28.4-55.0
 - Como funciona: transcreve os dois áudios e casa as palavras. Corta a voz original em frases SÓ em silêncio real
   (ou numa respiração, onde a boca pausa). Cada frase vira um pedaço com fade de 10 ms, colocado para começar com a
   boca; dentro dele a velocidade acompanha a boca mudando no máximo 0,20x por palavra (0,78–1,28x). Pausas = silêncio.
-- Leia as duas linhas do relatório: `speeds 0.78x-1.28x, biggest change between words 0.20x` e
+  Depois se AUTOCORRIGE: mede cada frase contra a boca, ajusta e renderiza de novo (até 4 rodadas).
+- Leia o relatório: `self-correction … worst phrase lag ≤ 100 ms, overlapping phrases: none`, `speeds 0.78x-1.28x, biggest change between words 0.20x` e
   `sync check … OK, all within 0.2 s`. Se o sync check disser "LOOK AT 15-18s +430 ms", assista esse trecho:
   quase sempre é `--ranges` errado ou uma palavra que o gerador inventou/pulou ali.
-- Medido num vídeo real de 30 s: nenhuma palavra cortada, mudança de velocidade gradual, voz a ≤ 0,21 s da boca em todos os trechos, texto intacto.
+- Medido num vídeo real de 30 s: nenhuma palavra cortada, nenhuma frase sobreposta, velocidade gradual, pior trecho a 0,09 s da boca, texto intacto. Roda em ~6 s.
 - NÃO aumente `--jump` acima de 0,25 para "grudar" mais na boca: a voz passa a ficar lenta e acelerar do nada
   (testado e reprovado num projeto real). Boca melhor se resolve na geração, não esticando a voz.
 - Ajustes: `--lead 0.04` (voz levemente antes da boca soa natural; 0,02–0,08).

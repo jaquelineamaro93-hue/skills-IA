@@ -29,6 +29,8 @@ Cada linha é um erro que custou uma regeneração ou uma reclamação. Leia ant
 - Tempos de palavra do Whisper erram até 0,4 s (ex.: "Mas" marcado 0,34 s antes do som). Use-os só para casar palavras; bordas de frase e cortes vêm do volume do áudio.
 - Velocidade constante por frase longa deixou a voz derivar 0,3–0,5 s no fim da frase. Dentro da frase a velocidade acompanha a boca, mas mudando no máximo 0,20x de uma palavra para a seguinte (0,78–1,28x): gradual não se percebe.
 - Em 0:29 os cards sumiam com transparência nos últimos 0,3 s e "vazavam" o fundo. Regra: cards ficam inteiros até o corte; o card final nasce do ÚLTIMO quadro do clipe, desfocando.
+- 0:09 "sobrepôs": uma frase começava 0,18 s antes de a anterior terminar (o fim de "e como" por cima de "valorizar"). Regra: uma frase nunca começa antes de a anterior acabar; o relatório lista "overlapping phrases" e tem que dar "none".
+- "Se você notar, eu ajusto" não é aceitável: o ajuste fino é automático. O `voice_sync.py` mede cada frase contra a boca (primeira e segunda metade), corrige início/fim e renderiza de novo até 4 rodadas. Resultado no teste: pior trecho 0,21 s → 0,09 s.
 - Métrica de velocidade por re-transcrição engana: numa cópia SEM alteração ela já mostra 0,80x–1,85x. Confie no relatório do `voice_sync.py` (velocidade exata do mapa) e no ouvido, não nessa medida.
 - Detector de "cliques" por salto de amostra acusa os "s" e "p" da própria voz original. A garantia é por construção (fade de 10 ms em cada emenda) e a checagem é só nas emendas.
 - O fim de um trecho precisa parar antes da próxima palavra do áudio completo, senão uma sílaba vaza e repete na emenda ("É super"/"Se... Se você").

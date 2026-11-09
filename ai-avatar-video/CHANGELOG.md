@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.4 — 2026-11-09
+- `voice_sync.py` se autocorrige: mede cada frase contra a boca (1ª e 2ª metade), ajusta início/fim e renderiza de
+  novo (até 4 rodadas). Pior trecho no teste: 0,21 s → 0,09 s.
+- Frases nunca se sobrepõem (corrige o "sobrepôs" em 0:09); o relatório lista sobreposições.
+
 ## 1.0.3 — 2026-11-09
 - `voice_sync.py`: sem "travadinhas". Corta a voz só em silêncio real (≥ 80 ms, -30 dB) ou numa respiração onde a boca
   pausa; antes cortava dentro de palavras quando o Whisper errava o fim delas. Dentro da frase a velocidade acompanha a

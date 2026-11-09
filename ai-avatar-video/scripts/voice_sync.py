@@ -88,6 +88,8 @@ def paused(t0, t1):  # is there >= A.pause of silence between the end of one wor
         if run >= need: return True
     return False
 
+REF = float(np.percentile(np.sqrt((np.pad(pcm(A.voice)[::3], (0, -len(pcm(A.voice)[::3]) % 160)).reshape(-1, 160) ** 2).mean(1)), 90))
+SPG = (DB_G > -20).astype(float)
 out = np.zeros(int(GD * SR) + SR, np.float32)
 cuts, firsts, tmp = [0.0], {}, tempfile.mkdtemp()
 for j, (ra, rb) in enumerate(av):
@@ -159,44 +161,75 @@ for j, (ra, rb) in enumerate(av):
             k_ = room / tot
             for p in L: p[2] = L[0][2] + (p[2] - L[0][2]) * k_; p[3] *= k_
     rates = [round((p[1] - p[0]) / p[3], 2) for p in L]
-    # Render phrase by phrase: each piece of the original runs from the quietest point before the phrase to the
-    # quietest point after it, at the phrase's ONE speed, placed so its first word lands on the mouth. Pauses
-    # between pieces are real silence. (A single time map stretched the pauses too, and a word whose start
-    # Whisper marked late got smeared 10x into the silence before the mouth opened.)
     # Render each phrase as its own piece (cut in silence, faded 10 ms). Inside the phrase the speed FOLLOWS the
-    # mouth word by word, but smoothly: each word may change speed by at most --jump (8%) from the previous one and
-    # stays inside --rate. Gradual changes are inaudible; sudden ones ("slow, then fast") are what people hear.
-    lo2, hi2 = lo, hi
-    g1, seg_rates, jumps = 0.0, [], []
-    for i, p in enumerate(L):
-        c0, c1 = C[i], C[i + 1]
-        if c1 - c0 < 0.05: continue
-        W_ = [(o['s'], g['s'] - A.lead) for g, o in phrases[i] if p[0] + 0.05 < o['s'] < p[1] - 0.05]
-        r = (p[1] - p[0]) / p[3]; t = p[2]; o = p[0]; km = []
-        for ok, tk in W_ + [(p[1], p[2] + p[3])]:
-            want = (ok - o) / max(tk - t, 0.05)
-            r_new = max(lo2, min(hi2, max(r - A.jump, min(r + A.jump, want))))
-            if seg_rates: jumps.append(abs(r_new - r))
-            r = r_new; t += (ok - o) / r; o = ok; km.append((o, t)); seg_rates.append(round(r, 2))
-        t_end_sound = t
-        t0 = p[2] - (p[0] - c0) / ((p[1] - p[0]) / p[3])
-        tail = (c1 - p[1]) / r
-        if i == len(L) - 1 and t_end_sound + tail > g_cap:              # the CTA tail must fit: speed it a bit
-            tail = max(0.05, g_cap - t_end_sound)
-        t1 = t_end_sound + tail
-        fi, fo, fm = f'{tmp}/in{j}_{i}.wav', f'{tmp}/out{j}_{i}.wav', f'{tmp}/map{j}_{i}.txt'
-        wav_write(fi, pcm(A.voice, c0, c1))
-        with open(fm, 'w') as m:
-            m.write(f'{int(round((p[0] - c0) * SR))} {int(round((p[2] - t0) * SR))}\n')
-            for ok, tk in km[:-1] + ([km[-1]] if c1 - p[1] > 0.02 else []):
-                m.write(f'{int(round((ok - c0) * SR))} {int(round((tk - t0) * SR))}\n')
-        subprocess.run(['rubberband', '-q', '-3', '--formant', '-D', f'{t1 - t0:.5f}', '--timemap', fm, fi, fo],
-                       check=True, capture_output=True)
-        y = pcm(fo).copy(); s0 = max(0, int(round(t0 * SR))); n = min(len(y), len(out) - s0)
-        if n <= 0: continue
-        f = min(int(0.01 * SR), n // 2); y[:f] *= np.linspace(0, 1, f); y[n - f:n] *= np.linspace(1, 0, f)
-        out[s0:s0 + n] += y[:n]; g1 = max(g1, (s0 + n) / SR)
+    # mouth word by word, but smoothly: at most --jump change from one word to the next, inside --rate.
+    # Then SELF-CORRECT: measure each piece against the mouth (first and second half), move its start/end targets
+    # by the measured lag and render again, up to 4 rounds; keep the best round.
+    def env_db(y):
+        y = y[::3]; e = np.sqrt((np.pad(y, (0, -len(y) % 160)).reshape(-1, 160) ** 2).mean(1))
+        return 20 * np.log10(e / REF + 1e-9)
+    def lag_at(sp_out, t0, t1):   # voice-vs-mouth lag (s) in [t0, t1]; + = voice late
+        i0, i1 = max(0, int(t0 * 100)), min(len(sp_out), len(SPG), int(t1 * 100))
+        a_, b_ = SPG[i0:i1], sp_out[i0:i1]
+        if i1 - i0 < 30 or a_.sum() < 15 or b_.sum() < 15: return 0.0
+        c = [np.sum(a_ * np.roll(b_, -l)) for l in range(-40, 41)]
+        return (int(np.argmax(c)) - 40) / 100
+    def render(SH):
+        buf = np.zeros(len(out), np.float32); spans, sr_, jm = [], [], []
+        for i, p in enumerate(L):
+            c0, c1 = C[i], C[i + 1]
+            if c1 - c0 < 0.05: spans.append(None); continue
+            ss, se = SH[i]
+            st, en = p[2] - ss, p[2] + p[3] - se
+            if i and spans[-1]: st = max(st, spans[-1][2] + 0.02)
+            en = max(en, st + (p[1] - p[0]) / hi)
+            W_ = [(o['s'], g['s'] - A.lead) for g, o in phrases[i] if p[0] + 0.05 < o['s'] < p[1] - 0.05]
+            W_ = [(ok, tk - ss - (se - ss) * (ok - p[0]) / max(p[1] - p[0], 0.1)) for ok, tk in W_]
+            r = (p[1] - p[0]) / max(en - st, 0.05); r = max(lo, min(hi, r)); t = st; o = p[0]; km = []
+            for ok, tk in W_ + [(p[1], en)]:
+                want = (ok - o) / max(tk - t, 0.05)
+                r_new = max(lo, min(hi, max(r - A.jump, min(r + A.jump, want))))
+                if sr_: jm.append(abs(r_new - r))
+                r = r_new; t += (ok - o) / r; o = ok; km.append((o, t)); sr_.append(round(r, 2))
+            r0 = (km[0][0] - p[0]) / max(km[0][1] - st, 1e-3) if km and km[0][1] > st else 1.0
+            t0 = st - (p[0] - c0) / max(lo, min(hi, r0))
+            tail = (c1 - p[1]) / r
+            if i == len(L) - 1 and t + tail > g_cap: tail = max(0.05, g_cap - t)
+            t1 = t + tail
+            fi, fo, fm = f'{tmp}/in{j}_{i}.wav', f'{tmp}/out{j}_{i}.wav', f'{tmp}/map{j}_{i}.txt'
+            if not os.path.exists(fi): wav_write(fi, pcm(A.voice, c0, c1))
+            with open(fm, 'w') as m:
+                m.write(f'{int(round((p[0] - c0) * SR))} {int(round((st - t0) * SR))}\n')
+                for ok, tk in km[:-1] + ([km[-1]] if c1 - p[1] > 0.02 else []):
+                    m.write(f'{int(round((ok - c0) * SR))} {int(round((tk - t0) * SR))}\n')
+            subprocess.run(['rubberband', '-q', '-3', '--formant', '-D', f'{t1 - t0:.5f}', '--timemap', fm, fi, fo],
+                           check=True, capture_output=True)
+            y = pcm(fo).copy(); s0 = max(0, int(round(t0 * SR))); n = min(len(y), len(buf) - s0)
+            if n <= 0: spans.append(None); continue
+            f = min(int(0.01 * SR), n // 2); y[:f] *= np.linspace(0, 1, f); y[n - f:n] *= np.linspace(1, 0, f)
+            buf[s0:s0 + n] += y[:n]; spans.append((st, t, t1))
+        return buf, spans, sr_, jm
+    SH = [[0.0, 0.0] for _ in L]; best = None
+    for rnd in range(4):
+        buf, spans, sr_, jm = render(SH)
+        sp = (env_db(buf) > -20).astype(float)
+        errs = []
+        for i, spn in enumerate(spans):
+            if not spn: errs.append((0, 0)); continue
+            st, te, _ = spn; mid = (st + te) / 2
+            errs.append((lag_at(sp, st - 0.3, mid + 0.2), lag_at(sp, mid - 0.2, te + 0.3)))
+        worst = max((max(abs(a_), abs(b_)) for a_, b_ in errs), default=0)
+        if best is None or worst < best[0]: best = (worst, buf, sr_, jm, rnd)
+        if worst <= 0.1: break
+        for i, (ea, eb) in enumerate(errs):
+            if abs(ea) > 0.06: SH[i][0] += 0.8 * ea
+            if abs(eb) > 0.06: SH[i][1] += 0.8 * eb
+    worst, buf, seg_rates, jumps, rnd = best
+    out += buf; g1 = max((sp_[2] for sp_ in spans if sp_), default=g0)
     rates = seg_rates
+    ov = [f'{a_[1]:.2f}s' for a_, b_ in zip([x for x in spans if x], [x for x in spans if x][1:]) if b_[0] < a_[1] - 0.01]
+    print(f'range {j}: self-correction {rnd + 1} round(s), worst phrase lag {worst * 1000:.0f} ms, '
+          f'overlapping phrases: {", ".join(ov) or "none"}')
     print(f'range {j}: {len(P)} words, {len(phrases)} phrases, voice {o0:.2f}-{o1:.2f}s -> video {g0:.2f}-{g1:.2f}s, '
           f'speeds {min(rates, default=1)}x-{max(rates, default=1)}x, '
           f'biggest change between words {max(jumps, default=0):.2f}x')

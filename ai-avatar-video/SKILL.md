@@ -29,7 +29,7 @@ Siga as etapas na ordem. Leia o arquivo de `references/` indicado em cada etapa 
 | 7 | QA | `scripts/qa_check.py final/R01.mp4` + `references/checklist-qa.md` | entrega com prova |
 
 ```bash
-python3 scripts/voice_sync.py out/A.mp4 R01.mp3 out/A_fit.wav --ranges 0-28.4    # leia: sync check OK
+python3 scripts/voice_sync.py out/A.mp4 R01.mp3 out/A_fit.wav --ranges 0-28.4    # leia: lag ≤ 100 ms · overlapping: none · sync OK
 python3 scripts/soften_wrinkles.py out/A.mp4 out/A_soft.mp4 0.8                    # só se pedirem pele lisa
 python3 scripts/endcard.py last.png R01.mp3 54.4 63.4 out/endcard.mp4 "Linha|site.com|Link na bio" "KICKER"
 python3 scripts/assemble.py plan.json
