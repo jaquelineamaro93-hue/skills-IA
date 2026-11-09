@@ -1,0 +1,15 @@
+{
+  "clips": {
+    "A": {"video": "out/A_soft.mp4", "fit": "out/A_fit.wav"},
+    "B": {"video": "out/B_soft.mp4", "fit": "out/B_fit.wav"}
+  },
+  "timeline": [
+    {"clip": "A", "range": 0},
+    {"clip": "B", "range": 0, "overlay": "scenes/chat.json", "scene_voice_start": 23.0},
+    {"clip": "B", "range": 1, "overlay": "scenes/quote.json", "scene_voice_start": 37.1},
+    {"file": "out/endcard.mp4"}
+  ],
+  "music": "music.wav",
+  "music_volume": 0.11,
+  "out": "final/R01.mp4"
+}

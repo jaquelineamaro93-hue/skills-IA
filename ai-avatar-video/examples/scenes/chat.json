@@ -1,0 +1,7 @@
+{"type": "chat", "note": "Conversa recriada · nome preservado",
+ "msgs": [
+  {"from": "in",  "t": 0.0, "text": "Consegui o emprego!!"},
+  {"from": "out", "t": 1.6, "text": "Que notícia linda! Parabéns!!", "cps": 20},
+  {"from": "in",  "t": 4.2, "text": "Não é o salário dos sonhos, nem uma empresa enorme..."},
+  {"from": "in",  "t": 6.4, "text": "Mas é uma oportunidade real de crescimento."}
+ ]}

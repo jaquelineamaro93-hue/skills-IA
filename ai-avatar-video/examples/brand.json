@@ -1,0 +1,9 @@
+{
+  "accent": [201, 162, 94],
+  "text": [250, 245, 236],
+  "shade": [20, 14, 10],
+  "font_serif": ["NotoSerif-SemiBold.ttf", "NotoSerif-Bold.ttf"],
+  "font_sans": "NotoSans-Regular.ttf",
+  "font_sans_bold": ["NotoSans-SemiBold.ttf", "NotoSans-Bold.ttf"],
+  "fonts_dir": "/usr/share/fonts/truetype/noto/"
+}
