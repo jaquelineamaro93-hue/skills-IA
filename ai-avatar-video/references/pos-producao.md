@@ -11,15 +11,14 @@ python3 scripts/voice_sync.py out/B.mp4 R01.mp3 out/B_fit.wav --ranges 28.4-55.0
 - `--ranges`: trechos do ÁUDIO ORIGINAL (segundos) que aquele clipe fala, em ordem. Vários trechos num clipe:
   `--ranges 0-12.5,30.2-41.0` (cada um vira o range 0, 1… do `plan.json`).
 - Saída: `A_fit.wav` (exatamente a duração do vídeo) + `A_fit.wav.cuts.json`.
-- Como funciona: transcreve os dois áudios, casa as palavras, divide a voz original em frases nas pausas reais
-  (≥ 30 ms de silêncio) e onde a boca pausa mais que a voz; cada frase tem UMA velocidade constante entre 0,85x e
-  1,15x (vizinhas mudam no máximo 0,10x), é cortada no ponto mais silencioso e começa junto com a boca (início medido
-  pelo som, não pela transcrição). As pausas são silêncio de verdade. Fade de 10 ms em cada frase (sem cliques).
-- Leia as duas linhas do relatório: `phrase speeds 0.85x-1.15x, biggest jump 0.10x` e
+- Como funciona: transcreve os dois áudios e casa as palavras. Corta a voz original em frases SÓ em silêncio real
+  (ou numa respiração, onde a boca pausa). Cada frase vira um pedaço com fade de 10 ms, colocado para começar com a
+  boca; dentro dele a velocidade acompanha a boca mudando no máximo 0,20x por palavra (0,78–1,28x). Pausas = silêncio.
+- Leia as duas linhas do relatório: `speeds 0.78x-1.28x, biggest change between words 0.20x` e
   `sync check … OK, all within 0.2 s`. Se o sync check disser "LOOK AT 15-18s +430 ms", assista esse trecho:
   quase sempre é `--ranges` errado ou uma palavra que o gerador inventou/pulou ali.
-- Medido num vídeo real de 30 s: todos os trechos a menos de 0,2 s da boca, ritmo natural, texto intacto.
-- NÃO aumente `--rate` ou `--jump` para "grudar" mais na boca: a voz passa a ficar lenta e acelerar do nada
+- Medido num vídeo real de 30 s: nenhuma palavra cortada, mudança de velocidade gradual, voz a ≤ 0,21 s da boca em todos os trechos, texto intacto.
+- NÃO aumente `--jump` acima de 0,25 para "grudar" mais na boca: a voz passa a ficar lenta e acelerar do nada
   (testado e reprovado num projeto real). Boca melhor se resolve na geração, não esticando a voz.
 - Ajustes: `--lead 0.04` (voz levemente antes da boca soa natural; 0,02–0,08).
 - Se aparecer "only N words matched": arquivo de voz errado, `--ranges` errado ou idioma errado (`--lang`).
@@ -43,8 +42,8 @@ Conversas reais só com autorização; sem ela, recrie o texto e use a nota "Con
 ## 4. Card final — `endcard.py`
 Para o CTA que não coube na geração: fundo desfocado do próprio cenário + voz original + linhas aparecendo.
 ```bash
-ffmpeg -ss 27 -i out/B.mp4 -frames:v 1 frame.png
-python3 scripts/endcard.py frame.png R01.mp3 54.4 63.4 out/endcard.mp4 "Conheça a marca|marca.com|Link na bio" "PRÓXIMO PASSO"
+ffmpeg -sseof -0.1 -i out/B.mp4 -frames:v 1 last.png      # o ÚLTIMO quadro: o card nasce dele
+python3 scripts/endcard.py last.png R01.mp3 54.4 63.4 out/endcard.mp4 "Conheça a marca|marca.com|Link na bio" "PRÓXIMO PASSO"
 ```
 A 2ª linha sai na cor de destaque (use para a URL, escrita corretamente).
 

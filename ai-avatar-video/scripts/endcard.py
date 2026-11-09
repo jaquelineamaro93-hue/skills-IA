@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Full-screen end card (CTA) over a blurred still of the scene, carrying the ORIGINAL voice.
+"""Full-screen end card (CTA) over a blurred still of the scene (use the LAST frame of the clip before it:
+ffmpeg -sseof -0.1 -i clip.mp4 -frames:v 1 last.png), carrying the ORIGINAL voice.
 Use when the speech does not fit in the 30 s avatar generations (e.g. the closing URL / 'link na bio').
-usage: endcard.py bg_frame.png full_voice.mp3 START END out.mp4 "Line 1|line 2 (gold)|line 3" [kicker]
+usage: endcard.py last_frame.png full_voice.mp3 START END out.mp4 "Line 1|line 2 (gold)|line 3" [kicker]
 Lines are revealed one by one across the duration; the 2nd line is gold (use it for the URL)."""
 import sys, subprocess
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
@@ -10,6 +11,7 @@ s, e = float(s), float(e); D = e - s; W, H, FPS = 720, 1280, 24
 sys.path.insert(0, __import__('os').path.dirname(__import__('os').path.abspath(__file__)))
 from brand import font, ACCENT as GOLD, TEXT as CREAM, SHADE   # colors/fonts come from brand.json
 SERIF = font('font_serif', 52); SANSB = font('font_sans_bold', 26)
+sharp = Image.open(bg).convert('RGB').resize((W, H))   # bg = LAST frame of the previous clip: the card grows out of it
 b = Image.open(bg).convert('RGB').resize((int(W * 1.1), int(H * 1.1))).filter(ImageFilter.GaussianBlur(18))
 b = Image.blend(b, Image.new('RGB', b.size, SHADE), 0.55)
 lines = text.split('|')
@@ -19,7 +21,9 @@ p = subprocess.Popen(['ffmpeg', '-nostdin', '-v', 'error', '-y', '-f', 'rawvideo
 ease = lambda x: 1 - (1 - max(0, min(1, x))) ** 3
 for i in range(int(D * FPS)):
     t = i / FPS; z = 1 + 0.04 * t / D; cw, ch = int(W * 1.1 / z), int(H * 1.1 / z)
-    fr = b.crop(((b.width - cw) // 2, (b.height - ch) // 2, (b.width + cw) // 2, (b.height + ch) // 2)).resize((W, H)).convert('RGBA')
+    fr = b.crop(((b.width - cw) // 2, (b.height - ch) // 2, (b.width + cw) // 2, (b.height + ch) // 2)).resize((W, H))
+    if t < 0.35: fr = Image.blend(sharp, fr, ease(t / 0.35))   # sharp -> blurred: no jump at the cut
+    fr = fr.convert('RGBA')
     L = Image.new('RGBA', (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(L)
     if kicker: d.text((W / 2, 470), kicker, font=SANSB, fill=GOLD + (int(255 * ease(t / 0.5)),), anchor='mm')
     for k, ln in enumerate(lines):

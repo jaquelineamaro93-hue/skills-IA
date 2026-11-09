@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.3 — 2026-11-09
+- `voice_sync.py`: sem "travadinhas". Corta a voz só em silêncio real (≥ 80 ms, -30 dB) ou numa respiração onde a boca
+  pausa; antes cortava dentro de palavras quando o Whisper errava o fim delas. Dentro da frase a velocidade acompanha a
+  boca com mudança gradual (≤ 0,20x por palavra, 0,78–1,28x).
+- Cards sem fade-out (a transparência no fim "vazava" o fundo). Card final nasce do último quadro do clipe e desfoca.
+
 ## 1.0.2 — 2026-11-09
 - `voice_sync.py`: corrige trecho fora de sincronia ("conseguido um emprego" atrasado 0,5 s, "Mas" adiantado 0,7 s).
   Frases também quebram onde a boca pausa mais que a voz; início e fim de frase medidos pelo som (o Whisper erra a

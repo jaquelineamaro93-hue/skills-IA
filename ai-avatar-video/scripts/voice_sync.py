@@ -24,8 +24,8 @@ ap = argparse.ArgumentParser()
 ap.add_argument('gen'); ap.add_argument('voice'); ap.add_argument('out')
 ap.add_argument('--ranges', default=''); ap.add_argument('--lang', default='pt')
 ap.add_argument('--lead', type=float, default=0.04, help='voice leads the lips by this much (s); 0.02-0.08 looks natural')
-ap.add_argument('--rate', default='0.85,1.15', help='min,max steady speed of each phrase (natural: 0.85-1.15)')
-ap.add_argument('--jump', type=float, default=0.10, help='max speed change from one phrase to the next')
+ap.add_argument('--rate', default='0.78,1.28', help='min,max speed')
+ap.add_argument('--jump', type=float, default=0.20, help='max speed change from one word to the next (gradual = natural)')
 ap.add_argument('--pause', type=float, default=0.03, help='silence (s) in the original that separates two phrases (tuned: 0.03)')
 A = ap.parse_args()
 SR = 48000
@@ -112,12 +112,33 @@ for j, (ra, rb) in enumerate(av):
             phrases.append(cur); cur = []
         cur.append(pb)
     phrases.append(cur)
+    # Cut ONLY in real silence of the original (>= 80 ms below -30 dB) between the last word of one phrase and the
+    # first word of the next. No real silence -> the two phrases stay one. (Whisper word ends are often early:
+    # cutting "between words" by its timestamps split "cliente" and "contratação" in two -> audible stutter.)
+    def silent_cut(t0, t1, thr=-30, need=8):
+        i0, i1 = int(max(0, t0) * 100), int(t1 * 100); best, run, start = None, 0, 0
+        for i in range(i0, max(i0, i1)):
+            if DB_O[i] < thr:
+                if run == 0: start = i
+                run += 1
+                if run >= need and (best is None or run > best[1]): best = (start, run)
+            else: run = 0
+        return None if best is None else (best[0] + best[1] / 2) / 100
+    merged, C = [phrases[0]], [o0]
+    for ph in phrases[1:]:
+        lg, lw = merged[-1][-1]; w0, w1 = max(lw['s'] + 0.1, lw['e'] - 0.05), ph[0][1]['s'] + 0.12
+        c = silent_cut(w0, w1)                                     # real silence: 80 ms below -30 dB
+        if c is None and ph[0][0]['s'] - lg['e'] - (ph[0][1]['s'] - lw['e']) >= 0.25:
+            c = silent_cut(w0, w1, -24, 4)                         # mouth pauses, voice only breathes: cut in the breath
+        if c is None: merged[-1] = merged[-1] + ph
+        else: merged.append(ph); C.append(c)
+    C.append(o1); phrases = merged
     # place every phrase: steady speed r in [lo, hi], starting with the mouth; then resolve overlaps in order
-    L, prev = [], None  # [o_start, o_end, g_start, duration]
-    for ph in phrases:
-        os_, oe = snap_on(DB_O, ph[0][1]['s']), snap_off(DB_O, ph[-1][1]['e'])
-        gs, ge = snap_on(DB_G, ph[0][0]['s']), snap_off(DB_G, ph[-1][0]['e'])
-        if oe - os_ < 0.1 or ge - gs < 0.1: os_, oe, gs, ge = ph[0][1]['s'], ph[-1][1]['e'], ph[0][0]['s'], ph[-1][0]['e']
+    L, prev = [], None  # [o_start, o_end, g_start, duration]  (o_* = where the sound starts/ends inside its cut)
+    for k, ph in enumerate(phrases):
+        os_ = max(C[k], snap_on(DB_O, ph[0][1]['s'])); oe = min(C[k + 1], max(os_ + 0.1, snap_off(DB_O, ph[-1][1]['e'], fwd=0.6)))
+        gs, ge = snap_on(DB_G, ph[0][0]['s']), snap_off(DB_G, ph[-1][0]['e'], fwd=0.6)
+        if ge - gs < 0.1: gs, ge = ph[0][0]['s'], ph[-1][0]['e']
         r = max(lo, min(hi, (oe - os_) / max(ge - gs, 0.05)))
         if prev is not None: r = max(prev - A.jump, min(prev + A.jump, r))   # no sudden speed change between phrases
         prev = r; d = (oe - os_) / r
@@ -135,38 +156,50 @@ for j, (ra, rb) in enumerate(av):
         for i in range(1, len(L)): L[i][2] = max(L[i][2], L[i - 1][2] + L[i - 1][3] + 0.03)
         tot = L[-1][2] + L[-1][3] - L[0][2]; room = g_cap - 0.05 - L[0][2]
         if tot > room:
-            k = room / tot
-            for p in L: p[2] = L[0][2] + (p[2] - L[0][2]) * k; p[3] *= k
+            k_ = room / tot
+            for p in L: p[2] = L[0][2] + (p[2] - L[0][2]) * k_; p[3] *= k_
     rates = [round((p[1] - p[0]) / p[3], 2) for p in L]
     # Render phrase by phrase: each piece of the original runs from the quietest point before the phrase to the
     # quietest point after it, at the phrase's ONE speed, placed so its first word lands on the mouth. Pauses
     # between pieces are real silence. (A single time map stretched the pauses too, and a word whose start
     # Whisper marked late got smeared 10x into the silence before the mouth opened.)
-    def quietest(t0, t1):
-        i0, i1 = int(max(0, t0) * 100), max(int(max(0, t0) * 100) + 1, int(t1 * 100))
-        return (i0 + int(np.argmin(DB_O[i0:i1]))) / 100
-    C = [o0] + [quietest(L[i - 1][1] - 0.05, L[i][0] + 0.05) for i in range(1, len(L))] + [o1]
-    g1 = 0.0
+    # Render each phrase as its own piece (cut in silence, faded 10 ms). Inside the phrase the speed FOLLOWS the
+    # mouth word by word, but smoothly: each word may change speed by at most --jump (8%) from the previous one and
+    # stays inside --rate. Gradual changes are inaudible; sudden ones ("slow, then fast") are what people hear.
+    lo2, hi2 = lo, hi
+    g1, seg_rates, jumps = 0.0, [], []
     for i, p in enumerate(L):
         c0, c1 = C[i], C[i + 1]
-        if c1 - c0 < 0.02: continue
-        r = (p[1] - p[0]) / p[3]
-        t0 = p[2] - (p[0] - c0) / r
-        dur = (c1 - c0) / r
-        if i == len(L) - 1 and t0 + dur > g_cap:                     # the CTA tail must fit: speed it up a bit
-            r = min(1.3, (c1 - c0) / max(g_cap - t0, 0.05)); dur = (c1 - c0) / r
-        fi, fo = f'{tmp}/in{j}_{i}.wav', f'{tmp}/out{j}_{i}.wav'
+        if c1 - c0 < 0.05: continue
+        W_ = [(o['s'], g['s'] - A.lead) for g, o in phrases[i] if p[0] + 0.05 < o['s'] < p[1] - 0.05]
+        r = (p[1] - p[0]) / p[3]; t = p[2]; o = p[0]; km = []
+        for ok, tk in W_ + [(p[1], p[2] + p[3])]:
+            want = (ok - o) / max(tk - t, 0.05)
+            r_new = max(lo2, min(hi2, max(r - A.jump, min(r + A.jump, want))))
+            if seg_rates: jumps.append(abs(r_new - r))
+            r = r_new; t += (ok - o) / r; o = ok; km.append((o, t)); seg_rates.append(round(r, 2))
+        t_end_sound = t
+        t0 = p[2] - (p[0] - c0) / ((p[1] - p[0]) / p[3])
+        tail = (c1 - p[1]) / r
+        if i == len(L) - 1 and t_end_sound + tail > g_cap:              # the CTA tail must fit: speed it a bit
+            tail = max(0.05, g_cap - t_end_sound)
+        t1 = t_end_sound + tail
+        fi, fo, fm = f'{tmp}/in{j}_{i}.wav', f'{tmp}/out{j}_{i}.wav', f'{tmp}/map{j}_{i}.txt'
         wav_write(fi, pcm(A.voice, c0, c1))
-        if abs(r - 1) > 0.005:
-            subprocess.run(['rubberband', '-q', '-3', '--formant', '-D', f'{dur:.5f}', fi, fo], check=True, capture_output=True)
-        else: fo = fi
+        with open(fm, 'w') as m:
+            m.write(f'{int(round((p[0] - c0) * SR))} {int(round((p[2] - t0) * SR))}\n')
+            for ok, tk in km[:-1] + ([km[-1]] if c1 - p[1] > 0.02 else []):
+                m.write(f'{int(round((ok - c0) * SR))} {int(round((tk - t0) * SR))}\n')
+        subprocess.run(['rubberband', '-q', '-3', '--formant', '-D', f'{t1 - t0:.5f}', '--timemap', fm, fi, fo],
+                       check=True, capture_output=True)
         y = pcm(fo).copy(); s0 = max(0, int(round(t0 * SR))); n = min(len(y), len(out) - s0)
         if n <= 0: continue
         f = min(int(0.01 * SR), n // 2); y[:f] *= np.linspace(0, 1, f); y[n - f:n] *= np.linspace(1, 0, f)
         out[s0:s0 + n] += y[:n]; g1 = max(g1, (s0 + n) / SR)
+    rates = seg_rates
     print(f'range {j}: {len(P)} words, {len(phrases)} phrases, voice {o0:.2f}-{o1:.2f}s -> video {g0:.2f}-{g1:.2f}s, '
-          f'phrase speeds {min(rates, default=1)}x-{max(rates, default=1)}x, '
-          f'biggest jump {max((abs(a - b) for a, b in zip(rates, rates[1:])), default=0):.2f}x')
+          f'speeds {min(rates, default=1)}x-{max(rates, default=1)}x, '
+          f'biggest change between words {max(jumps, default=0):.2f}x')
     if nxt_g is not None: cuts.append(round((P[-1][0]['e'] + nxt_g) / 2, 3))
 cuts.append(round(GD, 3))
 wav_write(A.out, out[:int(round(GD * SR))])

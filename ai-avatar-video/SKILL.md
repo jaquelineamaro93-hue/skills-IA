@@ -11,7 +11,7 @@ Siga as etapas na ordem. Leia o arquivo de `references/` indicado em cada etapa 
 1. **Consentimento.** Só o rosto e a voz da própria pessoa ou de quem autorizou por escrito. Sem isso, recuse.
 2. **Fotos reais travam a identidade.** Nunca use imagem gerada como referência de rosto. Corrija tudo na imagem-base, antes do vídeo.
 3. **Voz final = arquivo original.** A fala do gerador de vídeo troca palavras: descarte sempre.
-4. **Ritmo natural > sincronia perfeita.** Uma velocidade por frase (0,85–1,15x). Nunca estique palavra por palavra.
+4. **Ritmo natural > sincronia perfeita.** Corte a voz só em silêncio; velocidade muda aos poucos (≤ 0,20x por palavra). Nunca saltos.
 5. **Expressão jovem e relaxada.** Bloco EXPRESSIONS em todo prompt; tags de frustração viram meio-sorriso.
 6. **Custo com "ok".** Mostre o custo, espere a resposta, gere 1 teste, só depois o lote.
 7. **CTA inteiro.** Em todo vídeo, confira a transcrição dos últimos 8 s.
@@ -29,9 +29,9 @@ Siga as etapas na ordem. Leia o arquivo de `references/` indicado em cada etapa 
 | 7 | QA | `scripts/qa_check.py final/R01.mp4` + `references/checklist-qa.md` | entrega com prova |
 
 ```bash
-python3 scripts/voice_sync.py out/A.mp4 R01.mp3 out/A_fit.wav --ranges 0-28.4    # leia: speeds 0.85-1.15x
+python3 scripts/voice_sync.py out/A.mp4 R01.mp3 out/A_fit.wav --ranges 0-28.4    # leia: sync check OK
 python3 scripts/soften_wrinkles.py out/A.mp4 out/A_soft.mp4 0.8                    # só se pedirem pele lisa
-python3 scripts/endcard.py frame.png R01.mp3 54.4 63.4 out/endcard.mp4 "Linha|site.com|Link na bio" "KICKER"
+python3 scripts/endcard.py last.png R01.mp3 54.4 63.4 out/endcard.mp4 "Linha|site.com|Link na bio" "KICKER"
 python3 scripts/assemble.py plan.json
 python3 scripts/qa_check.py final/R01.mp4 --lang pt                                # joins: none · END com o CTA
 ```

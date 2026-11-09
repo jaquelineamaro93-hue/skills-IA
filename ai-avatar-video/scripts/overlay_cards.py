@@ -121,7 +121,7 @@ def apply(video, sc, out, t0=0.0):
         b = rd.stdout.read(W * H * 3)
         if len(b) < W * H * 3: break
         t = i / FPS; fr = Image.frombytes('RGB', (W, H), b).convert('RGBA')
-        Lr = LAY[sc['type']](sc, t + t0); k = min(1, t / 0.3, max(0, D - t) / 0.3)
+        Lr = LAY[sc['type']](sc, t + t0); k = min(1, t / 0.3)   # no fade-out: half-transparent cards at the cut look like a glitch
         if k < 1:
             arr = np.array(Lr); arr[..., 3] = (arr[..., 3] * k).astype(np.uint8); Lr = Image.fromarray(arr, 'RGBA')
         fr.alpha_composite(Lr); wr.stdin.write(fr.convert('RGB').tobytes()); i += 1
