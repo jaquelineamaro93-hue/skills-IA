@@ -2,7 +2,6 @@
 
 Copyright (c) 2026 Jaqueline Amaro. Todos os direitos reservados.
 
-> RASCUNHO: revise com sua assessoria jurídica antes de vender.
 
 1. **Concessão.** Quem compra recebe uma licença pessoal, não exclusiva e intransferível para usar esta skill
    (instruções, referências, scripts e exemplos) na produção de vídeos próprios ou de clientes atendidos diretamente.

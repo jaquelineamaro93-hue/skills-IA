@@ -55,7 +55,7 @@ A skill cria o seu `PERFIL.md`, gera a ficha do personagem para você aprovar, m
 gera um vídeo de teste e, aprovado, entrega o MP4 final.
 
 ## Suporte e atualizações
-Versão no `CHANGELOG.md`. Dúvidas e atualizações: <seu canal de suporte>.
+Versão no `CHANGELOG.md`. Dúvidas e atualizações: [Jaqueline Amaro no LinkedIn](https://www.linkedin.com/in/jaquelineamaro/).
 
 ## Licença
 Uso conforme `LICENSE.md`. É proibido revender ou redistribuir o pacote.
