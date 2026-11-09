@@ -55,7 +55,13 @@ A skill cria o seu `PERFIL.md`, gera a ficha do personagem para você aprovar, m
 gera um vídeo de teste e, aprovado, entrega o MP4 final.
 
 ## Suporte e atualizações
-Versão no `CHANGELOG.md`. Dúvidas e atualizações: [Jaqueline Amaro no LinkedIn](https://www.linkedin.com/in/jaquelineamaro/).
+Versão no `CHANGELOG.md`. Dúvidas e atualizações:
+[LinkedIn](https://www.linkedin.com/in/jaquelineamaro/) · [Instagram @jaquedocrm1112](https://www.instagram.com/jaquedocrm1112/).
+
+## Quem criou
+**Jaqueline Amaro** — especialista em CRM, CX e IA, criadora da [SOMA Mentoria](https://www.somamentoria.com) e da
+[Conexão CRM](https://www.conexaocrm.com) (CRM Academy + Mulheres de CRM). Esta skill nasceu da produção dos vídeos
+dela com o próprio avatar e a própria voz: cada regra veio de um erro real, corrigido e testado.
 
 ## Licença
 Uso conforme `LICENSE.md`. É proibido revender ou redistribuir o pacote.
