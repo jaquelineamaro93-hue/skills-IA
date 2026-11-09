@@ -2,7 +2,6 @@
 
 Copyright (c) 2026 Jaqueline Amaro. Todos os direitos reservados.
 
-
 1. **Concessão.** Quem compra recebe uma licença pessoal, não exclusiva e intransferível para usar esta skill
    (instruções, referências, scripts e exemplos) na produção de vídeos próprios ou de clientes atendidos diretamente.
 2. **Proibido:** revender, sublicenciar, redistribuir, publicar ou compartilhar o pacote ou partes dele (inclusive
