@@ -13,7 +13,7 @@ cards de conversa/passos/frase, card final com o CTA e música baixa. Um MP4 pro
 | `examples/` | Perfil e notas para preencher, plano de montagem, cenas de cards, cores da marca |
 
 ### Diferenciais
-- **Sincronia de voz medida:** 0,06 s de diferença média entre voz e boca num vídeo real (90% das palavras abaixo de 0,1 s), sem estalos nas emendas.
+- **Voz natural e na boca:** a sua voz original, com ritmo constante por frase (nada de acelerar e frear), centrada na boca do avatar e sem estalos nas emendas.
 - **Identidade fiel:** ficha de personagem só a partir de fotos reais, com checklist de aprovação (sobrancelha, óculos, acessórios, assimetrias).
 - **Sem "cara de velha":** bloco de expressões jovens no prompt e suavização de pele opcional que não mexe em traços.
 - **O CTA nunca some:** montagem que não corta a voz, card final com a voz original e conferência automática do fim.

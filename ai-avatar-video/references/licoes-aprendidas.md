@@ -20,7 +20,9 @@ Cada linha é um erro que custou uma regeneração ou uma reclamação. Leia ant
 - A fala gerada pelo modelo de vídeo inventa palavras ("sabote", "candilita", "minida andando"). Sempre trocar pela voz original.
 - Alinhamento global (DTW) derrapou ~0,5 s e criou acelerações bruscas ("velocidade 10x").
 - Esticar a voz em pedaços por palavra (atempo) gerou cliques e ruídos.
-- O vídeo gerado faz pausas mais longas que a voz original; forçar a fala a cobrir a pausa deixou a voz 0,15 s fora da boca. Solução (`voice_sync.py`): mapa contínuo do Rubber Band com início e fim de cada palavra; pausas livres, palavras com limite de velocidade → 0,06 s.
+- Grudar a voz palavra por palavra na boca (velocidade livre até 2x) deu ótima sincronia no papel (0,06 s) e ficou HORRÍVEL de ouvir: "bem lento e do nada acelera". Medido: 0,49x a 1,48x dentro das frases. Regra: uma velocidade constante por frase (0,85–1,15x), mudança máxima de 0,10x entre frases, pausas absorvem o resto. Ritmo natural vale mais que 0,05 s de sincronia.
+- Métrica de velocidade por re-transcrição engana: numa cópia SEM alteração ela já mostra 0,80x–1,85x. Confie no relatório do `voice_sync.py` (velocidade exata do mapa) e no ouvido, não nessa medida.
+- Detector de "cliques" por salto de amostra acusa os "s" e "p" da própria voz original. A garantia é por construção (fade de 10 ms em cada emenda) e a checagem é só nas emendas.
 - O fim de um trecho precisa parar antes da próxima palavra do áudio completo, senão uma sílaba vaza e repete na emenda ("É super"/"Se... Se você").
 - Um início negativo em t=0 apagou a primeira frase sem aviso. Nunca deixe o início abaixo de 0.
 

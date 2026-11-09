@@ -1,8 +1,13 @@
 # Changelog
 
+## 1.0.1 — 2026-11-09
+- `voice_sync.py`: ritmo natural. Cada frase da voz original tem UMA velocidade constante (0,85–1,15x) e frases vizinhas mudam no máximo 0,10x; as pausas absorvem a diferença. Corrige a voz "lenta e do nada acelera" da 1.0.0 (variação real de até 2x por palavra). O relatório mostra a faixa de velocidades e o maior salto.
+- Pausas detectadas pelo volume real da voz (≥ 30 ms a -24 dB), não pelos tempos do Whisper.
+- Lições e pós-produção atualizadas com as medições.
+
 ## 1.0.0 — 2026-11-09
 - Fluxo completo com pontos de aprovação: perfil → ficha de personagem → voz → plano de cenas → geração com custo confirmado → pós → QA.
-- `voice_sync.py`: mapa de tempo contínuo (Rubber Band) com início e fim de cada palavra; pausas livres. Medido num vídeo real de 30 s: 0,06 s de diferença média entre voz e boca, 90% abaixo de 0,1 s, sem cliques.
+- `voice_sync.py`: mapa de tempo contínuo (Rubber Band) com início e fim de cada palavra; pausas livres. (substituído na 1.0.1: o ritmo variava demais)
 - `words.py`: transcrição local com tempo por palavra (faster-whisper), áudio lido via ffmpeg.
 - `soften_wrinkles.py`: suaviza linhas finas só na pele do rosto.
 - `assemble.py`: fade de 10 ms em cada emenda; música que nunca encurta a voz.

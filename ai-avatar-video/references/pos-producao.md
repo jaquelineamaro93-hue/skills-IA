@@ -11,10 +11,15 @@ python3 scripts/voice_sync.py out/B.mp4 R01.mp3 out/B_fit.wav --ranges 28.4-55.0
 - `--ranges`: trechos do ÁUDIO ORIGINAL (segundos) que aquele clipe fala, em ordem. Vários trechos num clipe:
   `--ranges 0-12.5,30.2-41.0` (cada um vira o range 0, 1… do `plan.json`).
 - Saída: `A_fit.wav` (exatamente a duração do vídeo) + `A_fit.wav.cuts.json`.
-- Como funciona: transcreve os dois áudios, casa as palavras e monta UM mapa de tempo contínuo (Rubber Band) por
-  trecho. Dentro das palavras a velocidade muda no máximo 2x; as pausas esticam ou encolhem livremente. Resultado
-  medido num vídeo real: 0,06 s de diferença média entre voz e boca, 90% das palavras abaixo de 0,1 s, sem cliques.
-- Ajustes: `--lead 0.04` (voz levemente antes da boca soa natural; 0,02–0,08), `--max-rate 2.0`.
+- Como funciona: transcreve os dois áudios, casa as palavras, divide a voz original em frases nas pausas reais
+  (≥ 30 ms de silêncio) e dá a cada frase UMA velocidade constante entre 0,85x e 1,15x, centrada na boca; frases
+  vizinhas mudam no máximo 0,10x. As pausas absorvem a diferença. Tudo num mapa contínuo do Rubber Band (sem cliques).
+- Leia a linha do relatório: `phrase speeds 0.85x-1.15x, biggest jump 0.10x`. Se aparecer velocidade fora disso,
+  o `--ranges` está errado.
+- Medido num vídeo real de 30 s: voz a ~0,12 s da boca em média, sem cliques, ritmo natural.
+- NÃO aumente `--rate` ou `--jump` para "grudar" mais na boca: a voz passa a ficar lenta e acelerar do nada
+  (testado e reprovado num projeto real). Boca melhor se resolve na geração, não esticando a voz.
+- Ajustes: `--lead 0.04` (voz levemente antes da boca soa natural; 0,02–0,08).
 - Se aparecer "only N words matched": arquivo de voz errado, `--ranges` errado ou idioma errado (`--lang`).
 
 ## 2. Pele (opcional, só se a pessoa pedir) — `soften_wrinkles.py`
