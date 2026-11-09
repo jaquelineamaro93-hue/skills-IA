@@ -9,11 +9,13 @@ Output:   out_fit.wav (48 kHz mono, exactly as long as the video) and out_fit.wa
           {"cuts": [0, ..., video_len], "firsts": {"j": [video_t, voice_t]}} (first matched word of each range).
 
 Method (why): both audios are transcribed with word timestamps (words.py) and matched in order (difflib).
-The original is split into phrases at its real pauses AND where the mouth pauses longer than the voice. Each phrase
-keeps ONE steady speed (0.85x-1.15x, max 0.10x change between neighbours), is cut at the quietest point around it,
-and placed so its first word lands on the mouth (start found from the sound, not Whisper's often-wrong word edges).
-Pauses are real silence. Rejected on purpose: word-by-word speed (sounds slow-then-fast), global DTW (drifts),
-one time map with stretched pauses (smears a word into the silence before the mouth opens).
+The original voice is cut into phrases ONLY in real silence (or in a breath where the mouth pauses). Each phrase is
+one piece (10 ms fades) that starts with the mouth; inside it the speed follows the mouth but changes at most --jump
+(0.20x) from one word to the next, within --rate (0.78-1.28x). Pauses are real silence; phrases never overlap.
+Then it SELF-CORRECTS: each phrase is measured against the mouth (first/second half) and re-rendered, up to 4 rounds.
+Phrase edges come from the sound, not from Whisper word times (they can be 0.4 s off).
+Rejected on purpose (each failed in a real project): word-by-word speed jumps (slow-then-fast voice), global DTW
+(drift), stretching pauses (smears a word into the silence), cutting by Whisper times (splits words = stutter).
 Requires the `rubberband` CLI (apt install rubberband-cli / brew install rubberband).
 """
 import sys, os, json, re, argparse, difflib, subprocess, unicodedata, shutil, tempfile, wave
@@ -54,7 +56,9 @@ def wav_write(path, y):
 G, O_all = words(A.gen), words(A.voice)
 av = [tuple(map(float, r.split('-'))) for r in A.ranges.split(',') if r.strip()] or [(0.0, VD)]
 O = [w for w in O_all if any(a - 0.3 <= w['s'] <= b + 0.3 for a, b in av)]
-rng = lambda t: next((j for j, (a, b) in enumerate(av) if a - 0.3 <= t <= b + 0.3), len(av) - 1)
+def rng(t):  # which range a time of the ORIGINAL belongs to: strictly inside first, then the nearest one
+    return next((j for j, (a, b) in enumerate(av) if a <= t < b),
+                min(range(len(av)), key=lambda j: min(abs(t - av[j][0]), abs(t - av[j][1]))))
 nz = lambda s: re.sub(r'[^a-z0-9]', '', unicodedata.normalize('NFKD', s.lower()).encode('ascii', 'ignore').decode())
 sm = difflib.SequenceMatcher(None, [nz(w['w']) for w in G], [nz(w['w']) for w in O], autojunk=False)
 pairs = [(G[b.a + k], O[b.b + k]) for b in sm.get_matching_blocks() for k in range(b.size)]
@@ -88,7 +92,7 @@ def paused(t0, t1):  # is there >= A.pause of silence between the end of one wor
         if run >= need: return True
     return False
 
-REF = float(np.percentile(np.sqrt((np.pad(pcm(A.voice)[::3], (0, -len(pcm(A.voice)[::3]) % 160)).reshape(-1, 160) ** 2).mean(1)), 90))
+REF = float(np.percentile(_e, 90))   # speech level of the original voice
 SPG = (DB_G > -20).astype(float)
 out = np.zeros(int(GD * SR) + SR, np.float32)
 cuts, firsts, tmp = [0.0], {}, tempfile.mkdtemp()
@@ -99,16 +103,15 @@ for j, (ra, rb) in enumerate(av):
     nxt_g = next((g['s'] for g, o in pairs if rng(o['s']) > j), None)
     g_cap = GD if nxt_g is None else nxt_g - 0.05          # never overlap the next range's speech
     # source span: a breath before the first word .. end of the range (the CTA tail is never trimmed)
-    o0 = max(0.0, ra - 0.05, P[0][1]['s'] - 0.15); o1 = min(VD, max(rb, P[-1][1]['e']) + 0.12)
+    o0 = max(0.0, ra, P[0][1]['s'] - 0.15); o1 = min(VD, max(rb, P[-1][1]['e']) + 0.12)
+    if j + 1 < len(av): o1 = min(o1, av[j + 1][0])   # never play a syllable of the next range (it would repeat at the join)
     g0 = max(0.0, P[0][0]['s'] - A.lead - (P[0][1]['s'] - o0))
-    # PHRASES (runs of speech between pauses) keep ONE steady speed each, limited to --rate (0.85x-1.15x): a voice
-    # that slows down and speeds up word by word sounds fake, even when it matches the lips better.
+    # PHRASE candidates: where the original pauses, or where the mouth pauses clearly longer than the voice.
     lo, hi = map(float, A.rate.split(','))
     phrases, cur = [], [P[0]]
     for (ga, wa), pb in zip(P[:-1], P[1:]):
-        # a new phrase where the ORIGINAL voice pauses, or where the MOUTH pauses clearly longer than the voice
-        # does (the generated video often holds a 1-2 s pause where the original only breathes: without this
-        # split, the words before the pause come late and the words after it come early)
+        # (the generated video often holds a 1-2 s pause where the original only breathes: without a split there,
+        # the words before the pause come late and the words after it come early)
         mouth_gap, voice_gap = pb[0]['s'] - ga['e'], pb[1]['s'] - wa['e']
         if paused(wa['e'], pb[1]['s']) or (mouth_gap >= 0.25 and mouth_gap - voice_gap >= 0.2):
             phrases.append(cur); cur = []
@@ -135,7 +138,7 @@ for j, (ra, rb) in enumerate(av):
         if c is None: merged[-1] = merged[-1] + ph
         else: merged.append(ph); C.append(c)
     C.append(o1); phrases = merged
-    # place every phrase: steady speed r in [lo, hi], starting with the mouth; then resolve overlaps in order
+    # first placement of every phrase (start with the mouth, average speed in [lo, hi]); render() refines it
     L, prev = [], None  # [o_start, o_end, g_start, duration]  (o_* = where the sound starts/ends inside its cut)
     for k, ph in enumerate(phrases):
         os_ = max(C[k], snap_on(DB_O, ph[0][1]['s'])); oe = min(C[k + 1], max(os_ + 0.1, snap_off(DB_O, ph[-1][1]['e'], fwd=0.6)))
@@ -160,7 +163,6 @@ for j, (ra, rb) in enumerate(av):
         if tot > room:
             k_ = room / tot
             for p in L: p[2] = L[0][2] + (p[2] - L[0][2]) * k_; p[3] *= k_
-    rates = [round((p[1] - p[0]) / p[3], 2) for p in L]
     # Render each phrase as its own piece (cut in silence, faded 10 ms). Inside the phrase the speed FOLLOWS the
     # mouth word by word, but smoothly: at most --jump change from one word to the next, inside --rate.
     # Then SELF-CORRECT: measure each piece against the mouth (first and second half), move its start/end targets
@@ -219,20 +221,18 @@ for j, (ra, rb) in enumerate(av):
             st, te, _ = spn; mid = (st + te) / 2
             errs.append((lag_at(sp, st - 0.3, mid + 0.2), lag_at(sp, mid - 0.2, te + 0.3)))
         worst = max((max(abs(a_), abs(b_)) for a_, b_ in errs), default=0)
-        if best is None or worst < best[0]: best = (worst, buf, sr_, jm, rnd)
+        if best is None or worst < best[0]: best = (worst, buf, sr_, jm, rnd, spans)
         if worst <= 0.1: break
         for i, (ea, eb) in enumerate(errs):
             if abs(ea) > 0.06: SH[i][0] += 0.8 * ea
             if abs(eb) > 0.06: SH[i][1] += 0.8 * eb
-    worst, buf, seg_rates, jumps, rnd = best
+    worst, buf, rates, jumps, rnd, spans = best
     out += buf; g1 = max((sp_[2] for sp_ in spans if sp_), default=g0)
-    rates = seg_rates
     ov = [f'{a_[1]:.2f}s' for a_, b_ in zip([x for x in spans if x], [x for x in spans if x][1:]) if b_[0] < a_[1] - 0.01]
-    print(f'range {j}: self-correction {rnd + 1} round(s), worst phrase lag {worst * 1000:.0f} ms, '
-          f'overlapping phrases: {", ".join(ov) or "none"}')
-    print(f'range {j}: {len(P)} words, {len(phrases)} phrases, voice {o0:.2f}-{o1:.2f}s -> video {g0:.2f}-{g1:.2f}s, '
-          f'speeds {min(rates, default=1)}x-{max(rates, default=1)}x, '
-          f'biggest change between words {max(jumps, default=0):.2f}x')
+    print(f'range {j}: {len(P)} words, {len(phrases)} phrases, voice {o0:.2f}-{o1:.2f}s -> video {g0:.2f}-{g1:.2f}s\n'
+          f'  speeds {min(rates, default=1)}x-{max(rates, default=1)}x, biggest change between words '
+          f'{max(jumps, default=0):.2f}x | self-correction {rnd + 1} round(s), worst phrase lag {worst * 1000:.0f} ms '
+          f'| overlapping phrases: {", ".join(ov) or "none"}')
     if nxt_g is not None: cuts.append(round((P[-1][0]['e'] + nxt_g) / 2, 3))
 cuts.append(round(GD, 3))
 wav_write(A.out, out[:int(round(GD * SR))])

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.0 — 2026-11-09 — versão de lançamento
+- `voice_sync.py`: com vários trechos no mesmo clipe, um trecho nunca toca sílaba do seguinte (evita a sílaba
+  repetida na emenda); palavras atribuídas ao trecho certo sem tolerância ambígua.
+- Relatório da autocorreção passa a descrever a rodada escolhida (antes podia listar a última).
+- Revisão final de todos os textos: nenhuma referência a parâmetros antigos; README com o que foi testado.
+
 ## 1.0.4 — 2026-11-09
 - `voice_sync.py` se autocorrige: mede cada frase contra a boca (1ª e 2ª metade), ajusta início/fim e renderiza de
   novo (até 4 rodadas). Pior trecho no teste: 0,21 s → 0,09 s.

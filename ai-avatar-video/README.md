@@ -1,7 +1,7 @@
 # AI Avatar Video — skill para Claude Code e Codex
 
 Transforme roteiros em reels verticais com o **seu avatar de IA falando com a sua própria voz clonada**:
-rosto travado, 5 ângulos de câmera, cenário único, voz original sincronizada à boca palavra por palavra,
+rosto travado, 5 ângulos de câmera, cenário único, a sua voz original no seu ritmo e na boca do avatar,
 cards de conversa/passos/frase, card final com o CTA e música baixa. Um MP4 pronto por roteiro.
 
 ## O que vem no pacote
@@ -13,12 +13,17 @@ cards de conversa/passos/frase, card final com o CTA e música baixa. Um MP4 pro
 | `examples/` | Perfil e notas para preencher, plano de montagem, cenas de cards, cores da marca |
 
 ### Diferenciais
-- **Voz natural e na boca:** a sua voz original, com ritmo constante por frase (nada de acelerar e frear), centrada na boca do avatar e sem estalos nas emendas.
+- **Voz natural e na boca, com autocorreção:** a sua voz original, sem acelerar e frear do nada, sem palavra cortada, sem frase sobreposta e sem estalo. O script mede cada frase contra a boca, se corrige sozinho e entrega um relatório (testado num vídeo real: pior trecho a 0,09 s da boca).
 - **Identidade fiel:** ficha de personagem só a partir de fotos reais, com checklist de aprovação (sobrancelha, óculos, acessórios, assimetrias).
 - **Sem "cara de velha":** bloco de expressões jovens no prompt e suavização de pele opcional que não mexe em traços.
 - **O CTA nunca some:** montagem que não corta a voz, card final com a voz original e conferência automática do fim.
 - **Sem surpresa na conta:** a skill mostra o custo e espera o seu "ok" antes de cada geração paga.
 - Transcrição 100% local (Whisper): suas gravações não vão para nenhuma API de transcrição.
+
+## Testado de ponta a ponta
+Num vídeo real de 30 s (avatar gerado no Seedance 2.5 + voz da ElevenLabs): sincronia, cards, card final, música e
+conferência final rodando só com os scripts do pacote. Cada defeito encontrado nos testes virou regra e está
+documentado em `references/licoes-aprendidas.md`.
 
 ## Requisitos
 - Claude Code (ou Codex) com acesso a terminal.

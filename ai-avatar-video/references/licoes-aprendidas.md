@@ -33,7 +33,7 @@ Cada linha é um erro que custou uma regeneração ou uma reclamação. Leia ant
 - "Se você notar, eu ajusto" não é aceitável: o ajuste fino é automático. O `voice_sync.py` mede cada frase contra a boca (primeira e segunda metade), corrige início/fim e renderiza de novo até 4 rodadas. Resultado no teste: pior trecho 0,21 s → 0,09 s.
 - Métrica de velocidade por re-transcrição engana: numa cópia SEM alteração ela já mostra 0,80x–1,85x. Confie no relatório do `voice_sync.py` (velocidade exata do mapa) e no ouvido, não nessa medida.
 - Detector de "cliques" por salto de amostra acusa os "s" e "p" da própria voz original. A garantia é por construção (fade de 10 ms em cada emenda) e a checagem é só nas emendas.
-- O fim de um trecho precisa parar antes da próxima palavra do áudio completo, senão uma sílaba vaza e repete na emenda ("É super"/"Se... Se você").
+- O fim de um trecho precisa parar antes da próxima palavra do áudio completo, senão uma sílaba vaza e repete na emenda ("É super"/"Se... Se você"). Travado no `voice_sync.py` desde a 1.1.0 (o teste com dois trechos pegou o trecho 1 invadindo o 2 em 0,27 s).
 - Um início negativo em t=0 apagou a primeira frase sem aviso. Nunca deixe o início abaixo de 0.
 
 ## Mixagem e CTA
