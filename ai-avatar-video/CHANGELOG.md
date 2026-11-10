@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.1 — 2026-11-10
+- Testado num UGC real de 26 s: OmniHuman 1.5 (grátis) com 1 foto 9:16 + áudio inteiro gera o vídeo todo numa vez,
+  com a voz original preservada (dispensa `voice_sync.py`). Documentado em `geradores.md` e `ugc-produto.md`
+  (card do CTA cobrindo rótulo deformado; imagens coladas no chat não viram arquivo; host de download do Artlist).
+
 ## 1.2.0 — 2026-11-10
 - Novo `references/ugc-produto.md` e etapa 4b: vídeo de produto (UGC). Foto real do produto como referência (fichas
   de IA deformam rótulos), conferência do nome da marca na voz antes de gerar, cupom da própria pessoa, prompt para

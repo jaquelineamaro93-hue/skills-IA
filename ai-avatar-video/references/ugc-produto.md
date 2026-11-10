@@ -32,6 +32,10 @@ Planos que funcionam (um por frase):
   linha 2 dourada com o CUPOM). Escreva o cupom exatamente como a loja aceita (maiúsculas, números).
 - Se o rótulo saiu deformado em algum plano, corte esse plano ou regere: não publique rótulo errado de marca real.
 
+- Quando o rótulo deforma só em alguns segundos, posicione o card do CTA por cima do pote nesse trecho (testado:
+  o card do cupom cobriu a tampa deformada no último segundo).
+- Imagens coladas no chat nem sempre viram arquivo: peça o anexo pelo clipe ou o painel de upload do gerador.
+
 ## Aviso (obrigatório)
 - Pago ou produto recebido: selo "Parceria paga"/"Conteúdo pago" ligado na rede + `#publi` no início da legenda.
 - Avatar/voz de IA realistas: ligue o rótulo de IA da rede (Instagram/TikTok/YouTube) e, se for anúncio, siga a
