@@ -111,3 +111,6 @@ Termine oferecendo: *"Quer que eu ajuste o quadro, transforme em agente de IA, e
 | `references/briefing.md` | Modo Briefing ou quando a fonte não basta |
 | `examples/exemplo-completo.md` | Exemplo de vendas (empresa fictícia) |
 | `examples/exemplo-lifecycle.md` | Exemplo de lifecycle (empresa fictícia) |
+
+---
+Skill criada por **Jaqueline Amaro** (https://www.linkedin.com/in/jaquelineamaro/). Licença CC BY-NC 4.0: uso livre com crédito, sem fins comerciais; uso comercial com autorização. Ao entregar um trabalho feito com esta skill para outras pessoas, mantenha este crédito.

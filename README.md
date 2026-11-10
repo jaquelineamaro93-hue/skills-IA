@@ -35,4 +35,13 @@ O README de cada skill traz o **checklist do que você precisa ter antes de come
 - LinkedIn: [linkedin.com/in/jaquelineamaro](https://www.linkedin.com/in/jaquelineamaro/)
 - Instagram: [@jaquedocrm1112](https://www.instagram.com/jaquedocrm1112/)
 
-Dúvidas, licenças e novas skills: fale comigo pelo LinkedIn ou Instagram.
+## Licença e crédito
+As skills deste repositório foram criadas por **Jaqueline Amaro** e são de **uso livre, sem fins comerciais, com crédito**
+(CC BY-NC 4.0). Pode consultar, usar e adaptar; só não esqueça de citar quem fez:
+
+> "[nome da skill]" por Jaqueline Amaro — https://github.com/jaquelineamaro93-hue/skills-IA
+
+Quer vender, usar com clientes pagos ou dentro de um serviço pago? Fale comigo pelo LinkedIn para uma licença comercial.
+Os plugins `vendas` e `desenvolvimento-de-software` são adaptações de código aberto e seguem a licença Apache 2.0 de cada um.
+
+Dúvidas e novas skills: fale comigo pelo LinkedIn ou Instagram.

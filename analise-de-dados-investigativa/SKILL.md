@@ -251,3 +251,6 @@ Apos entregar o relatorio, ofereca:
 | `references/lenses.md` | Tecnicas detalhadas, fluxos de execucao e mini-cases das 6 lentes | Antes de executar a Fase 3 |
 | `references/conversation-tips.md` | Metricas e tecnicas para analise de conversas | Quando o dataset incluir conversas/chats |
 | `references/examples.md` | Exemplos completos de input/output em cenarios variados | Para calibrar profundidade e tom |
+
+---
+Skill criada por **Jaqueline Amaro** (https://www.linkedin.com/in/jaquelineamaro/). Licença CC BY-NC 4.0: uso livre com crédito, sem fins comerciais; uso comercial com autorização. Ao entregar um trabalho feito com esta skill para outras pessoas, mantenha este crédito.

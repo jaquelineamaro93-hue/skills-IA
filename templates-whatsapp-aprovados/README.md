@@ -1,5 +1,7 @@
 # Templates de WhatsApp Aprovados — skill para Claude Code, Claude.ai e Codex
 
+> Criado por **Jaqueline Amaro** · [LinkedIn](https://www.linkedin.com/in/jaquelineamaro/)
+
 Templates **UTILITY** da WhatsApp Business Platform (Meta) feitos para serem **aprovados na primeira submissão**:
 confirmação de pedido, envio, agendamento, pagamento, boleto, resultado de exame, acesso a plataforma e mais.
 
@@ -29,6 +31,6 @@ confirmação de pedido, envio, agendamento, pagamento, boleto, resultado de exa
 
 Depois é só pedir: *"Cria um template de confirmação de consulta com botões confirmar e remarcar."*
 
-## Licença
-Uso pessoal e comercial no seu trabalho; revenda e redistribuição proibidas. Veja [LICENSE.md](LICENSE.md).
-A aprovação final de cada template é sempre decisão da Meta.
+## Licença e crédito
+Criado por **Jaqueline Amaro**. Uso livre e sem fins comerciais, **desde que você dê o crédito** (CC BY-NC 4.0).
+Para vender ou usar com clientes pagos, fale comigo pelo [LinkedIn](https://www.linkedin.com/in/jaquelineamaro/). Detalhes em [LICENSE.md](LICENSE.md).

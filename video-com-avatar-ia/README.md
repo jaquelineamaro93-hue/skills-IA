@@ -1,5 +1,7 @@
 # Vídeo com Avatar de IA — skill para Claude Code e Codex
 
+> Criado por **Jaqueline Amaro** · [LinkedIn](https://www.linkedin.com/in/jaquelineamaro/)
+
 Transforme roteiros em reels verticais e vídeos UGC de produto com o **seu avatar de IA falando com a sua própria voz clonada**:
 rosto travado, 5 ângulos de câmera, cenário único, a sua voz original no seu ritmo e na boca do avatar,
 cards de conversa/passos/frase, card final com o CTA e música baixa. Um MP4 pronto por roteiro.
@@ -88,5 +90,6 @@ Versão no `CHANGELOG.md`. Dúvidas e atualizações:
 [Conexão CRM](https://www.conexaocrm.com) (CRM Academy + Mulheres de CRM). Esta skill nasceu da produção dos vídeos
 dela com o próprio avatar e a própria voz: cada regra veio de um erro real, corrigido e testado.
 
-## Licença
-Uso conforme `LICENSE.md`. É proibido revender ou redistribuir o pacote.
+## Licença e crédito
+Criado por **Jaqueline Amaro**. Uso livre e sem fins comerciais, **desde que você dê o crédito** (CC BY-NC 4.0).
+Para vender ou usar com clientes pagos, fale comigo pelo [LinkedIn](https://www.linkedin.com/in/jaquelineamaro/). Detalhes em [LICENSE.md](LICENSE.md).
