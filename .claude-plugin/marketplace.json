@@ -2,7 +2,7 @@
   "name": "skills-ia",
   "owner": { "name": "Jaqueline Amaro" },
   "plugins": [
-    { "name": "vendas", "source": "./plugin-vendas", "description": "Vendas: prep de calls, follow-up, contas, deals, pipeline e forecast com o seu CRM, e-mail e agenda." },
-    { "name": "engenharia", "source": "./plugin-engenharia", "description": "Engenharia: standup, code review, arquitetura, debug, incidentes e documentação técnica." }
+    { "name": "vendas", "source": "./plugin-vendas", "description": "Ajudante de vendas: prepara e resume reuniões, faz follow-up, pesquisa empresas, cuida dos negócios, revisa o funil e faz a previsão de vendas." },
+    { "name": "desenvolvimento-de-software", "source": "./plugin-desenvolvimento-de-software", "description": "Para quem cria sistemas e aplicativos: resumo da daily, revisão de código, arquitetura, correção de erros, sistema fora do ar, testes e documentação." }
   ]
 }

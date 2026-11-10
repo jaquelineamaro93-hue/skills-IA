@@ -1,148 +1,128 @@
 # Plugin Vendas
 
-A sales plugin designed for Claude Cowork and Claude Code. It helps with the whole sales day: prepping calls, summarizing and following up, researching accounts, working deals, reviewing pipeline and writing the forecast. It works with the tools your team already uses (your CRM, email, calendar, chat and call recorder) or with files you upload when nothing is connected.
+Um ajudante de vendas para o Claude (Cowork e Claude Code). Ele cuida do dia a dia do vendedor: prepara reuniões, resume e faz o follow-up, pesquisa empresas, cuida dos negócios, revisa o funil e escreve a previsão de vendas.
 
-## Installation
+Funciona com as ferramentas que o seu time já usa (CRM, e-mail, agenda, chat e gravador de reuniões). Se nada estiver conectado, funciona com planilhas e textos que você enviar.
+
+## Instalação
 
 ```bash
 claude plugin marketplace add jaquelineamaro93-hue/skills-IA
+```
+```bash
 claude plugin install vendas@skills-ia
 ```
 
-## What's new in 2.0
+## Como funciona, em 4 frases
 
-- **From 9 to 36 skills.** New skills cover deal reviews, close plans, stakeholder maps, renewals, customer health, lead routing, CRM updates, meeting booking, inbox sweeps and team pipeline views.
-- **Works across CRMs and email providers.** Skills read your CRM's own stages and fields instead of assuming one vendor's setup, and work the same on Gmail or Outlook, Slack or Teams. No settings file is needed; a skill asks once for anything it cannot find.
-- **Uses uploaded files when nothing is connected.** Upload a pipeline export, a transcript or a list of accounts, and the skill works from that.
-- **Acts when you ask.** Skills can update CRM records, create email drafts or send email, post to chat and book meetings, within each connector's permissions. Changes a skill suggests on its own are shown to you first, with the evidence behind them.
-- **Treats outside content as information.** Emails, call transcripts, chat messages and documents are read as information, never as instructions. If an email or transcript asks for an action, the skill shows you the action before anything happens.
-- **Existing skill names still work.** `account-research`, `call-summary`, `forecast`, `call-prep`, `daily-briefing`, `draft-outreach`, `pipeline-review`, `competitive-intelligence` and `create-an-asset` keep their names, rebuilt on the new skills. Two behave differently: `create-an-asset` now builds decks, one-pagers and leave-behinds from your account data rather than landing pages or interactive demos, and `forecast` writes a commit, best-case and pipeline narrative instead of best, likely and worst scenarios.
+- **Você pede em português normal.** "Me prepara para a reunião com a Acme" já chama a skill certa. Ou chame pelo nome, por exemplo `/vendas:resumir-reuniao`.
+- **Ele só muda algo quando você manda.** Atualizar o CRM, enviar e-mail, postar no chat e marcar reunião só acontecem se você pedir. O que ele sugerir sozinho aparece antes, com a prova do porquê.
+- **E-mail de cliente não dá ordem para ele.** E-mails, gravações e mensagens são lidos como informação. Se um e-mail "pedir" alguma ação, ele mostra para você antes.
+- **Sem ferramenta conectada também funciona.** Envie a exportação do funil, a transcrição ou a lista de clientes, e ele trabalha com isso.
 
-## Skills
+## As 36 skills
 
-Skills run when your request matches, or directly by name (for example `/vendas:call-summary`).
+### Seu dia
 
-### Your day
-
-| Skill | Description |
+| Skill | O que faz |
 |---|---|
-| `setup` | First-run setup: shows what's connected and what each tool unlocks, learns how you write, and renders a starter dashboard |
-| `daily-briefing` | Morning rundown: today's meetings with account context, deals closing soon, customer emails waiting, top actions |
-| `call-prep` | Pre-call brief: attendees, account history, prior call context, open opportunity status, discovery questions |
-| `call-summary` | Turn a transcript or call notes into a follow-up email draft, a team summary and proposed CRM updates |
-| `inbox-sweep` | Sort unread customer emails by priority and draft replies |
-| `schedule-meeting` | Find a time, draft the invite, book it on your calendar and log it to the CRM |
-| `log-activity` | Log a call, meeting or email to the right account, opportunity and contact in the CRM |
-| `end-of-day` | Close out the day: calls processed, CRM current, commitments captured, tomorrow's top three |
-| `weekly-wrap` | End-of-week summary of what closed, moved and slipped, and what's on deck Monday |
+| `primeiros-passos` | Mostra o que está conectado, aprende como você escreve e já monta um painel inicial |
+| `resumo-do-dia` | Resumo da manhã: reuniões de hoje, negócios fechando, e-mails esperando, ações principais |
+| `preparar-reuniao` | Uma página antes da reunião: quem vai, histórico, o que foi dito antes, perguntas para fazer |
+| `resumir-reuniao` | Da gravação ou anotação, sai o e-mail de follow-up, o resumo para o time e o que atualizar no CRM |
+| `limpar-caixa-de-entrada` | Separa os e-mails de clientes por prioridade e escreve as respostas |
+| `marcar-reuniao` | Acha horário, escreve o convite, marca na agenda e registra no CRM |
+| `registrar-no-crm` | Registra uma ligação, reunião ou e-mail no cliente e negócio certos |
+| `fechar-o-dia` | Fecha o dia: reuniões processadas, CRM em dia, compromissos anotados, 3 prioridades de amanhã |
+| `resumo-da-semana` | O que fechou, andou e atrasou na semana, e o que vem na segunda |
 
-### Accounts and prospecting
+### Clientes e prospecção
 
-| Skill | Description |
+| Skill | O que faz |
 |---|---|
-| `account-research` | Research a company or contact: overview, recent news, likely priorities and fit against your ICP |
-| `account-context` | One brief on an account from CRM data, email, docs, transcripts and team chat |
-| `stakeholder-map` | Map the people in a deal: roles, influence, sentiment, who's missing and your best way in |
-| `draft-outreach` | Draft a personalized email or multi-touch sequence, and add the contact to a sequence when asked |
-| `lead-triage` | Score an inbound lead or rank a lead backlog against your ICP and recommend next actions |
-| `route-lead` | Decide who owns an unrouted lead or opportunity and draft the handoff notes |
-| `account-tiering` | Score and tier a list of accounts or your whole book by fit and engagement |
-| `account-plan` | Build or refresh a strategic account plan and sync key fields to the CRM |
-| `expansion-whitespace` | Find expansion plays in an account or book, with evidence and the opportunities to create |
+| `pesquisar-empresa` | Pesquisa uma empresa ou pessoa: o que fazem, notícias, prioridades e se combinam com seu cliente ideal |
+| `tudo-sobre-um-cliente` | Um resumo de tudo sobre um cliente: CRM, e-mails, documentos, gravações e chat do time |
+| `quem-decide-a-compra` | Mapa das pessoas do negócio: quem decide, quem influencia, quem falta e por onde entrar |
+| `escrever-mensagem-de-prospeccao` | E-mail personalizado ou sequência de contatos, e inclusão numa cadência se você pedir |
+| `escolher-melhores-leads` | Dá nota a um lead ou ordena uma lista pelo encaixe com o cliente ideal |
+| `enviar-lead-para-vendedor` | Decide quem fica com um lead sem dono e escreve o recado de passagem |
+| `priorizar-clientes` | Separa sua carteira em grupos A, B e C para mostrar onde focar |
+| `plano-para-um-cliente` | Cria ou atualiza o plano estratégico de um cliente |
+| `vender-mais-para-clientes` | Acha onde dá para vender mais para quem já é cliente, com evidência |
 
-### Deals
+### Negócios
 
-| Skill | Description |
+| Skill | O que faz |
 |---|---|
-| `deal-review` | Deep-dive on one opportunity: health score, risks, qualification gaps and next actions |
-| `deal-advance-gap` | What is missing to move a deal to the next stage and to close, with owners and dates |
-| `deal-signals` | Alerts across your book: deals gone quiet, slipping close dates, champion changes, competitor mentions |
-| `deal-slip-scenario` | Model the effect on your number if a deal slips, shrinks or is lost |
-| `close-plan` | Business case and mutual action plan: why buy, why now, and the dated path to signature |
-| `handle-objection` | Work through an objection or competitive threat with responses and proof points from your own history |
-| `competitive-intelligence` | The play against a named competitor in a deal, plus win/loss patterns and battlecards across the book |
-| `create-an-asset` | Build a customer deck, one-pager or leave-behind from your account data, with no made-up numbers |
-| `update-opportunity` | Update stage, close date, next steps, amount or forecast category, with a before and after |
+| `revisar-negocio` | Análise funda de um negócio: nota de saúde, riscos, o que falta e próximos passos |
+| `o-que-falta-para-avancar` | O que precisa acontecer para o negócio avançar e fechar, com quem e quando |
+| `sinais-do-negocio` | Alertas da carteira: negócios parados, datas escorregando, troca de pessoas, concorrente |
+| `e-se-a-venda-atrasar` | Simula o efeito na meta se um negócio atrasar, diminuir ou for perdido |
+| `plano-para-fechar-venda` | Caso de negócio e plano de ação conjunto até a assinatura |
+| `responder-objecao` | Como responder uma objeção, com provas do seu próprio histórico |
+| `comparar-concorrentes` | Como ganhar de um concorrente num negócio, e cartões de batalha para o time |
+| `criar-material-de-venda` | Apresentação, one-pager ou material para o cliente, sem número inventado |
+| `atualizar-negocio-no-crm` | Muda etapa, data, próximo passo, valor ou categoria, mostrando o antes e depois |
 
-### Pipeline and forecast
+### Funil e previsão
 
-| Skill | Description |
+| Skill | O que faz |
 |---|---|
-| `pipeline-review` | Stage-by-stage pipeline health: coverage, aging, conversion and at-risk deals |
-| `crm-hygiene-check` | Read-only audit of opportunities for missing fields, stale dates and stage mismatches |
-| `forecast` | The commit, best-case and pipeline narrative for a forecast call or a 1:1 with your manager |
-| `team-pipeline` | Leader view of a team's pipeline by rep and stage, with at-risk deals and coaching moments |
-| `rep-context` | Leader prep for a 1:1 with a rep: pipeline, recent activity and where they may need help |
-| `win-loss-review` | Patterns in recently closed deals: where deals are lost, common objections, what wins |
+| `revisar-funil` | Saúde do funil por etapa: cobertura, negócios envelhecendo, conversão e riscos |
+| `arrumar-crm` | Revisa o CRM atrás de campos vazios, datas vencidas e etapas erradas |
+| `previsao-de-vendas` | O texto da previsão para a reunião de forecast ou o 1:1 com o gestor |
+| `funil-do-time` | Visão do gestor: funil por vendedor e etapa, riscos e onde treinar |
+| `preparar-conversa-com-vendedor` | Prepara o gestor para o 1:1 com um vendedor |
+| `por-que-ganhamos-ou-perdemos` | Padrões nos negócios fechados: onde perdemos, objeções, o que faz ganhar |
 
-### Customers
+### Clientes atuais
 
-| Skill | Description |
+| Skill | O que faz |
 |---|---|
-| `customer-health` | Health check on a customer and QBR prep: relationship, engagement, risks and value delivered |
-| `customer-voice` | Direct, attributed customer quotes on a topic from call transcripts and email |
-| `renewal-radar` | Upcoming renewals with timing, risk and uplift potential |
+| `saude-do-cliente` | Saúde do cliente e preparação da reunião trimestral (QBR) |
+| `o-que-os-clientes-dizem` | Citações literais dos clientes sobre um assunto, tiradas de gravações e e-mails |
+| `renovacoes-chegando` | Renovações que estão chegando, com prazo, risco e chance de aumentar |
 
-## Example workflows
+## Exemplos
 
-### After a call
+**Depois de uma reunião:** digite `/vendas:resumir-reuniao` e cole suas anotações ou a transcrição. Você recebe o resumo, o rascunho do e-mail de follow-up, o resumo para o time e as atualizações sugeridas no CRM. Nada é gravado nem enviado sem você mandar.
 
-```
-/vendas:call-summary
-```
+**Reunião de previsão:** "Escreve minha previsão deste trimestre." A skill `previsao-de-vendas` lê seus negócios abertos (ou a exportação do funil) e escreve o que vai fechar, o que pode fechar, o que mudou e onde está o risco.
 
-Paste your notes or transcript, or name the call if your call recorder is connected. You get a summary, a follow-up email draft, a team summary and proposed CRM updates. Nothing is written to the CRM or sent until you say so.
+**Antes de falar com uma empresa nova:** "Pesquisa a Acme antes da minha call amanhã." A skill `pesquisar-empresa` traz o que a empresa faz, notícias recentes, prioridades prováveis, se ela combina com seu cliente ideal e se ela já está no seu CRM.
 
-### Forecast call
+## Funciona com arquivos, melhor com as suas ferramentas
 
-```
-Write my forecast for this quarter
-```
-
-The `forecast` skill reads your open opportunities (or an uploaded pipeline export) and writes the commit, best-case and pipeline story, what changed and where the risk is.
-
-### Researching a prospect
-
-```
-Research Acme Corp before my call tomorrow
-```
-
-The `account-research` skill gives you a company overview, recent news, likely priorities and fit against your ICP, and checks whether the company is already in your CRM.
-
-## Works with files, better with your tools
-
-Every skill works without any connectors:
-
-| What you can do | With nothing connected | With connected tools |
+| O que você quer | Sem nada conectado | Com ferramentas conectadas |
 |---|---|---|
-| Summarize a call and follow up | Paste notes or a transcript | Call recorder, email, CRM, chat |
-| Review pipeline and forecast | Upload a pipeline export | CRM |
-| Research accounts | Web search and your context | Data enrichment, CRM |
-| Prep for calls | Describe the meeting | Calendar, CRM, email, call recorder |
-| Draft outreach | Web search and your context | Email, CRM, sales engagement |
-| Update the CRM | Get a checklist to apply by hand | CRM |
-| Book meetings | Get a draft invite to send yourself | Calendar, CRM |
+| Resumir reunião e fazer follow-up | Cole anotações ou transcrição | Gravador de reuniões, e-mail, CRM, chat |
+| Revisar funil e previsão | Envie a exportação do funil | CRM |
+| Pesquisar empresas | Busca na web e o que você contar | Enriquecimento de dados, CRM |
+| Preparar reuniões | Descreva a reunião | Agenda, CRM, e-mail, gravador |
+| Escrever prospecção | Busca na web e o que você contar | E-mail, CRM, ferramenta de cadência |
+| Atualizar o CRM | Recebe um checklist para aplicar à mão | CRM |
+| Marcar reuniões | Recebe o convite pronto para enviar | Agenda, CRM |
 
-With nothing connected, a skill says plainly what it used and what it could not see.
+Sem nada conectado, a skill diz claramente o que usou e o que não conseguiu ver.
 
-## Connectors
+## Ferramentas que conectam
 
-> To check which tools are included and what else works, see [CONNECTORS.md](CONNECTORS.md).
-
-| Category | Examples | What it enables |
+| Tipo | Exemplos | O que libera |
 |---|---|---|
-| **CRM** | HubSpot, Close, Salesforce | Opportunities, accounts, contacts, record updates |
-| **Email and calendar** | Gmail, Google Calendar, Calendly, Microsoft 365 | Customer threads, drafts, meetings, booking |
-| **Call recorder** | Gong, Fireflies, Zoom, Otter.ai | Transcripts and call history |
-| **Data enrichment** | Clay, ZoomInfo, Apollo, Lusha, Crunchbase | Company and contact data |
-| **Chat** | Slack, Microsoft Teams | Team context and summaries posted to channels |
+| **CRM** | HubSpot, Close, Salesforce | Negócios, clientes, contatos, atualizações |
+| **E-mail e agenda** | Gmail, Google Agenda, Calendly, Microsoft 365 | Conversas, rascunhos, reuniões, agendamento |
+| **Gravador de reuniões** | Gong, Fireflies, Zoom, Otter.ai | Transcrições e histórico de reuniões |
+| **Enriquecimento de dados** | Clay, ZoomInfo, Apollo, Lusha, Crunchbase | Dados de empresas e contatos |
+| **Chat** | Slack, Microsoft Teams | Contexto do time e resumos nos canais |
 
-**Salesforce and Microsoft 365 (Outlook, Teams, SharePoint) are included. Your organization's admin enables each one in Claude before people can sign in; for Salesforce, that includes setting up your org's Salesforce app.**
+Salesforce e Microsoft 365 (Outlook, Teams, SharePoint) estão incluídos, mas o administrador da empresa precisa liberar cada um no Claude antes de as pessoas entrarem; no Salesforce, isso inclui configurar o app da empresa. A lista completa está em [CONNECTORS.md](CONNECTORS.md).
 
-See [CONNECTORS.md](CONNECTORS.md) for every included server and other options.
+## Para administradores
 
-## For admins
+As permissões de cada conector controlam o que pode rodar: cada ferramenta pode ser permitir, perguntar ou bloquear, e as skills nunca passam disso. Se uma ferramenta de escrita estiver bloqueada, a skill continua funcionando e entrega um checklist para a pessoa aplicar à mão.
 
-Connector permissions are where your team controls what runs. Each connector can allow, ask or block each of its tools, and the skills never go beyond those settings. If a write tool is blocked, the skill keeps working and hands the person a checklist to apply by hand.
+Para execuções agendadas (o resumo da manhã, os alertas semanais), deixe as ferramentas de enviar, postar e gravar em **perguntar**, para nada sair ou mudar sem uma pessoa aprovar.
 
-For scheduled runs (a morning briefing, a weekly deal signals digest), set send, post and write tools to **ask**, so nothing goes out or changes without a person approving it.
+## Origem e licença
+
+Obra derivada do plugin de vendas de código aberto da Anthropic (Apache 2.0), traduzida e adaptada para o português por Jaqueline Amaro. Veja [LICENSE](LICENSE) e [NOTICE](NOTICE).

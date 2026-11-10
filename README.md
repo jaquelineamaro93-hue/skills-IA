@@ -12,8 +12,8 @@ Skills para Claude Code e Codex, construídas e testadas em projetos reais por *
 ## Plugins (Claude Cowork e Claude Code)
 | Plugin | O que faz |
 |---|---|
-| [`vendas`](plugin-vendas/) | 36 skills de vendas: prep e resumo de calls, follow-up, pesquisa de contas, deals, pipeline, forecast, renovações e higiene do CRM. |
-| [`engenharia`](plugin-engenharia/) | Standup, code review, arquitetura (ADR), debug, incidentes, deploy checklist, testes e documentação técnica. |
+| [`vendas`](plugin-vendas/) | 36 ajudantes para vender: preparar e resumir reuniões, follow-up, pesquisar empresas, cuidar dos negócios, revisar o funil, previsão de vendas e renovações. |
+| [`desenvolvimento-de-software`](plugin-desenvolvimento-de-software/) | 10 ajudantes para quem cria sistemas e aplicativos: resumo da daily, revisão de código, arquitetura, correção de erros, sistema fora do ar, testes e documentação. |
 
 Instalação dos plugins no Claude Code:
 ```bash
@@ -22,7 +22,7 @@ claude plugin marketplace add jaquelineamaro93-hue/skills-IA
 ```bash
 claude plugin install vendas@skills-ia
 ```
-Os plugins são obras derivadas de código aberto (Apache 2.0, ver `LICENSE` e `NOTICE` de cada um).
+Os plugins são obras derivadas de código aberto da Anthropic (Apache 2.0), traduzidas e adaptadas para o português; veja `LICENSE` e `NOTICE` de cada um.
 
 Cada pasta de skill é completa: `SKILL.md` (o fluxo), `references/` e, quando precisa, `scripts/` e `examples/`.
 O README de cada skill traz o **checklist do que você precisa ter antes de começar** (contas, programas e materiais) e a instalação.

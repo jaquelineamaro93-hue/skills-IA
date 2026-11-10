@@ -1,36 +1,34 @@
-# Connectors
+# Conectores
 
-## How tool references work
+## Como as skills falam das ferramentas
 
-Plugins are **tool-agnostic**. They describe workflows in terms of categories (CRM, chat, email, etc.) rather than specific products. The `.mcp.json` pre-configures specific MCP servers, but any MCP server in that category works.
+O plugin não depende de uma marca. As skills falam do tipo de ferramenta ("o CRM", "o e-mail", "a agenda", "as gravações"), então qualquer conector daquele tipo funciona. O arquivo `.mcp.json` já traz alguns servidores configurados, mas qualquer servidor do mesmo tipo serve.
 
-Many plugins use `~~category` placeholders in their files. The skills in this plugin name the category in plain words instead ("the CRM", "email", "the calendar", "call transcripts"). Either way, a skill refers to the category, so any connector in that category works. The placeholder column below maps each category to the shared naming used across plugins.
+Toda skill também funciona sem nada conectado: envie uma exportação ou cole anotações, e ela trabalha com isso.
 
-Every skill also works with nothing connected: upload an export or paste notes, and the skill works from that.
+## Conectores deste plugin
 
-## Connectors for this plugin
-
-| Category | Placeholder | Included servers | Other options |
-|----------|-------------|-----------------|---------------|
+| Tipo | Apelido | Já incluídos | Outras opções |
+|------|---------|--------------|---------------|
 | CRM | `~~CRM` | HubSpot, Salesforce\*, Close, Monday | Pipedrive, Attio, Zoho CRM, Copper |
-| Email | `~~email` | Gmail, Microsoft 365 (Outlook)\* |  |
-| Calendar | `~~calendar` | Google Calendar, Calendly, Microsoft 365 (Outlook)\* |  |
+| E-mail | `~~email` | Gmail, Microsoft 365 (Outlook)\* |  |
+| Agenda | `~~calendar` | Google Agenda, Calendly, Microsoft 365 (Outlook)\* |  |
 | Chat | `~~chat` | Slack, Microsoft 365 (Teams)\* |  |
-| Docs and knowledge base | `~~knowledge base` | Google Drive, Notion, Atlassian (Confluence), Microsoft 365 (SharePoint)\* | Box, Dropbox, Guru |
-| Conversation intelligence | `~~conversation intelligence` | Gong, Fireflies, Zoom, Otter.ai | Granola, Fathom, Chorus |
-| Data enrichment | `~~data enrichment` | Clay, ZoomInfo, Apollo, Lusha, Crunchbase | Clearbit |
-| Sales engagement | `~~sales engagement` | Outreach, Apollo | Salesloft |
-| Competitive intelligence | `~~competitive intelligence` | Similarweb | Crayon, Klue |
-| Project tracker | `~~project tracker` | Atlassian (Jira) | Linear, Asana |
+| Documentos e base de conhecimento | `~~knowledge base` | Google Drive, Notion, Atlassian (Confluence), Microsoft 365 (SharePoint)\* | Box, Dropbox, Guru |
+| Gravador de reuniões | `~~conversation intelligence` | Gong, Fireflies, Zoom, Otter.ai | Granola, Fathom, Chorus |
+| Enriquecimento de dados | `~~data enrichment` | Clay, ZoomInfo, Apollo, Lusha, Crunchbase | Clearbit |
+| Cadência de vendas | `~~sales engagement` | Outreach, Apollo | Salesloft |
+| Inteligência competitiva | `~~competitive intelligence` | Similarweb | Crayon, Klue |
+| Gestão de projetos | `~~project tracker` | Atlassian (Jira) | Linear, Asana |
 
-## Salesforce and Microsoft 365
+## Salesforce e Microsoft 365
 
-**Salesforce and Microsoft 365 (marked \* above) are included, and both need setup at the organization level: an admin enables the connector in Claude before people can sign in. For Salesforce, that includes setting up your org's Salesforce app.**
+**Salesforce e Microsoft 365 (marcados com \* acima) estão incluídos, e os dois precisam ser configurados pela empresa: um administrador libera o conector no Claude antes de as pessoas entrarem. No Salesforce, isso inclui configurar o app da empresa.**
 
-Once connected, the skills use them the same way as any other tool in their category.
+Depois de conectados, as skills usam esses conectores como qualquer outra ferramenta do mesmo tipo.
 
-Google Calendar, Gmail and Google Drive are listed in `.mcp.json` without a URL. Connect them in Claude's connector settings.
+Google Agenda, Gmail e Google Drive estão no `.mcp.json` sem endereço. Conecte pelas configurações de conectores do Claude.
 
-## Permissions
+## Permissões
 
-What a connector is allowed to do is set on the connector itself: allow, ask or block for each tool. The skills never go beyond those settings. See the README for recommended settings for scheduled runs.
+O que cada conector pode fazer é definido no próprio conector: permitir, perguntar ou bloquear, ferramenta por ferramenta. As skills nunca passam disso. Veja no README as configurações recomendadas para execuções agendadas.

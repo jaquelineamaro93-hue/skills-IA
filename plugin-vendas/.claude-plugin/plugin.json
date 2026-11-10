@@ -1,7 +1,7 @@
 {
   "name": "vendas",
   "version": "2.0.1",
-  "description": "Sales skills that work with the tools your team already uses - your CRM, email, calendar, chat and call recorder - or with uploaded files. Prep calls, summarize and follow up, research accounts, review deals and pipeline, and write the forecast. When you ask, it can update CRM records, create email drafts or send email, post to chat and book meetings through your connected tools.",
+  "description": "Ajudante de vendas: prepara e resume reuniões, faz follow-up, pesquisa empresas, cuida dos negócios, revisa o funil e escreve a previsão de vendas. Funciona com o seu CRM, e-mail, agenda, chat e gravador de reuniões, ou com arquivos que você enviar. Só atualiza o CRM, envia e-mail ou marca reunião quando você pedir.",
   "author": {
     "name": "Jaqueline Amaro",
     "url": "https://www.linkedin.com/in/jaquelineamaro/"
