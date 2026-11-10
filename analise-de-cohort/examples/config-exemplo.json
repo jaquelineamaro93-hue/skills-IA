@@ -1,0 +1,22 @@
+{
+  "empresa": "Empresa Exemplo (fictícia)",
+  "tipo": "recorrente",
+  "base": "examples/base-exemplo.csv",
+  "colunas": {"cliente": "id_cliente", "data": "mes", "receita": "valor_mensal", "quantidade": "conversas"},
+  "dia_primeiro": false,
+  "segmentos": {"canal": "canal", "plano": "plano"},
+  "faixas_ticket": [
+    {"nome": "Até R$ 1.500", "ate": 1500},
+    {"nome": "R$ 1.500 a R$ 4.000", "ate": 4000},
+    {"nome": "R$ 4.000 a R$ 10.000", "ate": 10000},
+    {"nome": "Acima de R$ 10.000", "ate": null}
+  ],
+  "margem": 0.7,
+  "meta_ltv_cac": 3,
+  "investimento": {"2025-03-01": 18000, "2025-04-01": 22000, "2025-05-01": 15000, "2025-06-01": 25000},
+  "fontes": ["Receita mensal por cliente: exportação do sistema de cobrança.", "Canal e plano: CRM."],
+  "limitacoes": ["Investimento de aquisição preenchido só para os 4 primeiros meses."],
+  "insights": [
+    {"titulo": "Exemplo de insight", "o_numero": "Retenção no mês 6: X%.", "o_que_significa": "Explique em linguagem simples.", "o_que_fazer": "Ação concreta."}
+  ]
+}
