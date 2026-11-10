@@ -5,6 +5,7 @@ Skills para Claude Code e Codex, construídas e testadas em projetos reais por *
 | Skill | O que faz |
 |---|---|
 | [`video-com-avatar-ia`](video-com-avatar-ia/) | Reels verticais com o seu avatar de IA falando com a sua própria voz clonada: identidade fiel, 5 ângulos, voz natural sincronizada à boca com autocorreção, cards, CTA e música. |
+| [`automacoes-n8n`](automacoes-n8n/) | 24 automações prontas do n8n para CRM, marketing e vendas (Kommo, RD, Ploomes, HubSpot, Meta CAPI, Manychat...), com guia de configuração e um sanitizador que limpa seus fluxos antes de compartilhar. |
 | [`analise-de-cohort`](analise-de-cohort/) | Mostra quanto tempo os clientes ficam e quanto valem: retenção, receita, LTV, CAC, LTV/CAC e payback por safra, cortes por canal e plano, insights e testes de conferência. |
 | [`analise-de-dados-investigativa`](analise-de-dados-investigativa/) | Análise de dados investigativa: 6 lentes não-convencionais, checagem anti-pareidolia, oportunidades priorizadas, gráficos e relatório com nível de confiança. |
 | [`ninja-fluxograma`](ninja-fluxograma/) | Desenha qualquer processo do negócio no Miro (ou FigJam, Mermaid, draw.io): vendas, lifecycle e jornada do cliente, atendimento e operação. Transforma o fluxo em agente de IA, régua de lifecycle ou passo a passo. |

@@ -1,0 +1,235 @@
+{
+  "name": "Criar Template de WhatsApp (Meta) + Log em Sheets (Template)",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v21.0/SEU_WABA_ID/message_templates",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.body.template) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        624,
+        288
+      ],
+      "id": "ae0d37c1-b1f8-4fd7-87f0-bf01caae580f",
+      "name": "POST create template",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Meta (Facebook Graph)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "criar-template",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        336,
+        288
+      ],
+      "id": "a8343485-7f43-4ce4-be21-71ac9295b5e7",
+      "name": "Webhook",
+      "webhookId": "SEU_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"ok\": true,\n  \"mensagem\": \"Template enviado! Aguardando aprovacao da Meta.\",\n  \"id\": \"{{ $json.id }}\",\n  \"status\": \"{{ $json.status }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        1072,
+        288
+      ],
+      "id": "e2a7b42f-f469-437f-bc9c-6eaba4418c50",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "SEU_ID_DA_PLANILHA_GOOGLE",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=SEU_GID_DA_ABA",
+          "mode": "list",
+          "cachedResultName": "Sua aba ou planilha",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA_GOOGLE/edit#gid=SEU_GID_DA_ABA"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "nome_template": "={{ $('Webhook').item.json.body.template.name }}",
+            "setor": "={{ $('Webhook').item.json.body.setor }}",
+            "data": "={{ $now.format('dd/MM/yyyy') }}",
+            "titulo": "={{ $('Webhook').item.json.body.template.name }}",
+            "corpo_mensagem": "={{ $('Webhook').item.json.body.template.components[0].text }}",
+            "link botões": "={{ $('Webhook').item.json.body.template.components.find(c => c.type === 'BUTTONS')?.buttons?.find(b => b.url)?.url || '' }}",
+            "responsável": "={{ $('Webhook').item.json.body.responsavel }}"
+          },
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        832,
+        288
+      ],
+      "id": "7aaf6867-066d-4c2e-81ac-cd85ba3dbb3b",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## README_SETUP — Criar Template de WhatsApp (Meta) + Log em Sheets\n\nRecebe um payload de template de mensagem (de um app/front-end) por webhook, cria o\ntemplate na WhatsApp Business API (Meta Graph), registra o template numa planilha do\nGoogle Sheets e responde ao chamador com o status.\n\n**1. Credenciais**\n- Meta (Facebook Graph): reconfigure `[Reconfigurar] Meta (Facebook Graph)` com o\n  Access Token do sistema (permissao whatsapp_business_management).\n- Google Sheets: reconfigure `[Reconfigurar] Google Sheets` (OAuth2).\n\n**2. Trocar placeholders**\n- `SEU_WABA_ID` -> id da sua conta WhatsApp Business (no endpoint /v21.0/{id}/message_templates).\n- `SEU_ID_DA_PLANILHA_GOOGLE` -> planilha de log dos templates.\n- `SEU_APP.vercel.app` -> aponte o front-end para a URL do webhook (path 'criar-template').\n- webhookId sera regerado ao salvar.\n\n**3. Ativar**\n- Teste criando um template real (aprovacao da Meta pode demorar) e so entao mude `active` para true.\n\nIMPORTANTE: o Access Token do Meta e a credencial Google que ja circularam devem ser\nREVOGADOS/REGERADOS. Placeholder NAO invalida o segredo antigo.",
+        "height": 360,
+        "width": 540,
+        "color": 5
+      },
+      "name": "README_SETUP",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        240,
+        -460
+      ],
+      "id": "readme_setup"
+    },
+    {
+      "parameters": {
+        "content": "### ATENCAO — Credencial de outro cliente removida\nO no 'POST create template' vinha com DUAS credenciais: a do Meta (correta) e uma\n`httpBearerAuth` chamada \"[Hubspot] Outro Cliente\", de OUTRO cliente, anexada por engano.\nEla foi REMOVIDA na sanitizacao. Confira no n8n se esse token nao foi exposto\nindevidamente entre projetos — e revogue-o por seguranca.",
+        "height": 220,
+        "width": 440,
+        "color": 1
+      },
+      "name": "Nota - ATENCAO Credencial",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        240,
+        -70
+      ],
+      "id": "nota_-_atencao_credencial"
+    },
+    {
+      "parameters": {
+        "content": "### ENTRADA — Webhook 'criar-template'\nRecebe o JSON do template (name, language, category, components, setor, responsavel).\nO front-end (SEU_APP.vercel.app) faz POST aqui.",
+        "height": 200,
+        "width": 380,
+        "color": 4
+      },
+      "name": "Nota - Entrada",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        240,
+        620
+      ],
+      "id": "nota_-_entrada"
+    },
+    {
+      "parameters": {
+        "content": "### META — POST create template\nCria o template na WhatsApp Business API via Graph v21.0 em /{SEU_WABA_ID}/message_templates.\nUsa a credencial Meta. O template entra em aprovacao na Meta.",
+        "height": 200,
+        "width": 400,
+        "color": 6
+      },
+      "name": "Nota - Meta",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        600,
+        620
+      ],
+      "id": "nota_-_meta"
+    },
+    {
+      "parameters": {
+        "content": "### LOG + RESPOSTA\n- Google Sheets: registra nome, setor, data, titulo, corpo e link dos botoes.\n- Respond to Webhook: devolve {ok, mensagem, id, status} ao chamador.",
+        "height": 200,
+        "width": 400,
+        "color": 3
+      },
+      "name": "Nota - Log e Resposta",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        620
+      ],
+      "id": "nota_-_log_e_resposta"
+    }
+  ],
+  "connections": {
+    "POST create template": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "POST create template",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [],
+  "pinData": {}
+}

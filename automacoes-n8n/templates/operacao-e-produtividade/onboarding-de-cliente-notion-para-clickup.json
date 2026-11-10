@@ -1,0 +1,463 @@
+{
+  "name": "Onboarding de Cliente (Notion -> ClickUp) (Template)",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f8271cdf-7ae8-4cfe-aa02-cb8fd54cc543",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "text": "Pra você voar",
+        "returnAll": true,
+        "simple": false,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        256,
+        -208
+      ],
+      "id": "0ac37fb4-195a-4e46-adbe-fa99b11c70cb",
+      "name": "Search a page",
+      "credentials": {
+        "notionApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Notion"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "database",
+        "databaseId": {
+          "__rl": true,
+          "value": "SEU_DATABASE_ID_NOTION",
+          "mode": "id"
+        },
+        "simple": false
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        272,
+        16
+      ],
+      "id": "59c508cc-098f-43b0-99e6-b2ec0c37efdf",
+      "name": "Get a database page",
+      "credentials": {
+        "notionApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Notion"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.notion.com/v1/databases/SEU_DATABASE_ID_NOTION/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        512,
+        32
+      ],
+      "id": "addd0f01-26a3-4b5a-b78b-fd5fbce3bb11",
+      "name": "HTTP Request",
+      "credentials": {
+        "notionApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Notion"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "results",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        720,
+        32
+      ],
+      "id": "5c2ed622-21c3-43c6-901d-7441bba50c6f",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        928,
+        32
+      ],
+      "id": "59bf9e7a-4b8c-4808-abd1-57a4f0cce423",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.notion.com/v1/blocks/{{ $json.id }}/children?page_size=1000",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1216,
+        48
+      ],
+      "id": "7697e955-435c-4fad-811f-fadbcdbbf84e",
+      "name": "HTTP Request1",
+      "credentials": {
+        "notionApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Notion"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const results = $input.first().json.results || [];\n\nfunction richTextToPlainText(richText = []) {\n  return richText.map(item => item.plain_text || \"\").join(\"\");\n}\n\nfunction blockToText(block) {\n  const type = block.type;\n  const value = block[type];\n\n  if (!value) return \"\";\n\n  switch (type) {\n    case \"heading_1\":\n    case \"heading_2\":\n    case \"heading_3\":\n      return richTextToPlainText(value.rich_text);\n\n    case \"paragraph\":\n      return richTextToPlainText(value.rich_text);\n\n    case \"bulleted_list_item\":\n      return `- ${richTextToPlainText(value.rich_text)}`;\n\n    case \"numbered_list_item\":\n      return `1. ${richTextToPlainText(value.rich_text)}`;\n\n    case \"to_do\":\n      return `${value.checked ? \"[x]\" : \"[ ]\"} ${richTextToPlainText(value.rich_text)}`;\n\n    case \"quote\":\n      return `> ${richTextToPlainText(value.rich_text)}`;\n\n    case \"callout\":\n      return `> ${richTextToPlainText(value.rich_text)}`;\n\n    case \"divider\":\n      return \"---\";\n\n    default:\n      return \"\";\n  }\n}\n\nlet titulo = \"\";\nconst conteudo = [];\n\nfor (const block of results) {\n  if (!titulo && block.type?.startsWith(\"heading\")) {\n    titulo = richTextToPlainText(block[block.type]?.rich_text || []);\n    continue;\n  }\n\n  const text = blockToText(block);\n  if (text) conteudo.push(text);\n}\n\nconst conteudoTexto = conteudo.join(\"\\n\\n\");\n\nreturn [\n  {\n    json: {\n      titulo,\n      conteudo: conteudoTexto,\n\n      // Use este campo no HTTP Request quando precisar enviar dentro de JSON manual\n      conteudo_json: JSON.stringify(conteudoTexto),\n      titulo_json: JSON.stringify(titulo),\n    },\n  },\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1488,
+        48
+      ],
+      "id": "3eed3e10-207b-4c2e-9ad8-fa5dae7ac5f1",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "url": "https://api.clickup.com/api/v3/workspaces/SEU_WORKSPACE_ID_CLICKUP/docs",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "clickUpOAuth2Api",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1088,
+        384
+      ],
+      "id": "2a3bea3a-87ef-4130-b367-427ed99c2f49",
+      "name": "HTTP Request8",
+      "credentials": {
+        "clickUpOAuth2Api": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] ClickUp"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.clickup.com/api/v3/workspaces/SEU_WORKSPACE_ID_CLICKUP/docs/SEU_DOC_ID_CLICKUP/pages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "clickUpOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"name\": \"{{ $('Loop Over Items').first().json.properties.Nome.title[0].text.content }}\",\n  \"content_format\": \"text/md\",\n  \"content\": {{ $json.conteudo_json }}\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1760,
+        48
+      ],
+      "id": "46162154-9b49-45f5-a910-318e81b368c1",
+      "name": "HTTP Request9",
+      "credentials": {
+        "clickUpOAuth2Api": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] ClickUp"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "docs",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1296,
+        384
+      ],
+      "id": "767b2bde-3b4f-4e42-a436-beb98bcf1c45",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "02521a2b-fe0e-4726-8338-92e88f6b8038",
+              "leftValue": "={{ $json.name }}",
+              "rightValue": "Onboard",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1504,
+        384
+      ],
+      "id": "32f8198a-54ee-46c4-89fb-841d49210832",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "team": "SEU_WORKSPACE_ID_CLICKUP",
+        "space": "SEU_LIST_ID_CLICKUP",
+        "folderless": true,
+        "list": "SEU_ID_CLICKUP",
+        "name": "={{ $('Loop Over Items').first().json.properties.Nome.title[0].text.content }}",
+        "additionalFields": {
+          "content": "=https://app.clickup.com/{{ $json.workspace_id }}/v/dc/{{ $json.doc_id }}/{{ $json.id }}"
+        }
+      },
+      "type": "n8n-nodes-base.clickUp",
+      "typeVersion": 1,
+      "position": [
+        1968,
+        48
+      ],
+      "id": "6a9144b6-c143-46b1-b172-a39d76ef0b60",
+      "name": "Create a task",
+      "credentials": {
+        "clickUpOAuth2Api": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] ClickUp"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## README_SETUP — Onboarding de Cliente (Notion -> ClickUp)\n\nLe um banco de dados de onboarding no Notion (etapas/tarefas de um novo cliente),\npercorre os itens e cria as tarefas correspondentes no ClickUp, alem de gerar/atualizar\npaginas de documento no ClickUp.\n\n**1. Credenciais**\n- Notion: reconfigure `[Reconfigurar] Notion` com a sua integracao (Internal Integration Token).\n- ClickUp: reconfigure `[Reconfigurar] ClickUp` (OAuth2).\n\n**2. Trocar placeholders**\n- `SEU_DATABASE_ID_NOTION` -> id do seu database de onboarding no Notion.\n- `SEU_WORKSPACE.notion.site` -> seu workspace publico do Notion (se usado em links).\n- ClickUp: `SEU_WORKSPACE_ID_CLICKUP`, `SEU_DOC_ID_CLICKUP`, `SEU_LIST_ID_CLICKUP`,\n  `SEU_ID_CLICKUP` -> IDs do seu workspace/doc/lista/space.\n  Pegue via API do ClickUp ou pela URL dos recursos.\n\n**3. Como funciona**\n- HTTP Request consulta o database do Notion (query) e os blocos das paginas.\n- Split Out / SplitInBatches percorrem os itens; Filter seleciona o que virar tarefa.\n- ClickUp 'Create a task' e HTTP para /docs/.../pages criam as tarefas e a documentacao.\n\n**4. Ativar**\n- Teste com um cliente de exemplo e so entao mude `active` para true.\n\nIMPORTANTE: os tokens de Notion e ClickUp que ja circularam devem ser REVOGADOS/REGERADOS.\nPlaceholder NAO invalida o segredo antigo.",
+        "height": 380,
+        "width": 560,
+        "color": 5
+      },
+      "name": "README_SETUP",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        -668
+      ],
+      "id": "readme_setup"
+    },
+    {
+      "parameters": {
+        "content": "### ORIGEM — Notion\n'Search a page' + HTTP Request consultam o database de onboarding (query) e os blocos\ndas paginas via api.notion.com/v1. Reconfigure a credencial e troque SEU_DATABASE_ID_NOTION.",
+        "height": 200,
+        "width": 440,
+        "color": 4
+      },
+      "name": "Nota - Notion",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        32
+      ],
+      "id": "nota_-_notion"
+    },
+    {
+      "parameters": {
+        "content": "### PROCESSAMENTO — Split / Filter / Code\nSplit Out e SplitInBatches percorrem os itens do onboarding; Filter seleciona os que\ndevem virar tarefa; Code monta o payload. Ajuste os criterios conforme seu processo.",
+        "height": 200,
+        "width": 440,
+        "color": 3
+      },
+      "name": "Nota - Processamento",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        420,
+        32
+      ],
+      "id": "nota_-_processamento"
+    },
+    {
+      "parameters": {
+        "content": "### DESTINO — ClickUp\n'Create a task' cria as tarefas e os HTTP Request criam/atualizam paginas de documento\nem /api/v3/workspaces/{ID}/docs. Troque os IDs de workspace/doc/lista pelos seus.",
+        "height": 200,
+        "width": 440,
+        "color": 6
+      },
+      "name": "Nota - ClickUp",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        880,
+        32
+      ],
+      "id": "nota_-_clickup"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get a database page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a database page": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request8": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        []
+      ]
+    },
+    "HTTP Request9": {
+      "main": [
+        [
+          {
+            "node": "Create a task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [],
+  "pinData": {}
+}

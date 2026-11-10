@@ -1,0 +1,131 @@
+{
+  "name": "[TEMPLATE] Remover Lead da Campanha ao Entrar no Grupo de WhatsApp",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "SEU_WEBHOOK_PATH_AQUI",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "a8917c1d-4998-4dbc-8b88-edf65f5b7914",
+      "name": "Webhook",
+      "webhookId": "SEU_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://sendflow.pro/a/SUA_API_KEY_SENDFLOW_AQUI",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"apiKey\": \"SUA_API_KEY_SENDFLOW_AQUI\",\n  \"phoneNumber\": \"{{ $json.body.data.number }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "88b27000-12c7-4eca-ab6b-b43e665687a2",
+      "name": "HTTP Request",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "content": "## 📘 README_SETUP — Remover lead da campanha ao entrar no grupo\n\nFluxo curto e de alto impacto: quando alguém **entra no grupo de WhatsApp**, esse\nnúmero é **removido da fila de disparo** da campanha que estava convidando ele.\n\n### Por que isso importa\nSem esse fluxo, quem já entrou no grupo continua recebendo mensagens de convite.\nAlém de ser péssima experiência, aumenta o risco de **denúncia e bloqueio do número**\nde WhatsApp — que é o ativo mais frágil de qualquer operação de grupos.\n\n---\n\n### ✅ Passo a passo de configuração\n\n**1. Trocar `SUA_API_KEY_SENDFLOW_AQUI`** no nó `HTTP Request`\n- ⚠️ **A chave aparece em DOIS lugares** neste nó:\n  - no final da **URL** (`https://sendflow.pro/a/SUA_API_KEY...`)\n  - dentro do **corpo JSON** (campo `apiKey`)\n- Troque nos dois. Se esquecer um, a requisição falha.\n- A chave fica no painel da sua ferramenta de gestão de grupos.\n\n**2. Configurar o Webhook**\n- Substitua `SEU_WEBHOOK_PATH_AQUI` (ou deixe o n8n gerar um novo path).\n- Copie a **Production URL**.\n- Cole na configuração de webhook da ferramenta de grupos, no evento de\n  **novo membro adicionado ao grupo**.\n\n**3. Conferir o formato do payload**\n- O fluxo espera o telefone em `body.data.number`.\n- Se a sua ferramenta enviar em outro caminho, ajuste a expressão no `HTTP Request`.\n\n**4. Testar antes de ativar**\n- Entre em um grupo de teste com um número seu e confira se ele sai da fila.\n- Só então mude para **Active** (o workflow vem desativado de propósito).\n\n---\n\n### 💡 Onde este template se encaixa\nEle é o **par natural** do fluxo que sincroniza a entrada no grupo com o CRM\n(ex.: \"entrou no grupo → cria assinante no Manychat\").\n\nOs dois escutam **o mesmo evento**, mas fazem coisas complementares:\n- um **registra** a entrada no CRM\n- este **para de incomodar** quem já entrou\n\nVale rodar os dois em paralelo, cada um no seu webhook.\n\n---\n\n### 🔐 Segurança\nEste template não usa o cofre de credenciais do n8n — a API Key vai crua na URL\ne no corpo da requisição. Como ela está **no caminho da URL**, ela também vaza em\nlogs de proxy, histórico e ferramentas de monitoramento.\n\n👉 Se você recebeu este arquivo de terceiros, **revogue e gere uma nova chave**\nna plataforma de origem. Trocar o valor no JSON não invalida a chave antiga.",
+        "height": 760,
+        "width": 470,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        -160
+      ],
+      "id": "sticky-README_SETUP",
+      "name": "README_SETUP"
+    },
+    {
+      "parameters": {
+        "content": "### 1️⃣ Gatilho\n\n**Webhook** recebe o POST quando\num número **entra no grupo**\n(evento de membro adicionado).\n\nCampo usado:\n`body.data.number` → o telefone.\n\n🔧 Ajuste: gere um path novo e\ncole a Production URL na\nferramenta de grupos.",
+        "height": 250,
+        "width": 260,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        -280
+      ],
+      "id": "sticky-Nota_1_Gatilho",
+      "name": "Nota_1_Gatilho"
+    },
+    {
+      "parameters": {
+        "content": "### 2️⃣ Remover da fila 🔑\n\n**HTTP Request** faz POST na API da\nferramenta de disparo, mandando o\ntelefone para ser retirado da campanha.\n\n⚠️ A **API Key aparece duas vezes**:\nno final da URL e no campo `apiKey`\ndo corpo. Troque nos dois.\n\n✅ Correção aplicada: adicionei **retry**\n(3 tentativas / 5s). Sem retry, uma falha\nde rede deixava o lead recebendo convites\nindefinidamente — e o fluxo não avisava\nninguém.",
+        "height": 250,
+        "width": 340,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        150,
+        -280
+      ],
+      "id": "sticky-Nota_2_Remocao",
+      "name": "Nota_2_Remocao"
+    },
+    {
+      "parameters": {
+        "content": "### 🚀 Sugestões de evolução (opcional)\n\nEste é o fluxo mais enxuto do banco — 2 nós. Justamente por isso, algumas melhorias valem a pena:\n\n- **Sem validação de origem:** qualquer pessoa com a URL do webhook consegue remover números\n  da sua campanha. Considere validar um header/token antes do `HTTP Request`.\n- **Sem tratamento de erro:** conecte a saída de erro do `HTTP Request` a um alerta (Slack,\n  e-mail) para saber quando alguém *não* foi removido.\n- **Sem registro:** um nó de Google Sheets ou banco após a remoção cria histórico de quem\n  entrou em qual grupo e quando — útil para medir a taxa de conversão do convite.\n- **Sem filtro de grupo:** hoje qualquer grupo dispara a remoção. Se você tem várias campanhas\n  simultâneas, um nó `If` checando `body.data.groupName` evita remoção cruzada.",
+        "height": 220,
+        "width": 550,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        60
+      ],
+      "id": "sticky-Nota_3_Melhorias",
+      "name": "Nota_3_Melhorias"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": ""
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [],
+  "pinData": {}
+}

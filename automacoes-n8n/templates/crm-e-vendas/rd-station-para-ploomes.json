@@ -1,0 +1,2960 @@
+{
+  "name": "RD ---> Ploomes (TEMPLATE - Sanitizado)",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c5136d2e-b335-4172-8361-090385790ea7",
+              "name": "api_key",
+              "value": "SEU_TOKEN_PLOOMES_AQUI",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -4416,
+        2496
+      ],
+      "id": "d3964375-d46a-4eac-bcc1-ae831f3234db",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "url": "=https://api2.ploomes.com/Contacts?$filter=Email eq '{{ $('RD').item.json['E-mail'] }}'",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "={{ $('Edit Fields').first().json.api_key }}"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -416,
+        2496
+      ],
+      "id": "3059fec1-5efb-4afe-990a-967d91065a1e",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "url": "=https://api2.ploomes.com/Deals?$filter=ContactId eq {{ $json.value[0].Id }} and StatusId eq 1",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "={{ $('Edit Fields').item.json.api_key }}"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -48,
+        2304
+      ],
+      "id": "8fb353b8-d020-4828-b941-a3defcea5959",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a1ca2669-73b1-4d57-96e9-2b1ca8a3dca5",
+              "leftValue": "={{ $json.value }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -272,
+        2496
+      ],
+      "id": "a169510d-d169-4b6f-8cb3-69fd585346b9",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "url": "https://api2.ploomes.com/Fields",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "SEU_TOKEN_PLOOMES_AQUI"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4640,
+        432
+      ],
+      "id": "b5ca15d7-6adb-414b-85ca-4fbebdf7c2eb",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const fieldsArray = $input.first().json.value;\n\nreturn fieldsArray.map(f => ({\n  id: f.Id,\n  name: f.Name,\n  key: f.Key,\n  typeId: f.TypeId,\n  optionsTableId: f.OptionsTableId || null,\n  entityId: f.EntityId  // 👈 aqui você já sabe se é contato (1) ou deal (2)\n}));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -4416,
+        432
+      ],
+      "id": "7a62fd75-6df9-47a6-817b-a64b730accb3",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA_GOOGLE/edit?gid=SEU_GID_DA_ABA#gid=SEU_GID_DA_ABA",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=SEU_GID_DA_ABA",
+          "mode": "list",
+          "cachedResultName": "Sua aba ou planilha",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA_GOOGLE/edit#gid=SEU_GID_DA_ABA"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -4192,
+        432
+      ],
+      "id": "fad94588-19b7-4ef7-813b-2f130514f51d",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api2-s04-public.ploomes.com/Deals?$filter=PipelineId%20eq%SEU_ID_AQUI&$select=Id%2CTitle%2CStageId&$expand=Stage%28%24select%3DId%2CName%2CPipelineId%29&$skip=900",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "SEU_TOKEN_PLOOMES_AQUI"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4416,
+        208
+      ],
+      "id": "ab6b6d36-f272-465e-8d2c-75468c65ed29",
+      "name": "HTTP Request3"
+    },
+    {
+      "parameters": {
+        "jsCode": "const deals = $input.first().json.value;\n\nconst stages = new Map();\n\nfor (const d of deals) {\n  const st = d.Stage;\n  if (st && st.Id) {\n    stages.set(st.Id, {\n      stageId: st.Id,\n      stageName: st.Name,\n      pipelineId: st.PipelineId\n    });\n  }\n}\n\nreturn Array.from(stages.values()).map(s => ({ json: s }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -4192,
+        208
+      ],
+      "id": "c80db85f-f49d-48e8-9567-642b2b188244",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "url": "=https://api2-s04-public.ploomes.com/Deals?$filter=Id eq {{ $json.PipelineId }}&$select=Id,Title,StageId,Status,PipelineId&$expand=Stage($select=Id,Name,PipelineId)",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "SEU_TOKEN_PLOOMES_AQUI"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4416,
+        -32
+      ],
+      "id": "83592dd1-56e5-42c3-bf6d-4005738299a6",
+      "name": "HTTP Request5"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "635e5b24-f82b-4b06-b96d-ceccca42ac23",
+              "name": "PipelineId",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "2d6b8564-1e12-4180-b724-bef4b6886e66",
+              "name": "Campo",
+              "value": "=https://api2.ploomes.com/Deals?$filter=PipelineId eq {{ $json.PipelineId }}&$select=Id,Title,StageId&$expand=Stage($select=Id,Name,PipelineId)",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -4640,
+        208
+      ],
+      "id": "2944515f-eaa4-463a-a5f6-3f4052b9a8bd",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA_GOOGLE/edit?gid=SEU_GID_DA_ABA#gid=SEU_GID_DA_ABA",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1532987074,
+          "mode": "list",
+          "cachedResultName": "Sua aba ou planilha",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA_GOOGLE/edit#gid=SEU_GID_DA_ABA"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "={{ $json.stageName }}",
+            "PipelineId": "=",
+            "Stageid": "={{ $json.stageId }}",
+            "Pipeline": "={{ $json.pipelineId }}"
+          },
+          "matchingColumns": [
+            "Stageid"
+          ],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -3968,
+        208
+      ],
+      "id": "5ee653e2-3254-46fb-a416-7df5d2821789",
+      "name": "Append or update row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "635e5b24-f82b-4b06-b96d-ceccca42ac23",
+              "name": "PipelineId",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "2d6b8564-1e12-4180-b724-bef4b6886e66",
+              "name": "Campo",
+              "value": "=https://api2.ploomes.com/Deals?$filter=PipelineId eq {{ $json.PipelineId }}&$select=Id,Title,StageId&$expand=Stage($select=Id,Name,PipelineId)",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -4640,
+        -32
+      ],
+      "id": "146c3af3-029e-4bd8-85dc-482acb03f096",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "SEU_PATH_WEBHOOK",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -4640,
+        2496
+      ],
+      "id": "00491387-abd6-4cfc-83af-42ca8626684d",
+      "name": "Webhook - RD",
+      "webhookId": "SEU_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api2-s04-public.ploomes.com/Webhooks",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "SEU_TOKEN_PLOOMES_AQUI"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "EntityId",
+              "value": "2"
+            },
+            {
+              "name": "ActionId",
+              "value": "5"
+            },
+            {
+              "name": "CallbackUrl",
+              "value": "SUA_URL_N8N/webhook/SEU_WEBHOOK_PLOOMES"
+            },
+            {
+              "name": "Name",
+              "value": "Deals - Lost (n8n)"
+            },
+            {
+              "name": "Active",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4640,
+        1104
+      ],
+      "id": "3f6bd262-9583-4c97-a189-6a11b1c47bc0",
+      "name": "SobeWebhook"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "https://api2-s04-public.ploomes.com/Webhooks(SEU_ID_AQUI)",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "SEU_TOKEN_PLOOMES_AQUI"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "Active",
+              "value": "false"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4640,
+        656
+      ],
+      "id": "665ff8d3-ab53-42fd-a226-987b75417e0c",
+      "name": "Desligar Webhook - Update"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "https://api2-s04-public.ploomes.com/Webhooks(SEU_ID_AQUI)",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "SEU_TOKEN_PLOOMES_AQUI"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "Active",
+              "value": "false"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4192,
+        656
+      ],
+      "id": "0e579511-a352-48e8-839a-a9db6e56c530",
+      "name": "Desliga Webhook - Lost"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "https://api2-s04-public.ploomes.com/Webhooks(SEU_ID_AQUI)",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "SEU_TOKEN_PLOOMES_AQUI"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "Active",
+              "value": "false"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4416,
+        656
+      ],
+      "id": "8acc6097-854d-483a-b592-5f097ccf7399",
+      "name": "Desliga Webhook - won"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "https://api2-s04-public.ploomes.com/Webhooks(SEU_ID_AQUI)",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "SEU_TOKEN_PLOOMES_AQUI"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "Active",
+              "value": "True"
+            },
+            {
+              "name": "CallbackUrl",
+              "value": "SUA_URL_N8N/webhook/SEU_WEBHOOK_PLOOMES"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4640,
+        880
+      ],
+      "id": "d5133053-ac3a-4019-bf86-d56583e12a2f",
+      "name": "Liga Webhook - update"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "https://api2-s04-public.ploomes.com/Webhooks(SEU_ID_AQUI)",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "SEU_TOKEN_PLOOMES_AQUI"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "Active",
+              "value": "True"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4416,
+        880
+      ],
+      "id": "11fd3e1d-16d3-45fa-84bd-908b8bc94791",
+      "name": "Liga Webhook - won"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "https://api2-s04-public.ploomes.com/Webhooks(SEU_ID_AQUI)",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "SEU_TOKEN_PLOOMES_AQUI"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "Active",
+              "value": "True"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4192,
+        880
+      ],
+      "id": "75f6647b-7ba0-4178-ab78-0039eabb2216",
+      "name": "Liga Webhook - lost"
+    },
+    {
+      "parameters": {
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "value": "SEU_USER_ID_SLACK",
+          "mode": "list",
+          "cachedResultName": "Sua aba ou planilha"
+        },
+        "text": "Recebemos uma informação de won",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -3968,
+        656
+      ],
+      "id": "d7db70bb-d263-4870-b491-66787d2a056f",
+      "name": "Send a message",
+      "webhookId": "SEU_WEBHOOK_ID",
+      "credentials": {
+        "slackApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Slack"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1e2059a1-acf4-4e75-89b9-14d92f52d3a1",
+              "leftValue": "={{ $json.value.toString() }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        176,
+        2304
+      ],
+      "id": "973a3fc0-d3a8-43f8-a6c5-a60d55616ed7",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"Origem\": \"{{ $('Webhook - RD').item.json.body.leads[0].custom_fields.URL_Origem }}\",\n  \"Lead origem\": \"{{ $('Webhook - RD').item.json.body.leads[0].id }}\",\n  \"URL Origem do Lead\": \"{{ $('Webhook - RD').item.json.body.leads[0].public_url }}\",\n\n  \"Plataforma\": \"{{ ( ($('Webhook - RD').item.json.body.leads[0].custom_fields || {}).utm_medium ) || ( ( ( ($('Webhook - RD').item.json.body.leads[0].last_conversion || {}).conversion_origin ) || {} ).medium ) || ( ( ( ($('Webhook - RD').item.json.body.leads[0].first_conversion || {}).conversion_origin ) || {} ).medium ) }}\",\n  \"Fúnil Origem\": \"{{ $('Webhook - RD').item.json.body.leads[0].uuid }}\",\n\n  \"Primeira Conversão - Mídia\": \"{{ ( ( ( ($('Webhook - RD').item.json.body.leads[0].first_conversion || {}).conversion_origin ) || {} ).medium ) }}\",\n  \"Primeira Conversão - Evento\": \"{{ $('Webhook - RD').item.json.body.leads[0].first_conversion && $('Webhook - RD').item.json.body.leads[0].first_conversion.content && $('Webhook - RD').item.json.body.leads[0].first_conversion.content.identificador }}\",\n  \"Primeira Conversão - Canal\": \"{{ ( ( ( ($('Webhook - RD').item.json.body.leads[0].first_conversion || {}).conversion_origin ) || {} ).channel ) }}\",\n  \"Primeira Conversão - Campanha\": \"{{ ( ( ( ($('Webhook - RD').item.json.body.leads[0].first_conversion || {}).conversion_origin ) || {} ).campaign ) }}\",\n\n  \"Origem Marketing\": \"{{ ( ($('Webhook - RD').item.json.body.leads[0].custom_fields || {}).utm_source ) || ( ($('Webhook - RD').item.json.body.leads[0].tags || [])[1] ) || ($('Webhook - RD').item.json.body.leads[0].first_conversion && $('Webhook - RD').item.json.body.leads[0].first_conversion.source) }}\",\n  \"Canal de Captação\": \"{{ ( ($('Webhook - RD').item.json.body.leads[0].custom_fields || {}).utm_campaign ) || ( ($('Webhook - RD').item.json.body.leads[0].tags || [])[0] ) }}\",\n\n  \"UTM Source\": \"{{ ( ($('Webhook - RD').item.json.body.leads[0].custom_fields || {}).utm_source ) }}\",\n  \"UTM Campaign\": \"{{ ( ($('Webhook - RD').item.json.body.leads[0].custom_fields || {}).utm_campaign ) }}\",\n  \"UTM Term\": \"{{ ( ($('Webhook - RD').item.json.body.leads[0].custom_fields || {}).utm_term ) }}\",\n  \"UTM Content\": \"{{ ( ($('Webhook - RD').item.json.body.leads[0].custom_fields || {}).utm_content ) }}\",\n  \"GCLID\": \"{{ ( ($('Webhook - RD').item.json.body.leads[0].custom_fields || {}).gclid ) }}\",\n  \"FBCLID\": \"{{ ( ($('Webhook - RD').item.json.body.leads[0].custom_fields || {}).fbclid ) }}\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3968,
+        2496
+      ],
+      "id": "cc5a2ab8-0296-4ca9-a7b5-5ff84bb748f5",
+      "name": "Traqueamento - RD Criação"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"Última Conversão - Mídia\": \"{{ $('Webhook - RD').item.json.body.leads[0].last_conversion.conversion_origin.medium }}\",\n  \"Primeira Conversão - Mídia\": \"{{ $('Webhook - RD').item.json.body.leads[0].first_conversion.source }}\",\n  \"Última Conversão - Evento\": \"{{ $('Webhook - RD').item.json.body.leads[0].last_conversion.content.event_identifier }}\",\n  \"Última Conversão - Canal\": \"{{ $('Webhook - RD').item.json.body.leads[0].last_conversion.conversion_origin.channel }}\",\n  \"Última Conversão - Campanha\": \"{{ $('Webhook - RD').item.json.body.leads[0].last_conversion.conversion_origin.campaign }}\",\n  \"Qualificação do Lead\": \"{{ $('Webhook - RD').item.json.body.leads[0].lead_stage }}\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3744,
+        2496
+      ],
+      "id": "92e71af0-bed2-4c09-b2be-dbc219286b98",
+      "name": "Traqueamento - RD Atualização"
+    },
+    {
+      "parameters": {
+        "height": 2224,
+        "width": 1664
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -5088,
+        -80
+      ],
+      "typeVersion": 1,
+      "id": "bd6f05a0-728e-45f9-9b3e-d1666bdb96f8",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api2.ploomes.com/Contacts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "={{ $('Edit Fields').item.json.api_key }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"Name\": \"{{ $('RD').first().json['Nome Completo'] || $('RD').first().json['Razão Social'] }}\",\n  \"LegalName\": \"{{ $('RD').first().json['Razão Social'] || '' }}\",\n  \"Register\": \"{{ ( $('RD').first().json['CNPJ ou CPF'] || '' ).replace(/\\\\D/g,'') }}\",\n  \"Email\": \"{{ $('RD').first().json['E-mail'] || '' }}\",\n  \"City\": \"{{ $('RD').first().json['Cidade do Cliente'] || '' }}\",\n  \"State\": \"{{ $('RD').first().json['Estado'] || '' }}\",\n  \"Phones\": [\n    {\n      \"TypeId\": 2,\n      \"Main\": true,\n      \"PhoneNumber\": \"{{ ( $('RD').first().json['Telefone do contato'] || '' ).replace(/\\\\D/g,'') }}\"\n    }\n  ],\n  \"OwnerId\": {{ $('Filter').first().json.Id }},\n  \"OriginId\": {{ $('Edit Fields4').first().json['id origem'] }},\n   \"OtherProperties\": [\n    {\n      \"FieldKey\": \"SEU_TOKEN_AQUI\",\n      \"StringValue\": \"{{ $('Webhook - RD').first().json.body.leads[0].custom_fields.Canal || '' }}\"\n    },\n    {\n      \"FieldKey\": \"SEU_TOKEN_AQUI\",\n      \"StringValue\": \"{{ $('RD').first().json['Meio de contato'] || '' }}\"\n    },\n    {\n      \"FieldKey\": \"SEU_TOKEN_AQUI\",\n      \"StringValue\": \"{{ $('Webhook - RD').first().json.body.leads[0].custom_fields['Observações do Cliente'] || '' }}\"\n    },\n    {\n      \"FieldKey\": \"SEU_TOKEN_AQUI\",\n      \"StringValue\": \"{{ $('RD').first().json['Potência do gerador'] }}\"\n    },\n    {\n      \"FieldKey\": \"SEU_TOKEN_AQUI\",\n      \"StringValue\": {{ $('Code in JavaScript1').first().json.Id }}\n    },\n    {\n      \"FieldKey\": \"SEU_TOKEN_AQUI\",\n      \"StringValue\": \"{{ $('Webhook - RD').first().json.body.leads[0].custom_fields.CPF }}\"\n    },\n {\n      \"FieldKey\": \"contact_company\",\n      \"StringValue\": \"{{ $('RD').first().json['Empresa'] || $('RD').first().json['Razão Social'] || '' }}\"\n    },\n    {\n      \"FieldKey\": \"contact_city\",\n      \"StringValue\": \"{{ $('RD').first().json['Cidade do Cliente'] || '' }}\"\n    },\n    {\n      \"FieldKey\": \"SEU_TOKEN_AQUI\",\n      \"StringValue\": \"{{ $('RD').first().json['Estado'] || '' }}\"\n    },\n    {\n      \"FieldKey\": \"SEU_TOKEN_AQUI\",\n      \"StringValue\": \"{{ $('Webhook - RD').first().json.body.leads[0].custom_fields['Urgência de Compra 2025'] || $('Webhook - RD').first().json.body.leads[0].custom_fields['Urgência de Compra_Ploomes'] || '' }}\"\n    },\n    {\n      \"FieldKey\": \"SEU_TOKEN_AQUI\",\n      \"StringValue\": \"{{ $('RD').first().json['Potência do gerador'] || '' }}\"\n    }\n  ]\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        176,
+        2496
+      ],
+      "id": "c9f882b9-5f4d-4303-9760-f913ae7c074e",
+      "name": "HTTP Request7"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"Nome Completo\": \"{{ $('Webhook - RD').first().json.body.leads[0].name }}\",\n  \"E-mail\": \"{{ $('Webhook - RD').first().json.body.leads[0].email }}\",\n  \"Telefone do contato\": \"{{ \n  (\n    $('Webhook - RD').first().json.body.leads[0].personal_phone ||\n    $('Webhook - RD').first().json.body.leads[0].mobile_phone ||\n    $('Webhook - RD').first().json.body.leads[0].first_conversion?.content?.Celular ||\n    $('Webhook - RD').first().json.body.leads[0].last_conversion?.content?.Celular ||\n    $('Webhook - RD').first().json.body.leads[0].first_conversion?.content?.__cdp__original_event?.payload?.mobile_phone ||\n    $('Webhook - RD').first().json.body.leads[0].last_conversion?.content?.__cdp__original_event?.payload?.mobile_phone ||\n    ''\n  ).toString().replace(/\\D/g,'')\n}}\",\n  \"Razão Social\": \"{{ $('Webhook - RD').first().json.body.leads[0].custom_fields['Razão Social'] }}\",\n  \"CNPJ ou CPF\": \"{{ $('Webhook - RD').first().json.body.leads[0].custom_fields.CNPJ }}\",\n  \"Estado\": \"{{ $('Webhook - RD').first().json.body.leads[0].state }}\",\n  \"Cidade do Cliente\": \"{{ $('Webhook - RD').first().json.body.leads[0].city }}\",\n  \"Segmento da Empresa\": \"{{ $('Webhook - RD').first().json.body.leads[0].custom_fields['Segmento da Empresa'] }}\",\n  \"Aplicação do gerador\": \"{{ $('Webhook - RD').first().json.body.leads[0].custom_fields['Aplicação do Gerador'] }}\",\n  \"Potência do gerador\": \"{{ \n  $('Webhook - RD').first().json.body.leads[0].custom_fields['Potência - Pronta entrega'] ||\n  $('Webhook - RD').first().json.body.leads[0].custom_fields['Potência - Pronta entrega_V2'] ||\n  $('Webhook - RD').first().json.body.leads[0].custom_fields['Qual potência está interessado?'] ||\n  $('Webhook - RD').first().json.body.leads[0].custom_fields['Qual a Potência do Gerador?'] ||\n  $('Webhook - RD').first().json.body.leads[0].custom_fields['Baixa Potencia 2025']\n}}\",\n  \"Meio de contato\": \"{{ $('Webhook - RD').first().json.body.leads[0].custom_fields['Meio de contato'] }}\",\n  \"Observações\": \"{{ $('Webhook - RD').first().json.body.leads[0].custom_fields['Observações do Cliente'] }}\",\n  \"Vendedor\": \"{{ $('Webhook - RD').first().json.body.leads[0].custom_fields['Nome do vendedor'] }}\",\n  \"Qualificação do lead\": \"{{ $('Webhook - RD').first().json.body.leads[0].lead_stage }}\",\n  \"Responsável\": \"{{ $('Webhook - RD').first().json.body.leads[0].user }}\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3520,
+        2496
+      ],
+      "id": "8830fccb-c77c-4606-9683-c8e2b85b18d3",
+      "name": "RD"
+    },
+    {
+      "parameters": {
+        "url": "https://api2.ploomes.com/Users?$select=Id,Name,Email",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "SEU_TOKEN_PLOOMES_AQUI"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2400,
+        2496
+      ],
+      "id": "0f08c54f-9c8f-44b8-92ab-3327f7aac09a",
+      "name": "HTTP Request8",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "value",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -2176,
+        2496
+      ],
+      "id": "b4d1fc15-cb32-4e06-84a4-225da2f478b1",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "11a41141-2c9c-458e-8036-3f189cc78d02",
+              "leftValue": "={{ $json.Email }}",
+              "rightValue": "={{ $('RD').item.json['Responsável'] }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -1952,
+        2496
+      ],
+      "id": "6d57d00e-b4c2-4ad5-8a8b-3919a23be904",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d4cf33b1-9afc-4fcb-b57e-422cbb8453a3",
+              "name": "Origem",
+              "value": "deal_origin",
+              "type": "string"
+            },
+            {
+              "id": "b0058320-c957-4e8b-82ab-8e953f6fb4ca",
+              "name": "Lead origem",
+              "value": "deal_lead",
+              "type": "string"
+            },
+            {
+              "id": "448c7ce6-2c25-4303-a5ce-5a5ce2461354",
+              "name": "URL Origem do Lead",
+              "value": "SEU_TOKEN_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "182ad826-9d8f-496c-b389-dcba7d686307",
+              "name": "Plataforma",
+              "value": "SEU_TOKEN_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "29fc98fe-b063-4914-ba10-82b6ef3fe144",
+              "name": "Fúnil Origem",
+              "value": "SEU_TOKEN_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "2c8393e5-a8fb-4c5c-b6ff-dcb2179a4f07",
+              "name": "Última Conversão – Mídia",
+              "value": "SEU_TOKEN_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "5abb6c32-dfe2-4c51-9571-caa32b01f878",
+              "name": "Última Conversão – Evento",
+              "value": "SEU_TOKEN_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "733ddf1d-7249-43a7-b10e-c938514d3160",
+              "name": "Última Conversão – Canal",
+              "value": "SEU_TOKEN_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "1c450b0c-f885-47a0-a476-54134ea6be04",
+              "name": "Última Conversão – Campanha",
+              "value": "SEU_TOKEN_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "7de8e157-693a-46cc-9379-de40bbc20869",
+              "name": "Primeira Conversão – Mídia",
+              "value": "SEU_TOKEN_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "94717949-8ca4-4be9-bafb-1c34fcf0ad89",
+              "name": "Primeira Conversão – Evento",
+              "value": "SEU_TOKEN_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "1fc2e046-ecfc-4377-836c-78114106dbcd",
+              "name": "Primeira Conversão – Canal",
+              "value": "SEU_TOKEN_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "48371ece-6b43-4f14-bd21-a4d42f0c3f5d",
+              "name": "Primeira Conversão – Campanha",
+              "value": "SEU_TOKEN_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "cf0b12c7-e51f-4bd2-8a62-e34708760d28",
+              "name": "Canal de Captação",
+              "value": "SEU_TOKEN_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "83aa8819-5e92-447b-8719-64b68b63e38b",
+              "name": "Origem Marketing",
+              "value": "SEU_TOKEN_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "d3f28681-e119-41b4-8351-247294b36744",
+              "name": "Qualificação do Lead",
+              "value": "SEU_TOKEN_AQUI",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -4192,
+        2496
+      ],
+      "id": "71afd677-0c53-44c7-a1e7-d1b645cac68e",
+      "name": "Traqueamento Ploomes - Lead"
+    },
+    {
+      "parameters": {
+        "url": "https://api2.ploomes.com//Contacts@Origins",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "={{ $('Edit Fields').item.json.api_key }}"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3040,
+        2112
+      ],
+      "id": "c278a7c8-c1ef-4bad-be74-47e2a1c97928",
+      "name": "HTTP Request9"
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "https://api2.ploomes.com/Webhooks(SEU_ID_AQUI)",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "SEU_TOKEN_PLOOMES_AQUI"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4640,
+        1328
+      ],
+      "id": "ce5c321e-2cf0-4c5b-9e1c-95bd2745fe74",
+      "name": "Deleta Webhook"
+    },
+    {
+      "parameters": {
+        "url": "https://api2.ploomes.com/Webhooks",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "SEU_TOKEN_PLOOMES_AQUI"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4640,
+        2000
+      ],
+      "id": "599b28e6-f420-422a-baff-1fdf892dfbf9",
+      "name": "Get Webhooks"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "value",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -2832,
+        2112
+      ],
+      "id": "e0dab51b-a2f7-4394-9641-63bc642988b0",
+      "name": "Split Out2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4dd6ee41-724e-495b-a161-e454f99564ec",
+              "leftValue": "={{ $json.Name }}",
+              "rightValue": "={{ $('Webhook - RD').item.json.body.leads[0].first_conversion.content.__cdp__original_event.payload.cf_utm_campaign }}",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -2624,
+        2112
+      ],
+      "id": "aff69285-32f1-4d91-ac4b-9913d5e1ad63",
+      "name": "Filter1",
+      "executeOnce": false,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "550972d6-acd6-43b9-bc07-477e397d8eef",
+              "leftValue": "={{ $json.Id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2160,
+        2128
+      ],
+      "id": "56c0a149-e63e-4263-9fed-643c14c10533",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api2.ploomes.com/Contacts@Origins",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "={{ $('Edit Fields').item.json.api_key }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "Name",
+              "value": "={{ $('Traqueamento - RD Atualização').first().json['Última Conversão - Mídia'] }} | {{ $('Webhook - RD').first().json.body.leads[0].first_conversion.conversion_origin.source }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1776,
+        2192
+      ],
+      "id": "45fa7ec9-6337-4d09-93a0-f6755f5c2314",
+      "name": "HTTP Request4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "17c8bd1c-58e9-4c40-a941-27e057c36f86",
+              "name": "id origem",
+              "value": "={{ $json.value && $json.value[0] ? $json.value[0].Id : ($json.Id || $json['id origem']) }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1552,
+        2112
+      ],
+      "id": "803b3dd8-da51-4d56-8a0d-ac0f83fc22b6",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -1728,
+        2320
+      ],
+      "id": "184e90f6-4593-4c6a-b883-dfc9921bff94",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript)\n// Compara profundamente dois valores (objetos/arrays/primitivos) e retorna mudanças.\n// Saída no formato de items do n8n: [{ json: { changes, added, removed, onlyChangedNewValues, hasChanges } }]\n\n/** Testa igualdade profunda segura (obj, array, primitivo, null/undefined) */\nfunction isDeepEqual(a, b) {\n  if (a === b) return true;\n\n  // Trata NaN\n  if (typeof a === 'number' && typeof b === 'number' && isNaN(a) && isNaN(b)) return true;\n\n  // Tipos diferentes\n  if (typeof a !== typeof b) return false;\n\n  // Nulls\n  if (a == null || b == null) return a === b;\n\n  // Datas\n  if (a instanceof Date || b instanceof Date) {\n    const da = a instanceof Date ? a : new Date(a);\n    const db = b instanceof Date ? b : new Date(b);\n    return da.getTime() === db.getTime();\n  }\n\n  // Buffers/TypedArrays (tratados como string)\n  if ((typeof Buffer !== 'undefined' && Buffer.isBuffer?.(a)) || (typeof Buffer !== 'undefined' && Buffer.isBuffer?.(b))) {\n    return String(a) === String(b);\n  }\n\n  // Arrays\n  if (Array.isArray(a) && Array.isArray(b)) {\n    if (a.length !== b.length) return false;\n    for (let i = 0; i < a.length; i++) {\n      if (!isDeepEqual(a[i], b[i])) return false;\n    }\n    return true;\n  }\n  if (Array.isArray(a) || Array.isArray(b)) return false;\n\n  // Objetos\n  if (typeof a === 'object' && typeof b === 'object') {\n    const ka = Object.keys(a);\n    const kb = Object.keys(b);\n    if (ka.length !== kb.length) return false;\n    for (const k of ka) {\n      if (!Object.prototype.hasOwnProperty.call(b, k)) return false;\n      if (!isDeepEqual(a[k], b[k])) return false;\n    }\n    return true;\n  }\n\n  // Primitivos\n  return a === b;\n}\n\n/** Gera uma string de caminho legível (ex.: \"OtherProperties.deal_...\") */\nfunction joinPath(pathArr) {\n  return pathArr\n    .map(seg => (typeof seg === 'number' ? `[${seg}]` : (pathArr.length && typeof seg === 'string' && seg.includes('.') ? `[\"${seg}\"]` : String(seg))))\n    .reduce((acc, seg, idx) => {\n      if (seg.startsWith('[')) return acc + seg;\n      return idx === 0 ? seg : acc + '.' + seg;\n    }, '');\n}\n\n/**\n * Diff recursivo entre dois valores\n * - changes: [{ path, oldValue, newValue, changeType: 'changed'|'added'|'removed' }]\n * - added:   [{ path, newValue }]\n * - removed: [{ path, oldValue }]\n */\nfunction deepDiff(oldVal, newVal, path = [], out = { changes: [], added: [], removed: [] }) {\n  // Igual — não registra\n  if (isDeepEqual(oldVal, newVal)) return out;\n\n  // Se tipos mudaram ou virou primitivo, é mudança direta\n  const oldIsObj = oldVal && typeof oldVal === 'object';\n  const newIsObj = newVal && typeof newVal === 'object';\n  const oldIsArr = Array.isArray(oldVal);\n  const newIsArr = Array.isArray(newVal);\n\n  // Caso geral: um lado não-objeto/array => mudança direta\n  if ((!oldIsObj && !newIsObj) || oldIsArr !== newIsArr || (oldIsObj && !newIsObj) || (!oldIsObj && newIsObj)) {\n    out.changes.push({ path: joinPath(path), oldValue: oldVal, newValue: newVal, changeType: 'changed' });\n    return out;\n  }\n\n  // Arrays: compara por índice (genérico)\n  if (oldIsArr && newIsArr) {\n    const maxLen = Math.max(oldVal.length, newVal.length);\n    for (let i = 0; i < maxLen; i++) {\n      if (i >= oldVal.length) {\n        // added\n        out.added.push({ path: joinPath([...path, i]), newValue: newVal[i] });\n        out.changes.push({ path: joinPath([...path, i]), oldValue: undefined, newValue: newVal[i], changeType: 'added' });\n      } else if (i >= newVal.length) {\n        // removed\n        out.removed.push({ path: joinPath([...path, i]), oldValue: oldVal[i] });\n        out.changes.push({ path: joinPath([...path, i]), oldValue: oldVal[i], newValue: undefined, changeType: 'removed' });\n      } else {\n        // recursivo\n        deepDiff(oldVal[i], newVal[i], [...path, i], out);\n      }\n    }\n    return out;\n  }\n\n  // Objetos: percorre chaves de ambos\n  const oldKeys = Object.keys(oldVal);\n  const newKeys = Object.keys(newVal);\n  const allKeys = new Set([...oldKeys, ...newKeys]);\n\n  for (const key of allKeys) {\n    const inOld = Object.prototype.hasOwnProperty.call(oldVal, key);\n    const inNew = Object.prototype.hasOwnProperty.call(newVal, key);\n\n    if (inOld && !inNew) {\n      out.removed.push({ path: joinPath([...path, key]), oldValue: oldVal[key] });\n      out.changes.push({ path: joinPath([...path, key]), oldValue: oldVal[key], newValue: undefined, changeType: 'removed' });\n    } else if (!inOld && inNew) {\n      out.added.push({ path: joinPath([...path, key]), newValue: newVal[key] });\n      out.changes.push({ path: joinPath([...path, key]), oldValue: undefined, newValue: newVal[key], changeType: 'added' });\n    } else {\n      // Existe nos dois — comparar recursivamente\n      deepDiff(oldVal[key], newVal[key], [...path, key], out);\n    }\n  }\n\n  return out;\n}\n\n/** Constrói um objeto { path: newValue } apenas para campos alterados/novos (útil para PATCH) */\nfunction buildOnlyChangedNewValues(changesArr) {\n  const out = {};\n  for (const ch of changesArr) {\n    // Ignora removidos (newValue === undefined)\n    if (typeof ch.newValue === 'undefined') continue;\n    out[ch.path] = ch.newValue;\n  }\n  return out;\n}\n\n// ========= CAPTURA \"Old\" e \"New\" =========\nconst payload = $input.first().json.body; // seu exemplo\nconst oldObj = payload?.Old ?? {};\nconst newObj = payload?.New ?? {};\n\n// ========= DIFF =========\nconst diff = deepDiff(oldObj, newObj);\nconst onlyChangedNewValues = buildOnlyChangedNewValues(diff.changes);\n\n// ========= RESULTADO PARA PRÓXIMOS NÓS =========\nreturn [\n  {\n    json: {\n      changes: diff.changes,           // [{ path, oldValue, newValue, changeType }]\n      added: diff.added,               // [{ path, newValue }]\n      removed: diff.removed,           // [{ path, oldValue }]\n      onlyChangedNewValues,            // { \"StageId\": 0 /* SEU_ID_AQUI */, \"UpdaterId\": 0 /* SEU_ID_AQUI */, \"LastUpdateDate\": \"2025-08-22T01:33:41.91\", ... }\n      hasChanges: diff.changes.length > 0\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -4608,
+        3760
+      ],
+      "id": "9260c2c1-df5e-4e5f-9657-70211f58b46d",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "SEU_PATH_WEBHOOK",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -4832,
+        3760
+      ],
+      "id": "974ccd7f-7e79-452a-ab89-1c56d4eebd86",
+      "name": "Webhook Ploomes1",
+      "webhookId": "SEU_WEBHOOK_ID",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c5136d2e-b335-4172-8361-090385790ea7",
+              "name": "api_key",
+              "value": "SEU_TOKEN_PLOOMES_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "0e6e71ce-895b-4649-99a2-f00909489596",
+              "name": "Client ID",
+              "value": "SEU_CLIENT_ID_RD_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "4026839a-e854-44b1-9a28-90ea181b595b",
+              "name": "Client secret",
+              "value": "SEU_CLIENT_SECRET_RD_AQUI",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -4384,
+        3760
+      ],
+      "id": "8c8b977c-67cb-4219-84cb-8468e6a51fba",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "url": "=https://api2-s04-public.ploomes.com/Deals?$filter=Id eq {{ $('Webhook Ploomes1').item.json.body.Old.Id }}&$expand=Stage,Pipeline&$select=Id,Title,StageId,PipelineId,ContactId,Amount,Stage,Pipeline",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "={{ $json.api_key }}"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4160,
+        3760
+      ],
+      "id": "82f930f9-3a55-446a-a0c8-df9bfb5e2b9f",
+      "name": "HTTP Request10"
+    },
+    {
+      "parameters": {
+        "url": "=https://api2-s04-public.ploomes.com/Contacts?$filter=Id eq {{ $json.value[0].ContactId }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "={{ $('Edit Fields3').item.json.api_key }}"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3936,
+        3760
+      ],
+      "id": "2f4b80ce-2ffa-4137-8450-c1bd1013f5f9",
+      "name": "HTTP Request11"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.rd.services/platform/contacts/email:{{ $json.value[0].Email }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "oAuth2Api",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3712,
+        3760
+      ],
+      "id": "547a9918-9e49-4b17-be0e-68e7e4f3ac3a",
+      "name": "HTTP Request12",
+      "credentials": {
+        "oAuth2Api": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] RD Station OAuth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://api.rd.services/platform/contacts/email:{{ $json.email }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "oAuth2Api",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "cf_ploomes_stage_name",
+              "value": "={{ $('HTTP Request10').item.json.value[0].Stage.Name }}"
+            },
+            {
+              "name": "cf_ploomes_pipeline_name",
+              "value": "={{ $('HTTP Request10').item.json.value[0].Pipeline.Name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3488,
+        3760
+      ],
+      "id": "d2033053-9b99-44b5-974d-81ca3b16f80e",
+      "name": "HTTP Request13",
+      "credentials": {
+        "oAuth2Api": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] RD Station OAuth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.rd.services/platform/contacts/fields",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "oAuth2Api",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4832,
+        3984
+      ],
+      "id": "18b6a59f-4e9f-4799-8a55-21af35157065",
+      "name": "HTTP Request14",
+      "credentials": {
+        "oAuth2Api": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] RD Station OAuth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "fields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -4608,
+        3984
+      ],
+      "id": "0deb3d3b-7a52-40c3-8b9a-d2a533392785",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA_GOOGLE/edit?gid=SEU_GID_DA_ABA#gid=SEU_GID_DA_ABA",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1589852401,
+          "mode": "list",
+          "cachedResultName": "Sua aba ou planilha",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA_GOOGLE/edit#gid=SEU_GID_DA_ABA"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "uuid": "={{ $json.uuid }}",
+            "label": "={{ $json.label.default }}",
+            "name": "={{ $json.name.default }}",
+            "api_identifier": "={{ $json.api_identifier }}",
+            "custom_field": "={{ $json.custom_field }}",
+            "validation_rules": "={{ $json.validation_rules }}",
+            "presentation_type": "={{ $json.presentation_type }}",
+            "data_type": "={{ $json.data_type }}"
+          },
+          "matchingColumns": [
+            "uuid"
+          ],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -4384,
+        3984
+      ],
+      "id": "0951559c-815a-4443-b6f0-d6b0e3f38aea",
+      "name": "Append or update row in sheet2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api2.ploomes.com//Contacts@Origins",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "=SEU_TOKEN_PLOOMES_AQUI"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4640,
+        1552
+      ],
+      "id": "bfca9d46-8bac-4695-9c99-7dc3e0d4c908",
+      "name": "HTTP Request15"
+    },
+    {
+      "parameters": {
+        "url": "=https://public-api2.ploomes.com/Fields?\\$filter=Key eq 'deal_origin'",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "=SEU_TOKEN_PLOOMES_AQUI"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4640,
+        1776
+      ],
+      "id": "e0a7865a-0a25-4481-b522-54c666011823",
+      "name": "HTTP Request16"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript) — Run Once for All Items\n\n// Lê todos os itens recebidos\nconst items = $input.all().map(item => item.json);\n\n// Verifica se há itens\nif (items.length === 0) {\n  return [{\n    json: {\n      status: 'erro',\n      message: 'Nenhum item recebido.'\n    }\n  }];\n}\n\n// Ordena por data mais antiga\nitems.sort((a, b) => new Date(a.LastUpdateDate) - new Date(b.LastUpdateDate));\n\n// Seleciona o mais antigo\nconst maisAntigo = items[0];\n\n// Retorna apenas os campos desejados\nreturn [{\n  json: {\n    Id: maisAntigo.Id,\n    Name: maisAntigo.Name,\n    LastUpdateDate: maisAntigo.LastUpdateDate\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2368,
+        2112
+      ],
+      "id": "0fbd62ec-4367-4e41-a63b-af707ebca9d9",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api2.ploomes.com/Contacts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "={{ $('Edit Fields').item.json.api_key }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"TypeId\": 2,\n  \"Name\": \"{{ $('RD').first().json['Nome Completo'] || $('RD').first().json['Razão Social'] }}\",\n  \"Email\": \"{{ $('RD').first().json['E-mail'] || '' }}\",\n  \"City\": \"{{ $('RD').first().json['Cidade do Cliente'] || '' }}\",\n  \"Register\": \"{{ $('Webhook - RD').item.json.body.leads[0].custom_fields.CPF }}\",\n  \"State\": \"{{ $('RD').first().json['Estado'] || '' }}\",\n  \"Phones\": [\n    {\n      \"TypeId\": 2,\n      \"Main\": true,\n      \"PhoneNumber\": \"{{ ( $('RD').first().json['Telefone do contato'] || '' ).replace(/\\\\D/g,'') }}\"\n    }\n  ],\n  \"OwnerId\": {{ $('Filter').first().json.Id }},\n  \"OriginId\": {{ $('Edit Fields4').first().json['id origem'] }},\n   \"OtherProperties\": [\n    {\n      \"FieldKey\": \"SEU_TOKEN_AQUI\",\n      \"StringValue\": \"{{ $('Webhook - RD').first().json.body.leads[0].custom_fields.Canal || '' }}\"\n    },\n    {\n      \"FieldKey\": \"SEU_TOKEN_AQUI\",\n      \"StringValue\": \"{{ $('RD').first().json['Meio de contato'] || '' }}\"\n    },\n    {\n      \"FieldKey\": \"SEU_TOKEN_AQUI\",\n      \"StringValue\": \"{{ $('Webhook - RD').first().json.body.leads[0].custom_fields['Observações do Cliente'] || '' }}\"\n    },\n    {\n      \"FieldKey\": \"SEU_TOKEN_AQUI\",\n      \"StringValue\": \"{{ $('Webhook - RD').item.json.body.leads[0].custom_fields.CPF }}\"\n    },\n {\n      \"FieldKey\": \"contact_company\",\n      \"StringValue\": \"{{ $('RD').first().json['Empresa'] || $('RD').first().json['Razão Social'] || '' }}\"\n    },\n    {\n      \"FieldKey\": \"contact_city\",\n      \"StringValue\": \"{{ $('RD').first().json['Cidade do Cliente'] || '' }}\"\n    },\n    {\n      \"FieldKey\": \"SEU_TOKEN_AQUI\",\n      \"StringValue\": \"{{ $('RD').first().json['Estado'] || '' }}\"\n    },\n    {\n      \"FieldKey\": \"SEU_TOKEN_AQUI\",\n      \"StringValue\": \"{{ $('RD').first().json['Potência do gerador'] }}\"\n    },\n    {\n      \"FieldKey\": \"SEU_TOKEN_AQUI\",\n      \"IntegerValue\": \"{{ $('Code in JavaScript1').first().json.Id }}\"\n    },\n    {\n      \"FieldKey\": \"SEU_TOKEN_AQUI\",\n      \"StringValue\": \"{{ $('Webhook - RD').first().json.body.leads[0].custom_fields['Urgência de Compra 2025'] || $('Webhook - RD').first().json.body.leads[0].custom_fields['Urgência de Compra_Ploomes'] || '' }}\"\n    },\n    {\n      \"FieldKey\": \"SEU_TOKEN_AQUI\",\n      \"StringValue\": \"{{ $('RD').first().json['Potência do gerador'] || '' }}\"\n    }\n  ]\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        176,
+        2688
+      ],
+      "id": "360bbcff-619d-49d8-9545-3147c02b26fc",
+      "name": "HTTP Request17"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9922fd9a-0de4-4d5c-874a-df00e8930906",
+              "leftValue": "={{ $('Webhook - RD').item.json.body.leads[0].custom_fields.CNPJ }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -48,
+        2592
+      ],
+      "id": "f453c7b4-723c-4247-a980-9ceba38748e9",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api2-s04-public.ploomes.com/Deals",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "={{ $('Edit Fields').item.json.api_key }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"Title\": \"{{ $('Webhook - RD').first().json.body.leads[0].name || 'Negócio sem título' }}\",\n  \"ContactId\": {{ $json.value[0].Id }},\n  \"OwnerId\": {{ $('Filter').first().json.Id }},\n  \"PipelineId\": SEU_ID_AQUI,\n  \"StageId\": SEU_ID_AQUI,\n  \"OriginId\": {{ $('Edit Fields4').first().json['id origem'] }},\n  \"Amount\": 0,\n  \"OtherProperties\": [\n    {\n      \"FieldKey\": \"deal_origin\",\n      \"StringValue\": \"{{ $('Webhook - RD').first().json.body.leads[0].custom_fields['Origem (Digital)'] || '' }}\"\n    },\n    {\n      \"FieldKey\": \"deal_Observacoes\",\n      \"StringValue\": \"{{ $('Webhook - RD').first().json.body.leads[0].custom_fields['Observações do Cliente'] || '' }}\"\n    },\n    {\n      \"FieldKey\": \"deal_Urgencia\",\n      \"StringValue\": \"{{ $('Webhook - RD').first().json.body.leads[0].custom_fields['Urgência de Compra 2025'] || $('Webhook - RD').first().json.body.leads[0].custom_fields['Urgência de Compra_Ploomes'] || '' }}\"\n    },\n    {\n      \"FieldKey\": \"SEU_TOKEN_AQUI\",\n      \"StringValue\": \"{{ $('Filter4').first().json.Id }}\"\n    },\n    {\n      \"FieldKey\": \"deal_Potencia\",\n      \"StringValue\": \"{{ $('Webhook - RD').first().json.body.leads[0].custom_fields['Potência - Pronta entrega'] || $('Webhook - RD').first().json.body.leads[0].custom_fields['Qual potência está interessado?'] || '' }}\"\n    },\n    {\n      \"FieldKey\": \"deal_Segmento\",\n      \"StringValue\": \"{{ $('Webhook - RD').first().json.body.leads[0].custom_fields['Segmento da Empresa (Digital)'] || $('Webhook - RD').first().json.body.leads[0].custom_fields['Qual segmento da Empresa_Ploomes'] || '' }}\"\n    },\n    {\n      \"FieldKey\": \"SEU_TOKEN_AQUI\",\n      \"StringValue\": \"{{ $('Traqueamento - RD Atualização').first().json['Primeira Conversão - Mídia'] }}\"\n    },\n    {\n      \"FieldKey\": \"SEU_TOKEN_AQUI\",\n      \"StringValue\": \"{{ $('Traqueamento - RD Atualização').first().json['Última Conversão - Evento'] }}\"\n    },\n    {\n      \"FieldKey\": \"SEU_TOKEN_AQUI\",\n      \"StringValue\": \"{{ $('Traqueamento - RD Criação').first().json['UTM Campaign'] }}\"\n    },\n    {\n      \"FieldKey\": \"SEU_TOKEN_AQUI\",\n      \"StringValue\": \"{{ $('Traqueamento - RD Criação').first().json['UTM Term'] }}\"\n    },\n    {\n      \"FieldKey\": \"deal_Vendedor\",\n      \"StringValue\": \"{{ $('Webhook - RD').first().json.body.leads[0].custom_fields['Nome do vendedor'] || '' }}\"\n    }\n  ]\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        400,
+        2592
+      ],
+      "id": "90d6659c-e4c3-44f8-a034-49e555ddd23b",
+      "name": "HTTP Request6"
+    },
+    {
+      "parameters": {
+        "url": "=https://api2.ploomes.com/Fields@OptionsTables?$filter=Id eq SEU_ID_AQUI&$expand=Options&$select=Id,Name",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "=SEU_TOKEN_PLOOMES_AQUI"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4832,
+        3536
+      ],
+      "id": "2d2c0595-68e0-4d87-bc11-ea0a63296ae7",
+      "name": "HTTP Request19"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api2.ploomes.com/Fields@OptionsTables@Options",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "SEU_TOKEN_PLOOMES_AQUI"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "TableId",
+              "value": "SEU_ID_AQUI"
+            },
+            {
+              "name": "Name",
+              "value": "Nova categoria"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4832,
+        3312
+      ],
+      "id": "ac705309-5685-48ea-b6a5-4bd3e52fafd3",
+      "name": "HTTP Request20"
+    },
+    {
+      "parameters": {
+        "url": "=https://api2.ploomes.com/Fields@OptionsTables?$filter=Id eq SEU_ID_AQUI&$expand=Options&$select=Id,Name",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "={{ $('Edit Fields').item.json.api_key }}"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2176,
+        2688
+      ],
+      "id": "2d498155-e753-4a3d-8a31-94c08b4e1a66",
+      "name": "HTTP Request21"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c0cf2457-ed56-4011-8317-39d02f31afd2",
+              "leftValue": "={{ $('RD').item.json['Meio de contato'] }}",
+              "rightValue": "={{ $json.Name }}",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -1728,
+        2688
+      ],
+      "id": "fdd706fd-75b5-4904-941f-281b66738cce",
+      "name": "Filter3",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "value[0].Options",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -1952,
+        2688
+      ],
+      "id": "2b650843-6eb8-4773-bae3-8fcdaef3aba2",
+      "name": "Split Out3"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -1504,
+        2416
+      ],
+      "id": "99628b77-7e9b-4000-86f0-622da0be2e6d",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api2-s04-public.ploomes.com/Deals",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "={{ $('Edit Fields').item.json.api_key }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"Title\": \"{{ $('Webhook - RD').first().json.body.leads[0].name || 'Negócio sem título' }}\",\n  \"ContactId\": {{ $('HTTP Request1').item.json.value[0].Id }},\n  \"OwnerId\": {{ $('Filter').first().json.Id }},\n  \"PipelineId\": SEU_ID_AQUI,\n  \"StageId\": SEU_ID_AQUI,\n  \"OriginId\": {{ $('Edit Fields4').first().json['id origem'] }},\n  \"Amount\": 0,\n  \"OtherProperties\": [\n    {\n      \"FieldKey\": \"deal_origin\",\n      \"StringValue\": \"{{ $('Webhook - RD').first().json.body.leads[0].custom_fields['Origem (Digital)'] || '' }}\"\n    },\n    {\n      \"FieldKey\": \"deal_Observacoes\",\n      \"StringValue\": \"{{ $('Webhook - RD').first().json.body.leads[0].custom_fields['Observações do Cliente'] || '' }}\"\n    },\n    {\n      \"FieldKey\": \"deal_Urgencia\",\n      \"StringValue\": \"{{ $('Webhook - RD').first().json.body.leads[0].custom_fields['Urgência de Compra 2025'] || $('Webhook - RD').first().json.body.leads[0].custom_fields['Urgência de Compra_Ploomes'] || '' }}\"\n    },\n    {\n      \"FieldKey\": \"deal_Potencia\",\n      \"StringValue\": \"{{ $('Webhook - RD').first().json.body.leads[0].custom_fields['Potência - Pronta entrega'] || $('Webhook - RD').first().json.body.leads[0].custom_fields['Qual potência está interessado?'] || '' }}\"\n    },\n    {\n      \"FieldKey\": \"deal_Segmento\",\n      \"StringValue\": \"{{ $('Webhook - RD').first().json.body.leads[0].custom_fields['Segmento da Empresa (Digital)'] || $('Webhook - RD').first().json.body.leads[0].custom_fields['Qual segmento da Empresa_Ploomes'] || '' }}\"\n    },\n    {\n      \"FieldKey\": \"deal_Vendedor\",\n      \"StringValue\": \"{{ $('Webhook - RD').first().json.body.leads[0].custom_fields['Nome do vendedor'] || '' }}\"\n    }\n  ]\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        448,
+        2320
+      ],
+      "id": "34474c0b-9b0a-4050-81fa-cc12f296ef3f",
+      "name": "HTTP Request18"
+    },
+    {
+      "parameters": {
+        "url": "=https://api2.ploomes.com/Fields@OptionsTables?$filter=Id eq 8833&$expand=Options&$select=Id,Name",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "={{ $('Edit Fields').item.json.api_key }}"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2528,
+        2944
+      ],
+      "id": "7207449b-3ad3-46db-a6a3-e372a082a5b3",
+      "name": "HTTP Request22"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c0cf2457-ed56-4011-8317-39d02f31afd2",
+              "leftValue": "={{ $('RD').first().json.Estado }}",
+              "rightValue": "={{ $json.Name }}",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -2080,
+        2944
+      ],
+      "id": "6c590eb0-f852-4293-b908-31675d023daa",
+      "name": "Filter4",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "value[0].Options",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -2304,
+        2944
+      ],
+      "id": "a2b25eb5-821a-4cef-ab5e-2f2bd6107fda",
+      "name": "Split Out4"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -800,
+        2512
+      ],
+      "id": "6f5ff0c9-bdaa-4f14-8ab3-297a54500cbf",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pega os dados do primeiro input\nconst data = $input.first().json;\n\n// Verifica se é um array; se não for, transforma em um\nconst estados = Array.isArray(data) ? data : [data];\n\n// Pega o nome do estado vindo do outro nó (\"RD\")\nconst estado = $('RD').first().json.Estado;\n\n// Busca o item que corresponde ao estado\nconst encontrado = estados.find(e => e.Name === estado);\n\n// Retorna apenas 1 resultado (o ID) ou null\nreturn [{ json: { Id: encontrado ? encontrado.Id : null } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1872,
+        2944
+      ],
+      "id": "c16227ee-c9a2-42a3-ad6b-b66da63af7b5",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c5136d2e-b335-4172-8361-090385790ea7",
+              "name": "api_key",
+              "value": "SEU_TOKEN_PLOOMES_AQUI",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -4160,
+        3328
+      ],
+      "id": "8aa0eb78-08f4-422d-af97-76b040fd94b7",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "url": "https://api2.ploomes.com/Contacts?$filter=Id eq SEU_ID_AQUI&$expand=Phones,OtherProperties",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "={{ $json.api_key }}"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3952,
+        3328
+      ],
+      "id": "e89b09fb-f316-4fe1-ad6a-a59100515378",
+      "name": "HTTP Request24"
+    },
+    {
+      "parameters": {
+        "url": "https://public-api2.ploomes.com/Deal",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "$filter",
+              "value": "Id eq SEU_ID_AQUI"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Key",
+              "value": "={{ $('Edit Fields5').item.json.api_key }}"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3744,
+        3328
+      ],
+      "id": "c20184c2-50d7-411f-b1f9-67f33576313a",
+      "name": "HTTP Request25"
+    },
+    {
+      "parameters": {
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "value": "SEU_USER_ID_SLACK",
+          "mode": "list",
+          "cachedResultName": "Sua aba ou planilha"
+        },
+        "text": "=Entrou contato no fluxo:\n\n{{ $json.body.leads[0].first_conversion.content.email_lead }}\n\nSUA_URL_N8N/workflow/SEU_WORKFLOW_ID",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -4384,
+        2256
+      ],
+      "id": "adc7ec52-21fe-407a-b410-5593593dc3ea",
+      "name": "Send a message1",
+      "webhookId": "SEU_WEBHOOK_ID",
+      "credentials": {
+        "slackApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Slack"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Traqueamento - RD Criação').item.json.GCLID }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    },
+                    "id": "6df910b4-a270-47b6-ab36-01710f9bbc6a"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Google"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "7adf8d51-e163-4c6c-9ede-5402776a2e75",
+                    "leftValue": "={{ $('Traqueamento - RD Criação').item.json.FBCLID }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "empty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Facebook"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "ignoreCase": false
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -3424,
+        2240
+      ],
+      "id": "450e668e-dbed-44ae-b087-3151a1b27494",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "17c8bd1c-58e9-4c40-a941-27e057c36f86",
+              "name": "id origem",
+              "value": "=SEU_ID_AQUI",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3168,
+        1584
+      ],
+      "id": "1d689c8a-61e7-4831-8891-1a85ff55817a",
+      "name": "Edit Fields6"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "17c8bd1c-58e9-4c40-a941-27e057c36f86",
+              "name": "id origem",
+              "value": "=SEU_ID_AQUI",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3024,
+        1808
+      ],
+      "id": "8e771fb3-8fd6-4cce-ba8a-60e9ae6cd943",
+      "name": "Edit Fields7"
+    },
+    {
+      "parameters": {
+        "color": 4,
+        "width": 720,
+        "height": 620,
+        "content": "## 🟢 LEIA PRIMEIRO — Configuração (Template Sanitizado)\n\nEste workflow integra **RD Station → Ploomes** (com Google Sheets e Slack de apoio).\nTodos os dados sensíveis foram trocados por placeholders. Ajuste os itens abaixo ANTES de ativar.\n\n### 1) Token do Ploomes\nProcure por `SEU_TOKEN_PLOOMES_AQUI` (nós \"Edit Fields\", \"Edit Fields3\", \"Edit Fields5\" e vários HTTP Request).\n➜ Gere sua **User-Key** no Ploomes (Admin → Integrações → Chave de API) e cole no lugar.\n💡 Dica: mantenha a chave **apenas** no nó \"Edit Fields\" (campo `api_key`) e faça os HTTP Requests\nreferenciarem `{{ $('Edit Fields').item.json.api_key }}` — evita repetir a chave em 20 lugares.\n\n### 2) Credenciais (aparecem como \"[Reconfigurar] ...\")\n- **Google Sheets OAuth2** → recrie e religue nos 3 nós \"Append or update row in sheet\".\n- **Slack API** → recrie e religue nos nós \"Send a message\".\n- **RD Station OAuth2** → recrie e religue nos nós \"HTTP Request12/13/14\".\n\n### 3) Client ID / Secret do RD Station\nNo nó \"Edit Fields3\": troque `SEU_CLIENT_ID_RD_AQUI` e `SEU_CLIENT_SECRET_RD_AQUI`\npelas credenciais do seu app no RD Station.\n\n### 4) URLs / IDs próprios\n- `SUA_URL_N8N` → URL pública da sua instância n8n.\n- `SEU_ID_DA_PLANILHA_GOOGLE` → ID da sua planilha (fica na URL do Sheets).\n- `SEU_USER_ID_SLACK` → ID do usuário/canal que recebe as notificações.\n- Webhooks: ao importar, cada nó Webhook gera um path novo — atualize os CallbackUrl no Ploomes.\n\n### 5) Ativar\nReconecte tudo, faça um teste com 1 lead real do RD e só então ative o workflow."
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -5100,
+        -560
+      ],
+      "id": "note-README_SETUP",
+      "name": "README_SETUP"
+    },
+    {
+      "parameters": {
+        "color": 5,
+        "width": 440,
+        "height": 300,
+        "content": "### ▶️ ENTRADA — Webhook do RD Station\nEste é o gatilho. O RD Station envia o lead para cá.\n➜ Copie a **Production URL** deste nó e cadastre no RD Station\n(Automação → enviar lead para webhook).\nO nó \"RD\" logo à frente normaliza os campos do lead."
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -4640,
+        1980
+      ],
+      "id": "note-nota_entrada",
+      "name": "nota_entrada"
+    },
+    {
+      "parameters": {
+        "color": 3,
+        "width": 380,
+        "height": 240,
+        "content": "### 🔑 TOKEN PLOOMES\nCole aqui sua User-Key do Ploomes em `api_key`\n(`SEU_TOKEN_PLOOMES_AQUI`).\nTodos os HTTP Requests do fluxo usam este valor."
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -4416,
+        2680
+      ],
+      "id": "note-nota_token",
+      "name": "nota_token"
+    },
+    {
+      "parameters": {
+        "color": 6,
+        "width": 480,
+        "height": 320,
+        "content": "### 👤 CONTATO NO PLOOMES\n1. \"HTTP Request1\" busca o contato por e-mail.\n2. O \"If\" checa se já existe.\n   - Não existe → \"HTTP Request7\" **cria** o contato.\n   - Existe → segue para tratar o negócio (Deal).\n⚠️ Os `FieldKey` (contact_XXXX) são campos personalizados\ndo SEU Ploomes — ajuste-os aos IDs da sua conta."
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -416,
+        2760
+      ],
+      "id": "note-nota_contato",
+      "name": "nota_contato"
+    },
+    {
+      "parameters": {
+        "color": 5,
+        "width": 460,
+        "height": 280,
+        "content": "### 📊 GOOGLE SHEETS (apoio)\nEstes nós gravam Fields / Stages numa planilha auxiliar.\n➜ Troque `SEU_ID_DA_PLANILHA_GOOGLE` pela sua planilha\ne religue a credencial Google Sheets.\nServe para você mapear IDs de campos e etapas do Ploomes."
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -4192,
+        120
+      ],
+      "id": "note-nota_sheets",
+      "name": "nota_sheets"
+    },
+    {
+      "parameters": {
+        "color": 5,
+        "width": 420,
+        "height": 260,
+        "content": "### 💬 SLACK (notificações)\nAvisa quando há \"won\"/entrada no fluxo.\n➜ Ajuste `SEU_USER_ID_SLACK` e religue a credencial Slack.\nOpcional: pode desativar se não usar Slack."
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3968,
+        380
+      ],
+      "id": "note-nota_slack",
+      "name": "nota_slack"
+    },
+    {
+      "parameters": {
+        "color": 6,
+        "width": 480,
+        "height": 300,
+        "content": "### 🔁 WEBHOOKS DO PLOOMES (won / lost / update)\nEstes nós registram/ligam/desligam webhooks no Ploomes,\napontando para a SUA instância n8n.\n➜ Troque `SUA_URL_N8N/webhook/SEU_WEBHOOK_PLOOMES`\npela URL de produção do seu Webhook.\nRode os \"Liga Webhook\" uma vez para criar os eventos no Ploomes."
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -4640,
+        1120
+      ],
+      "id": "note-nota_webhooks_ploomes",
+      "name": "nota_webhooks_ploomes"
+    }
+  ],
+  "connections": {
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Traqueamento Ploomes - Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook - RD": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Desligar Webhook - Update": {
+      "main": [
+        [
+          {
+            "node": "Desliga Webhook - won",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Desliga Webhook - won": {
+      "main": [
+        [
+          {
+            "node": "Desliga Webhook - Lost",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Liga Webhook - update": {
+      "main": [
+        [
+          {
+            "node": "Liga Webhook - won",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Liga Webhook - won": {
+      "main": [
+        [
+          {
+            "node": "Liga Webhook - lost",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Desliga Webhook - Lost": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Traqueamento - RD Criação": {
+      "main": [
+        [
+          {
+            "node": "Traqueamento - RD Atualização",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Traqueamento - RD Atualização": {
+      "main": [
+        [
+          {
+            "node": "RD",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RD": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request8",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request21",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request22",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request8": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Traqueamento Ploomes - Lead": {
+      "main": [
+        [
+          {
+            "node": "Traqueamento - RD Criação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request9": {
+      "main": [
+        [
+          {
+            "node": "Split Out2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out2": {
+      "main": [
+        [
+          {
+            "node": "Filter1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request4": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook Ploomes1": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request10": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request11": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request12": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request14": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request7",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request17",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request7": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request17": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request21": {
+      "main": [
+        [
+          {
+            "node": "Split Out3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out3": {
+      "main": [
+        [
+          {
+            "node": "Filter3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter3": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "HTTP Request18",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request22": {
+      "main": [
+        [
+          {
+            "node": "Split Out4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out4": {
+      "main": [
+        [
+          {
+            "node": "Filter4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter4": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request24",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request24": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request25",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields7",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields6": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields7": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [],
+  "pinData": {}
+}

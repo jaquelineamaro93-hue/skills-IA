@@ -1,0 +1,502 @@
+{
+  "name": "[TEMPLATE] Sendflow (Grupos de WhatsApp) ---> Manychat",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "=https://api.manychat.com/fb/subscriber/findByCustomField?field_id={{ $('ID dos campos1').item.json.Telefone }}&field_value={{ $json.Telefone }}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n  \"accept\": \"application/json\",\n  \"Authorization\": \"Bearer {{ $json['Api Key'] }}\"\n}\n",
+        "options": {}
+      },
+      "id": "2387d5ac-ccaa-4210-9a1a-5a36832d9df0",
+      "name": "HTTP Request2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1200,
+        -432
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "671cb651-a83a-4042-916c-562b2c178562",
+              "name": "Telefone",
+              "value": "SEU_ID_CAMPO_TELEFONE_MANYCHAT",
+              "type": "string"
+            },
+            {
+              "id": "dedc04fb-f0bf-4be6-bf29-b534ced8ceb5",
+              "name": "[A] ID Mensagem",
+              "value": "SEU_ID_CAMPO_MENSAGEM_MANYCHAT",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1648,
+        -432
+      ],
+      "id": "bc0c6897-f58e-47cf-af53-d78407bb292f",
+      "name": "ID dos campos1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "caa3b2f3-0381-482f-8e35-d23f8702e102",
+              "name": "Telefone",
+              "value": "={{ $('Webhook2').item.json.body.data.number }}",
+              "type": "string"
+            },
+            {
+              "id": "6547b759-0e65-43f0-aa28-739e41437536",
+              "name": "Api Key",
+              "value": "SEU_TOKEN_MANYCHAT_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "bee4daf3-ccb7-493a-8c0c-13a10ecb0c65",
+              "name": "ID Mensagem",
+              "value": "[NOME_DA_SUA_CAMPANHA] Inscrito",
+              "type": "string"
+            },
+            {
+              "id": "85a4253e-9f13-423d-8cdf-b45e5621a7c8",
+              "name": "Base",
+              "value": "={{ $('Webhook2').item.json.body.data.groupName }}",
+              "type": "string"
+            },
+            {
+              "id": "dfc8adfa-9342-4ddb-97ac-a23e5fdae407",
+              "name": "Grupo de Whats",
+              "value": "SEU_ID_CAMPO_GRUPO_WHATS_MANYCHAT",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "12247125-876d-40ad-a7de-fc3321d6e221",
+      "name": "Edit Fields2",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1424,
+        -432
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.manychat.com/fb/subscriber/createSubscriber",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n  \"accept\": \"application/json\",\n  \"Authorization\": \"Bearer {{ $('Edit Fields2').item.json['Api Key'] }}\",\n  \"content-type\": \"application/json\"\n}\n",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"first_name\": \"{{ $('Edit Fields2').first().json.Telefone }}\",\n  \"whatsapp_phone\": \"{{ $('Edit Fields2').first().json.Telefone }}\",\n  \"email\": \"\",\n  \"has_opt_in_sms\": false,\n  \"has_opt_in_email\": true,\n  \"consent_phrase\": \"SUA_CONSENT_PHRASE_AQUI\"\n}  ",
+        "options": {}
+      },
+      "id": "ffccf720-ce34-42b2-815f-ea8a7df2a17e",
+      "name": "HTTP Request3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -752,
+        -528
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.manychat.com/fb/subscriber/setCustomFields",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n  \"accept\": \"application/json\",\n  \"Authorization\": \"Bearer {{ $('Edit Fields2').item.json['Api Key'] }}\",\n  \"content-type\": \"application/json\"\n} ",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"subscriber_id\": \"{{ $json.data[0].id }}\",\n  \"fields\": [\n    {\n      \"field_id\": SEU_ID_CAMPO_STATUS_MANYCHAT,\n      \"field_value\": \"Entrou no grupo\"\n    },\n    {\n      \"field_id\": {{ $('Edit Fields2').item.json['Grupo de Whats'] }},\n      \"field_value\": \"{{ $('Edit Fields2').item.json.Base }}\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "d9994e69-071c-45b6-823e-dc7173eb3b63",
+      "name": "HTTP Request5",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -752,
+        -336
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "45bb1199-be09-4f7e-b978-c3651f09044d",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -976,
+        -432
+      ],
+      "id": "a9335b38-3cf1-4e06-9ec4-452dc12e5e21",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "SEU_WEBHOOK_PATH_AQUI",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1872,
+        -432
+      ],
+      "id": "8796d5d3-e1b6-4268-a99a-813ce550ca20",
+      "name": "Webhook2",
+      "webhookId": "SEU_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.manychat.com/fb/subscriber/setCustomFields",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n  \"accept\": \"application/json\",\n  \"Authorization\": \"Bearer {{ $('Edit Fields2').item.json['Api Key'] }}\",\n  \"content-type\": \"application/json\"\n} ",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"subscriber_id\": \"{{ $json.data[0].id }}\",\n  \"fields\": [\n    {\n      \"field_id\": SEU_ID_CAMPO_STATUS_MANYCHAT,\n      \"field_value\": \"Entrou no grupo\"\n    },\n    {\n      \"field_id\": {{ $('Edit Fields2').item.json['Grupo de Whats'] }},\n      \"field_value\": \"{{ $('Edit Fields2').item.json.Base }}\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "79a6350b-9e38-48e9-9e11-09c08b83cbb5",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -528,
+        -624
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const telefone = String($('Edit Fields2').first().json.Telefone || '').replace(/\\D/g, '');\n\nlet telefoneCorrigido = telefone;\n\nif (telefone.length === 12 && telefone.startsWith('55')) {\n  telefoneCorrigido = telefone.slice(0, 4) + '9' + telefone.slice(4);\n}\n\nreturn [\n  {\n    json: {\n      Telefone: telefoneCorrigido,\n    },\n  },\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -528,
+        -432
+      ],
+      "id": "af693d87-e874-44bb-abc0-9c52c7dfce2f",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.manychat.com/fb/subscriber/findByCustomField?field_id={{ $('ID dos campos1').item.json.Telefone }}&field_value={{ $json.Telefone }}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n  \"accept\": \"application/json\",\n  \"Authorization\": \"Bearer {{ $('Edit Fields2').item.json['Api Key'] }}\"\n}\n",
+        "options": {}
+      },
+      "id": "166b4c73-ea93-4ce2-98df-794b5024ad16",
+      "name": "HTTP Request4",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -304,
+        -432
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.manychat.com/fb/subscriber/setCustomFields",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n  \"accept\": \"application/json\",\n  \"Authorization\": \"Bearer {{ $('Edit Fields2').item.json['Api Key'] }}\",\n  \"content-type\": \"application/json\"\n} ",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"subscriber_id\": \"{{ $json.data[0].id }}\",\n  \"fields\": [\n    {\n      \"field_id\": SEU_ID_CAMPO_STATUS_MANYCHAT,\n      \"field_value\": \"Entrou no grupo\"\n    },\n    {\n      \"field_id\": {{ $('Edit Fields2').first().json['Grupo de Whats'] }},\n      \"field_value\": \"{{ $('Edit Fields2').first().json.Base }}\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "4cac337c-f3f0-43f9-a077-8e34813e074f",
+      "name": "HTTP Request6",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -80,
+        -432
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "content": "## 📘 README_SETUP — Sincronização de Grupos de WhatsApp → Manychat\n\nEste template recebe, via **webhook**, o aviso de que alguém **entrou em um grupo de WhatsApp**\n(disparado por uma ferramenta de gestão de grupos/disparo) e garante que esse número exista\ncomo **assinante no Manychat**, marcando de qual grupo/base ele veio.\n\n### ✅ Passo a passo de configuração\n\n**1. Trocar os placeholders no nó `Edit Fields2`**\n- `SEU_TOKEN_MANYCHAT_AQUI` → sua API Key do Manychat\n  (Manychat → Settings → API → *API Key*). Formato: `pageid:token`.\n- `SEU_ID_CAMPO_GRUPO_WHATS_MANYCHAT` → ID do custom field que guarda o nome do grupo.\n- `[NOME_DA_SUA_CAMPANHA] Inscrito` → nome da sua campanha/tag interna.\n\n**2. Trocar os placeholders no nó `ID dos campos1`**\n- `SEU_ID_CAMPO_TELEFONE_MANYCHAT` → ID do custom field \"Telefone\" no Manychat.\n- `SEU_ID_CAMPO_MENSAGEM_MANYCHAT` → ID do custom field de mensagem (opcional).\n\n> Como achar o ID de um campo: Manychat → Settings → Fields → clique no campo →\n> o número aparece na URL. Ou use `GET /fb/page/getCustomFields` na API.\n\n**3. Trocar `SEU_ID_CAMPO_STATUS_MANYCHAT`** nos 3 nós de `setCustomFields`\n(HTTP Request, HTTP Request5, HTTP Request6) — é o campo que recebe o valor \"Entrou no grupo\".\n\n**4. Configurar o Webhook (`Webhook2`)**\n- Substitua `SEU_WEBHOOK_PATH_AQUI` pelo path que você quiser (ou deixe o n8n gerar um novo).\n- Copie a **Production URL** e cole na ferramenta que envia o evento de entrada no grupo.\n- Payload esperado: `body.data.number` (telefone) e `body.data.groupName` (nome do grupo).\n\n**5. Ajustar `SUA_CONSENT_PHRASE_AQUI`** no nó `HTTP Request3`\n- O Manychat exige uma *consent phrase* para criar assinante de WhatsApp via API.\n  Use a frase que você cadastrou na sua conta.\n\n**6. Testar antes de ativar**\n- Rode em modo *Test* com um número seu.\n- Só então mude o workflow para **Active** (ele vem desativado de propósito).\n\n### 🔐 Segurança\nEste template **não usa credenciais nativas do n8n** — o token vai dentro de um nó Set e é\ninjetado no header `Authorization`. Isso é prático, mas expõe a chave a quem abrir o JSON.\n👉 Recomendação: mova o token para uma credencial **Header Auth** do n8n.\n\n⚠️ Se você recebeu este arquivo de terceiros, **revogue e gere uma nova API Key** no Manychat.",
+        "height": 780,
+        "width": 420,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2320,
+        -900
+      ],
+      "id": "sticky-readme_setup",
+      "name": "README_SETUP"
+    },
+    {
+      "parameters": {
+        "content": "### 1️⃣ Gatilho + Variáveis\n\n**Webhook2** — recebe o POST quando um número entra no grupo de WhatsApp.\nEspera `body.data.number` e `body.data.groupName`.\n🔧 Ajuste: gere um novo path e cole a URL na ferramenta de origem.\n\n**ID dos campos1** — guarda os **IDs dos custom fields** do Manychat.\n🔧 Ajuste: troque `SEU_ID_CAMPO_TELEFONE_MANYCHAT` e `SEU_ID_CAMPO_MENSAGEM_MANYCHAT`.",
+        "height": 240,
+        "width": 480,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1920,
+        -700
+      ],
+      "id": "sticky-nota---entrada",
+      "name": "Nota - Entrada"
+    },
+    {
+      "parameters": {
+        "content": "### 2️⃣ Onde vai o TOKEN 🔑\n\n**Edit Fields2** monta as variáveis usadas no fluxo inteiro:\n- `Telefone` → vem do webhook\n- `Api Key` → **SEU_TOKEN_MANYCHAT_AQUI**\n- `Base` → nome do grupo\n- `Grupo de Whats` → ID do campo\n\n⚠️ O token fica em texto puro aqui.\nPrefira migrar para uma credencial\n**Header Auth** do n8n.",
+        "height": 240,
+        "width": 340,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1470,
+        -700
+      ],
+      "id": "sticky-nota---token",
+      "name": "Nota - Token"
+    },
+    {
+      "parameters": {
+        "content": "### 3️⃣ O contato já existe?\n\n**HTTP Request2** consulta\n`findByCustomField` no Manychat\nbuscando pelo telefone.\n\nTem retry (5 tentativas) porque a\nAPI do Manychat limita requisições.\n\n**If2** verifica se `data` veio vazio:\n- **vazio** → precisa criar\n- **com dados** → só atualizar",
+        "height": 240,
+        "width": 320,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1240,
+        -700
+      ],
+      "id": "sticky-nota---busca",
+      "name": "Nota - Busca"
+    },
+    {
+      "parameters": {
+        "content": "### 4️⃣ Criar assinante\n\n**HTTP Request3** chama\n`createSubscriber` com telefone e\n`consent_phrase`.\n🔧 Ajuste `SUA_CONSENT_PHRASE_AQUI`.\n\n⚠️ **Atenção técnica:** o nó seguinte\nlê `$json.data[0].id`, mas o\n`createSubscriber` devolve `data`\ncomo **objeto** (não array).\nSe der erro, troque para `$json.data.id`.",
+        "height": 260,
+        "width": 320,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -820,
+        -820
+      ],
+      "id": "sticky-nota---criacao",
+      "name": "Nota - Criacao"
+    },
+    {
+      "parameters": {
+        "content": "### 5️⃣ Atualizar quem já existe\n\n**HTTP Request5** chama\n`setCustomFields` marcando:\n- campo de status → \"Entrou no grupo\"\n- campo do grupo → nome da base\n\n🔧 Troque `SEU_ID_CAMPO_STATUS_MANYCHAT`.",
+        "height": 200,
+        "width": 320,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -820,
+        -280
+      ],
+      "id": "sticky-nota---atualiza",
+      "name": "Nota - Atualiza"
+    },
+    {
+      "parameters": {
+        "content": "### 6️⃣ Plano B — correção do 9º dígito 📱\n\nSe a criação do assinante falhar (saída de erro do HTTP Request3), o fluxo cai aqui:\n\n**Code in JavaScript** — limpa o telefone e, se for um número BR antigo com 12 dígitos\n(`55` + DDD + 8 dígitos), insere o **9** que falta. Ex.: `SEU_ID_AQUI` → `SEU_ID_AQUI`.\n\n**HTTP Request4** → busca de novo no Manychat com o telefone corrigido.\n**HTTP Request6** → se achou, grava os custom fields normalmente.\n\n💡 Esse trecho existe porque bases antigas de WhatsApp guardam o número sem o nono dígito.",
+        "height": 240,
+        "width": 620,
+        "color": 1
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -580,
+        -180
+      ],
+      "id": "sticky-nota---fallback",
+      "name": "Nota - Fallback"
+    }
+  ],
+  "connections": {
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ID dos campos1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook2": {
+      "main": [
+        [
+          {
+            "node": "ID dos campos1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request4": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": ""
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [],
+  "pinData": {}
+}
