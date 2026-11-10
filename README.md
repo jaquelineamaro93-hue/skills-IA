@@ -9,6 +9,7 @@ Skills para Claude Code e Codex, construídas e testadas em projetos reais por *
 | [`analise-de-dados-investigativa`](analise-de-dados-investigativa/) | Análise de dados investigativa: 6 lentes não-convencionais, checagem anti-pareidolia, oportunidades priorizadas, gráficos e relatório com nível de confiança. |
 | [`ninja-fluxograma`](ninja-fluxograma/) | Desenha qualquer processo do negócio no Miro (ou FigJam, Mermaid, draw.io): vendas, lifecycle e jornada do cliente, atendimento e operação. Transforma o fluxo em agente de IA, régua de lifecycle ou passo a passo. |
 | [`planilha-de-growth`](planilha-de-growth/) | Monta a planilha central de growth da marca: tarefas, calendário comercial, preço e margem com cupom, concorrentes, influenciadores, criativos, réguas de CRM, eventos e brindes, com fórmulas e alertas. |
+| [`planejamento-estrategico`](planejamento-estrategico/) | Planeja a área do porquê até o OKR de cada pessoa: Casa da Estratégia, jornada, contexto, métricas de input e output, árvore de objetivos, OKRs com acompanhamento mensal e IA como parceira de pensamento. |
 | [`templates-whatsapp-aprovados`](templates-whatsapp-aprovados/) | Templates UTILITY do WhatsApp Business (Meta) prontos para aprovação: texto, variáveis, botões, payload JSON e checklist. |
 
 ## Plugins (Claude Cowork e Claude Code)
