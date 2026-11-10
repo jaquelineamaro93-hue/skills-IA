@@ -1,0 +1,10 @@
+{
+  "name": "desenvolvimento-de-software",
+  "version": "1.2.0",
+  "description": "Ajuda times de desenvolvimento de software no dia a dia: resumo da daily, revisão de código, decisões de arquitetura, correção de erros, sistema fora do ar, checklist antes de publicar, testes e documentação. Funciona sozinho ou com as suas ferramentas.",
+  "author": {
+    "name": "Jaqueline Amaro",
+    "url": "https://www.linkedin.com/in/jaquelineamaro/"
+  },
+  "license": "Apache-2.0"
+}

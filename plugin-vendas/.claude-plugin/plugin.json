@@ -1,0 +1,10 @@
+{
+  "name": "vendas",
+  "version": "2.0.1",
+  "description": "Ajudante de vendas: prepara e resume reuniões, faz follow-up, pesquisa empresas, cuida dos negócios, revisa o funil e escreve a previsão de vendas. Funciona com o seu CRM, e-mail, agenda, chat e gravador de reuniões, ou com arquivos que você enviar. Só atualiza o CRM, envia e-mail ou marca reunião quando você pedir.",
+  "author": {
+    "name": "Jaqueline Amaro",
+    "url": "https://www.linkedin.com/in/jaquelineamaro/"
+  },
+  "license": "Apache-2.0"
+}

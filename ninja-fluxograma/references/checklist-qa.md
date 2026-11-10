@@ -2,7 +2,16 @@
 
 Rode antes de entregar e no modo Auditoria. Cada item reprovado: corrija ou liste em "Confirmar com o responsável".
 
-## Processo
+## Qualquer processo
+- [ ] Começo (o que dispara) e todos os finais possíveis desenhados.
+- [ ] Toda etapa tem dono (pessoa, time ou sistema).
+- [ ] Toda decisão tem critério escrito e todas as saídas, inclusive "sem resposta".
+- [ ] Toda espera tem prazo; todo laço tem limite.
+- [ ] Toda passagem entre áreas avisa quem está do outro lado.
+- [ ] Cada etapa tem como medir se funcionou.
+- [ ] Lifecycle: toda régua tem regra de saída e limite de contatos por pessoa.
+
+## Processo de vendas / agente
 - [ ] Contexto antes e depois do SDR escrito (1 parágrafo cada).
 - [ ] Nenhuma regra de negócio inventada; premissas listadas.
 - [ ] Lead muito quente perguntado (existe ou "não se aplica" confirmado).
