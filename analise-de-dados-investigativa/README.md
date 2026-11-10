@@ -1,5 +1,7 @@
 # Análise de Dados Investigativa — skill para Claude Code, Claude.ai e Codex
 
+> Criado por **Jaqueline Amaro** · [LinkedIn](https://www.linkedin.com/in/jaquelineamaro/)
+
 Análise de dados que vai além do "o que os dados mostram" e descobre **o que eles estão tentando dizer**.
 Você manda a planilha, o export do CRM ou as conversas do WhatsApp; a skill enquadra a pergunta, mapeia a
 qualidade dos dados, cruza fontes e entrega oportunidades priorizadas com nível de confiança.
@@ -31,5 +33,6 @@ qualidade dos dados, cruza fontes e entrega oportunidades priorizadas com nível
 
 Depois é só pedir: *"Analisa esse export de leads e me diz o que estamos perdendo."*
 
-## Licença
-Uso pessoal e comercial no seu trabalho; revenda e redistribuição proibidas. Veja [LICENSE.md](LICENSE.md).
+## Licença e crédito
+Criado por **Jaqueline Amaro**. Uso livre e sem fins comerciais, **desde que você dê o crédito** (CC BY-NC 4.0).
+Para vender ou usar com clientes pagos, fale comigo pelo [LinkedIn](https://www.linkedin.com/in/jaquelineamaro/). Detalhes em [LICENSE.md](LICENSE.md).

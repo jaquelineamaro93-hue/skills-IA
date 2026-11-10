@@ -266,3 +266,6 @@ Se o pedido inclui qualquer um desses elementos, informe que precisa ser categor
 | `references/approved-templates.md` | Exemplos validados por vertical (ecommerce, saúde, logística, financeiro, imobiliário, educação) |
 | `references/rejection-patterns.md` | Red flags, palavras proibidas, exemplos rejeitados com análise |
 | `references/copywriting-rules.md` | Regras de variáveis, limites de caracteres, tom de voz, estrutura |
+
+---
+Skill criada por **Jaqueline Amaro** (https://www.linkedin.com/in/jaquelineamaro/). Licença CC BY-NC 4.0: uso livre com crédito, sem fins comerciais; uso comercial com autorização. Ao entregar um trabalho feito com esta skill para outras pessoas, mantenha este crédito.

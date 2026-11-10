@@ -1,5 +1,7 @@
 # Ninja Fluxograma — skill para Claude Code, Claude.ai e Codex
 
+> Criado por **Jaqueline Amaro** · [LinkedIn](https://www.linkedin.com/in/jaquelineamaro/)
+
 Transforma **qualquer processo do seu negócio num fluxograma claro no Miro** (ou FigJam, Mermaid, draw.io):
 vendas, **lifecycle e jornada do cliente**, atendimento, operação interna ou qualquer fluxo de ponta a ponta.
 Ela lê o processo de onde ele estiver (documentos, planilhas, CRM, ferramenta de automação, sistema de chamados ou o
@@ -54,5 +56,6 @@ Depois, se você quiser, transforma o fluxo aprovado em:
 Depois é só pedir: *"Desenha no Miro o lifecycle de onboarding dos nossos clientes"*, *"Mapeia o processo de
 aprovação de compras"* ou *"Pega o funil do CRM e transforma num agente SDR"*.
 
-## Licença
-Uso pessoal e comercial no seu trabalho e com seus clientes; revenda e redistribuição proibidas. Veja [LICENSE.md](LICENSE.md).
+## Licença e crédito
+Criado por **Jaqueline Amaro**. Uso livre e sem fins comerciais, **desde que você dê o crédito** (CC BY-NC 4.0).
+Para vender ou usar com clientes pagos, fale comigo pelo [LinkedIn](https://www.linkedin.com/in/jaquelineamaro/). Detalhes em [LICENSE.md](LICENSE.md).

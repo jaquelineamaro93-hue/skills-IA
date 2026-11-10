@@ -43,3 +43,6 @@ Pedido de correção: repita em 1 linha o que entendeu, corrija só aquilo e mos
 
 ## Quando algo der errado
 Antes de improvisar, procure o sintoma em `references/licoes-aprendidas.md`: rosto "embelezado", sobrancelha escura ou apagada, brinco de um lado só, fundo com cara de recorte, cara de velha, voz lenta que acelera do nada, sílaba repetida na emenda, CTA cortado aos 20 s. Cada item tem a causa e a correção testada.
+
+---
+Skill criada por **Jaqueline Amaro** (https://www.linkedin.com/in/jaquelineamaro/). Licença CC BY-NC 4.0: uso livre com crédito, sem fins comerciais; uso comercial com autorização. Ao entregar um trabalho feito com esta skill para outras pessoas, mantenha este crédito.
