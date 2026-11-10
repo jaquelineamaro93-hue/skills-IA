@@ -56,3 +56,22 @@ Teste que falha = parar e investigar antes de qualquer conclusão.
 - **Pedidos (e-commerce):** cliente ativo = comprou no mês. A retenção mensal costuma ser baixa (pouca gente compra
   todo mês); para e-commerce, olhe também a recompra acumulada (quantos já voltaram pelo menos uma vez até o mês N)
   e use janelas maiores (trimestre) se o ciclo de compra for longo.
+
+## Formatos de base
+- **Mês a mês:** uma linha por cliente x mês (assinatura). Ativo = valor do mês > 0.
+- **Pedidos / viagens / transações:** várias linhas no mesmo mês são somadas. Ativo = teve ao menos uma no mês.
+- **Contratos** (`"formato": "contratos"`): uma linha por contrato com início, fim (vazio = vigente) e valor mensal.
+  O script abre cada contrato em meses até o fim (ou até `ate`). Cliente ativo = pelo menos um contrato vigente.
+  Cria a métrica `contratos_ativos` (quantos contratos o cliente tem ao mesmo tempo).
+
+## Ativo por uso (`ativo_por`)
+Por padrão, ativo = receita > 0. Com `"ativo_por": "<métrica>"`, ativo = aquela métrica > 0 (ex.: passagens,
+conversas). Use quando o cliente pode pagar sem usar (ou usar sem pagar) e o que importa é o uso.
+
+## Abas de uso (`Uso - <métrica>`)
+Para cada métrica: total no período por safra e média por cliente ativo em cada mês desde a entrada. Uso por
+cliente subindo = quem fica se engaja mais; caindo = risco antes do cancelamento.
+
+## Aba Caminhos
+Compara a receita do cliente no último mês com a do mês de entrada (tolerância padrão de 10%, campo
+`tolerancia_caminhos`): Expandiu, Manteve, Reduziu, Saiu (não ativo no último mês).

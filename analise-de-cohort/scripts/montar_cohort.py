@@ -59,42 +59,85 @@ def mes_txt(d):
 
 
 # ---------------- leitura e preparo ----------------
-def ler_base(cfg):
+def _ler_arquivo(cfg):
     caminho = cfg["base"]
-    df = pd.read_excel(caminho, sheet_name=cfg.get("aba", 0)) if caminho.lower().endswith((".xlsx", ".xls")) else pd.read_csv(caminho, sep=cfg.get("separador", ","))
+    if caminho.lower().endswith((".xlsx", ".xls")):
+        return pd.read_excel(caminho, sheet_name=cfg.get("aba", 0))
+    return pd.read_csv(caminho, sep=cfg.get("separador", ","))
+
+
+def _expandir_contratos(df, cfg):
+    """Formato contratos: cliente | inicio | fim | valor_mensal. Vira uma linha por cliente x mês x contrato."""
+    fim_padrao = pd.Timestamp(cfg["ate"]) if cfg.get("ate") else pd.Timestamp.today().to_period("M").to_timestamp()
+    linhas = []
+    for row in df.itertuples(index=False):
+        ini = pd.Timestamp(row.inicio).to_period("M").to_timestamp()
+        fim = pd.Timestamp(row.fim).to_period("M").to_timestamp() if pd.notna(row.fim) else fim_padrao
+        m = ini
+        while m <= min(fim, fim_padrao):
+            d = row._asdict()
+            d.update({"data": m, "contratos_ativos": 1})
+            linhas.append(d)
+            m = m + pd.offsets.MonthBegin(1)
+    out = pd.DataFrame(linhas)
+    return out
+
+
+def ler_base(cfg):
+    df = _ler_arquivo(cfg)
     col = cfg["colunas"]
-    ren = {col["cliente"]: "cliente", col["data"]: "data", col["receita"]: "receita"}
+    contratos = cfg.get("formato") == "contratos"
+    ren = {col["cliente"]: "cliente", col["receita"]: "receita"}
+    if contratos:
+        ren[col["inicio"]] = "inicio"
+        ren[col["fim"]] = "fim"
+    else:
+        ren[col["data"]] = "data"
     if col.get("quantidade"):
         ren[col["quantidade"]] = "qtd"
-    segs = cfg.get("segmentos", {})
-    for nome, c in segs.items():
+    for nome, c in cfg.get("segmentos", {}).items():
         ren[c] = f"seg_{nome}"
+    for nome, c in cfg.get("metricas", {}).items():
+        ren[c] = f"met_{nome}"
     df = df.rename(columns=ren)
+    if contratos:
+        for c in ("inicio", "fim"):
+            df[c] = pd.to_datetime(df[c], dayfirst=cfg.get("dia_primeiro", True), errors="coerce")
+        df = _expandir_contratos(df, cfg)
+        df["met_contratos_ativos"] = df.pop("contratos_ativos")
+        cfg.setdefault("metricas", {})["contratos_ativos"] = "contratos_ativos"
     df["data"] = pd.to_datetime(df["data"], dayfirst=cfg.get("dia_primeiro", True))
     df["receita"] = pd.to_numeric(df["receita"], errors="coerce").fillna(0)
     if "qtd" in df:
         df["qtd"] = pd.to_numeric(df["qtd"], errors="coerce").fillna(0)
     elif cfg.get("tipo") == "pedidos":
         df["qtd"] = 1
+    for c in [c for c in df.columns if c.startswith("met_")]:
+        df[c] = pd.to_numeric(df[c], errors="coerce").fillna(0)
     df["mes"] = df["data"].dt.to_period("M").dt.to_timestamp()
     if cfg.get("ate"):
         df = df[df["mes"] <= pd.Timestamp(cfg["ate"])]
     if cfg.get("desde"):
         df = df[df["mes"] >= pd.Timestamp(cfg["desde"])]
+    # coluna que define "ativo": receita (padrão) ou uma métrica de uso
+    ativo = cfg.get("ativo_por", "receita")
+    df["_ativo"] = df["receita"] if ativo == "receita" else df[f"met_{ativo}"]
     return df
 
 
 def montar_dados(df, cfg):
-    pos = df[df["receita"] > 0]
+    pos = df[df["_ativo"] > 0]
     primeira = pos.groupby("cliente")["mes"].min().rename("cohort")
     df = df.join(primeira, on="cliente")
     df = df[df["cohort"].notna()]
     fim = df["mes"].max()
-    agg = {"receita": "sum"}
+    agg = {"receita": "sum", "_ativo": "sum"}
     if "qtd" in df:
         agg["qtd"] = "sum"
+    for c in [c for c in df.columns if c.startswith("met_")]:
+        agg[c] = "sum"
     por_cli_mes = df.groupby(["cohort", "mes", "cliente"]).agg(agg).reset_index()
-    ativos = por_cli_mes[por_cli_mes["receita"] > 0]
+    ativos = por_cli_mes[por_cli_mes["_ativo"] > 0]
     base = primeira.reset_index().groupby("cohort")["cliente"].nunique()
     linhas = []
     for coh, n0 in base.items():
@@ -107,6 +150,7 @@ def montar_dados(df, cfg):
                 "clientes_ativos": a["cliente"].nunique(), "clientes_cohort": n0,
                 "qtd": float(a["qtd"].sum()) if "qtd" in a else None,
                 "receita": float(a["receita"].sum()),
+                **{c: float(a[c].sum()) for c in a.columns if c.startswith("met_")},
             })
             mes = mes + pd.offsets.MonthBegin(1)
             idx += 1
@@ -138,8 +182,8 @@ def aba_leia_me(wb, cfg, fim, dados):
             ("LTV / CAC", "Quantas vezes o cliente já devolveu o custo de conquistá-lo. Acima de 1 na margem = já se pagou."),
         ]),
         ("DEFINIÇÕES DESTE MODELO", [
-            ("Entrada no cohort", "Mês da primeira receita maior que zero do cliente."),
-            ("Cliente ativo no mês", "Cliente do cohort com receita maior que zero naquele mês."),
+            ("Entrada no cohort", cfg.get("definicao_entrada") or "Mês em que o cliente fica ativo pela primeira vez."),
+            ("Cliente ativo no mês", cfg.get("definicao_ativo") or ("Cliente do cohort com receita maior que zero naquele mês." if cfg.get("ativo_por", "receita") == "receita" else f"Cliente do cohort com {cfg['ativo_por']} maior que zero naquele mês.")),
             ("Ticket médio", "Receita do mês ÷ quantidade (pedidos/uso) do mês." if tipo == "pedidos" or cfg["colunas"].get("quantidade") else "Receita do mês ÷ clientes ativos no mês."),
             ("Receita por cliente ativo", "Receita do mês ÷ clientes ativos no mês."),
             ("Receita por cliente adquirido", "Receita do mês ÷ clientes que entraram no cohort."),
@@ -313,7 +357,7 @@ def aba_segmento(wb, titulo_seg, coluna, df, primeira, fim, max_idx, sub):
     cli = primeira.reset_index()
     seg = df.groupby("cliente")[coluna].agg(lambda s: s.dropna().iloc[0] if s.dropna().size else "Sem informação")
     cli = cli.join(seg, on="cliente").rename(columns={coluna: "grupo"})
-    cm = df[df["receita"] > 0].groupby(["cliente", "mes"]).size().reset_index()
+    cm = df[df["_ativo"] > 0].groupby(["cliente", "mes"]).size().reset_index()
     ativos_cm = set(zip(cm["cliente"], cm["mes"]))
     vida = cm.groupby("cliente").size()
     rec_fim = df[df["mes"] == fim].groupby("cliente")["receita"].sum()
@@ -353,7 +397,7 @@ def aba_segmento(wb, titulo_seg, coluna, df, primeira, fim, max_idx, sub):
 def aba_resumo(wb, cfg, dados, df, primeira, fim, max_idx):
     ws = wb.create_sheet("Resumo", 1)
     tit(ws, f"Resumo do cohort — {cfg.get('empresa', '')}", f"{mes_txt(dados['cohort'].min())} a {mes_txt(fim)} · {primeira.size} clientes em {dados['cohort'].nunique()} safras")
-    cm = df[df["receita"] > 0].groupby(["cliente", "mes"]).size().reset_index()
+    cm = df[df["_ativo"] > 0].groupby(["cliente", "mes"]).size().reset_index()
     ativos_cm = set(zip(cm["cliente"], cm["mes"]))
     cli = primeira.reset_index()
 
@@ -409,9 +453,9 @@ def aba_auditoria(wb, dados, df, primeira, fim, base_bruta):
     rec_bruta = float(base_bruta["receita"].sum())
     rec_mod = float(dados["receita"].sum())
     testes.append(("Receita total do período", rec_bruta, rec_mod, "Soma da receita da base, sem passar pelas safras", abs(rec_bruta - rec_mod) < 0.01))
-    n_cli = base_bruta[base_bruta["receita"] > 0]["cliente"].nunique()
+    n_cli = base_bruta[base_bruta["_ativo"] > 0]["cliente"].nunique()
     n_mod = int(dados.groupby("cohort")["clientes_cohort"].first().sum())
-    testes.append(("Clientes: soma das safras", n_cli, n_mod, "Clientes com pelo menos um mês de receita maior que zero", n_cli == n_mod))
+    testes.append(("Clientes: soma das safras", n_cli, n_mod, "Clientes com pelo menos um mês ativo", n_cli == n_mod))
     rec_fim = float(base_bruta[base_bruta["mes"] == fim]["receita"].sum())
     rec_fim_mod = float(dados[dados["mes"] == fim]["receita"].sum())
     testes.append((f"Receita de {mes_txt(fim)}", rec_fim, rec_fim_mod, "Soma da base no último mês", abs(rec_fim - rec_fim_mod) < 0.01))
@@ -436,11 +480,92 @@ def aba_auditoria(wb, dados, df, primeira, fim, base_bruta):
     ok_n = sum(1 for t in testes if t[4])
     ws.cell(row=r + 1, column=1, value=f"{ok_n} de {len(testes)} testes passaram.").font = Font(bold=True)
     # buracos de receita
-    cm = base_bruta[base_bruta["receita"] > 0].groupby("cliente")["mes"].apply(sorted)
+    cm = base_bruta[base_bruta["_ativo"] > 0].groupby("cliente")["mes"].apply(sorted)
     voltas = [c for c, ms in cm.items() if any((b.year * 12 + b.month) - (a.year * 12 + a.month) > 1 for a, b in zip(ms, ms[1:]))]
     ws.cell(row=r + 3, column=1, value="Pontos de atenção").font = Font(bold=True, color=MARROM)
     ws.cell(row=r + 4, column=1, value=f"Clientes que pararam e voltaram a pagar: {len(voltas)}. Eles contam como inativos nos meses sem receita e voltam a contar quando retornam.").alignment = QUEBRA
     return testes
+
+
+def aba_metrica(wb, nome, coluna, dados, cohorts, max_idx):
+    ws = wb.create_sheet(f"Uso - {nome}"[:31])
+    tit(ws, f"{nome.replace('_', ' ').capitalize()} por cliente ativo", "Média de uso de quem estava ativo no mês. Mostra se quem fica usa mais (bom sinal) ou menos (risco).")
+    cab(ws, 4, ["Cohort", "Total no período"] + [f"mês {i}" for i in range(max_idx + 1)], [11, 14] + [10] * (max_idx + 1))
+    ws.freeze_panes = "C5"
+    for i, coh in enumerate(cohorts, start=5):
+        d = dados[dados["cohort"] == coh]
+        ws.cell(row=i, column=1, value=coh.to_pydatetime()).number_format = "MMM/YYYY"
+        ws.cell(row=i, column=2, value=float(d[coluna].sum())).number_format = "#,##0"
+        for row in d.itertuples(index=False):
+            ativos = row.clientes_ativos
+            if ativos:
+                ws.cell(row=i, column=3 + row.mes_indice, value=getattr(row, coluna) / ativos).number_format = "#,##0.0"
+    fim = get_column_letter(3 + max_idx)
+    ws.conditional_formatting.add(f"C5:{fim}{4+len(cohorts)}", ColorScaleRule(start_type="min", start_color="FFFFFF", end_type="max", end_color="D9C7B8"))
+
+
+def aba_caminhos(wb, df, primeira, fim, cfg):
+    """Classifica cada cliente pelo que aconteceu desde a entrada: expandiu, manteve, reduziu ou saiu."""
+    ws = wb.create_sheet("Caminhos")
+    tolerancia = cfg.get("tolerancia_caminhos", 0.1)
+    tit(ws, "Os caminhos depois da entrada", f"Compara a receita do cliente no último mês ({mes_txt(fim)}) com a do mês de entrada. Variação de até {tolerancia:.0%} conta como 'manteve'.")
+    rc = df.groupby(["cliente", "mes"])["receita"].sum()
+    ativo_cm = set(df[df["_ativo"] > 0].groupby(["cliente", "mes"]).size().index)
+    grupos = {"Expandiu": [], "Manteve": [], "Reduziu": [], "Saiu": []}
+    for cli, coh in primeira.items():
+        r0 = rc.get((cli, coh), 0)
+        if (cli, fim) not in ativo_cm:
+            grupos["Saiu"].append(cli)
+            continue
+        r1 = rc.get((cli, fim), 0)
+        if r0 and r1 > r0 * (1 + tolerancia):
+            grupos["Expandiu"].append(cli)
+        elif r0 and r1 < r0 * (1 - tolerancia):
+            grupos["Reduziu"].append(cli)
+        else:
+            grupos["Manteve"].append(cli)
+    textos = {
+        "Expandiu": "Paga mais do que na entrada. Base para casos de sucesso, indicação e programa de champions.",
+        "Manteve": "Ativo, sem crescer. Espaço para o segundo produto, caso de uso avançado e mais usuários.",
+        "Reduziu": "Ativo, pagando menos. Sinal de risco: entender o motivo antes da renovação.",
+        "Saiu": "Não está ativo no último mês. Olhe em que mês saiu (aba Retenção) e o motivo de cancelamento.",
+    }
+    cab(ws, 4, ["Caminho", "Clientes", "% da base", f"Receita em {mes_txt(fim)}", "O que fazer"], [14, 10, 10, 18, 90])
+    total = primeira.size
+    rec_fim = df[df["mes"] == fim].groupby("cliente")["receita"].sum()
+    cores = {"Expandiu": VERDE, "Manteve": "FFF3C4", "Reduziu": "FBE3C8", "Saiu": VERMELHO}
+    for i, (g, ids) in enumerate(grupos.items(), start=5):
+        ws.cell(row=i, column=1, value=g).fill = PatternFill("solid", fgColor=cores[g])
+        ws.cell(row=i, column=2, value=len(ids))
+        ws.cell(row=i, column=3, value=len(ids) / total if total else 0).number_format = "0%"
+        ws.cell(row=i, column=4, value=float(rec_fim.reindex(ids).fillna(0).sum())).number_format = MOEDA0
+        ws.cell(row=i, column=5, value=textos[g]).alignment = QUEBRA
+    return {g: len(v) for g, v in grupos.items()}
+
+
+def aba_jornada(wb, cfg):
+    j = cfg.get("jornada")
+    if not j:
+        return
+    ws = wb.create_sheet("Jornada do Cliente")
+    tit(ws, j.get("titulo", "Jornada do cliente depois da compra"), j.get("subtitulo", "Etapas definidas pelos pontos em que a curva de retenção muda."))
+    etapas = j["etapas"]
+    linhas = j.get("linhas", ["Pontos de contato", "Tarefas do cliente", "Dor principal", "Sentimento", "Momento da verdade", "O que entregar", "Métrica", "Responsável"])
+    cab(ws, 4, ["Camada"] + [f"{e['nome']}\n{e.get('periodo', '')}" for e in etapas], [24] + [34] * len(etapas))
+    ws.row_dimensions[4].height = 44
+    for i, linha in enumerate(linhas, start=5):
+        c = ws.cell(row=i, column=1, value=linha)
+        c.font = F_CAB
+        c.fill = FILL_CAB
+        for k, e in enumerate(etapas, start=2):
+            cel = ws.cell(row=i, column=k, value=e.get("campos", {}).get(linha, ""))
+            cel.alignment = QUEBRA
+            cel.fill = FILL_IN
+        ws.row_dimensions[i].height = 48
+    r = 5 + len(linhas)
+    ws.cell(row=r, column=1, value="Ciclo de vida").font = Font(bold=True, color=MARROM)
+    for k, e in enumerate(etapas, start=2):
+        ws.cell(row=r, column=k, value=e.get("ciclo", "")).font = Font(bold=True)
 
 
 def aba_insights(wb, cfg):
@@ -491,16 +616,20 @@ def main():
         aba_segmento(wb, f"Por {nome.capitalize()}", f"seg_{nome}", df, primeira, fim, max_idx, f"Retenção e receita por {nome}.")
     faixas = cfg.get("faixas_ticket")
     if faixas:
-        pico = df[df["receita"] > 0].groupby(["cliente", "mes"])["receita"].sum().groupby("cliente").max()
+        pico = df[df["_ativo"] > 0].groupby(["cliente", "mes"])["receita"].sum().groupby("cliente").max()
         fx = [(f["nome"], f.get("ate")) for f in faixas]
         df["seg_faixa"] = df["cliente"].map(lambda c: faixa_ticket(pico.get(c, 0), fx))
         aba_segmento(wb, "Por Faixa de Ticket", "seg_faixa", df, primeira, fim, max_idx, "Faixa pelo maior valor mensal (pico) de cada cliente.")
+    for nome in cfg.get("metricas", {}):
+        aba_metrica(wb, nome, f"met_{nome}", dados, cohorts, max_idx)
+    caminhos = aba_caminhos(wb, df, primeira, fim, cfg)
+    aba_jornada(wb, cfg)
     testes = aba_auditoria(wb, dados, df, primeira, fim, df)
     for ws in wb.worksheets:
         ws.sheet_view.showGridLines = False
     wb.save(sys.argv[2])
     ok = sum(1 for t in testes if t[4])
-    print(f"Análise criada: {sys.argv[2]} | {primeira.size} clientes, {len(cohorts)} safras, até mês {max_idx} | testes: {ok}/{len(testes)} passaram")
+    print(f"Análise criada: {sys.argv[2]} | {primeira.size} clientes, {len(cohorts)} safras, até mês {max_idx} | caminhos: {caminhos} | testes: {ok}/{len(testes)} passaram")
 
 
 if __name__ == "__main__":
