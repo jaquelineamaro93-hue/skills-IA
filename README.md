@@ -6,6 +6,7 @@ Skills para Claude Code e Codex, construídas e testadas em projetos reais por *
 |---|---|
 | [`ai-avatar-video`](ai-avatar-video/) | Reels verticais com o seu avatar de IA falando com a sua própria voz clonada: identidade fiel, 5 ângulos, voz natural sincronizada à boca com autocorreção, cards, CTA e música. |
 | [`complex-data-analysis`](complex-data-analysis/) | Análise de dados investigativa: 6 lentes não-convencionais, checagem anti-pareidolia, oportunidades priorizadas, gráficos e relatório com nível de confiança. |
+| [`ninja-fluxograma`](ninja-fluxograma/) | Desenha o processo comercial do cliente no Miro (ou FigJam, Mermaid, draw.io) a partir do playbook, do CRM ou do agente atual, e gera o agente SDR de IA a partir do fluxo. |
 | [`whatsapp-utility-templates`](whatsapp-utility-templates/) | Templates UTILITY do WhatsApp Business (Meta) prontos para aprovação: texto, variáveis, botões, payload JSON e checklist. |
 
 ## Plugins (Claude Cowork e Claude Code)
