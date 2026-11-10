@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.0 — 2026-11-10
+- Novo `references/ugc-produto.md` e etapa 4b: vídeo de produto (UGC). Foto real do produto como referência (fichas
+  de IA deformam rótulos), conferência do nome da marca na voz antes de gerar, cupom da própria pessoa, prompt para
+  o rótulo ficar legível, planos de produto, card de cupom e aviso #publi + rótulo de IA.
+
 ## 1.1.0 — 2026-11-09 — versão de lançamento
 - `voice_sync.py`: com vários trechos no mesmo clipe, um trecho nunca toca sílaba do seguinte (evita a sílaba
   repetida na emenda); palavras atribuídas ao trecho certo sem tolerância ambígua.

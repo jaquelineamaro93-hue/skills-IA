@@ -1,6 +1,6 @@
 # AI Avatar Video — skill para Claude Code e Codex
 
-Transforme roteiros em reels verticais com o **seu avatar de IA falando com a sua própria voz clonada**:
+Transforme roteiros em reels verticais e vídeos UGC de produto com o **seu avatar de IA falando com a sua própria voz clonada**:
 rosto travado, 5 ângulos de câmera, cenário único, a sua voz original no seu ritmo e na boca do avatar,
 cards de conversa/passos/frase, card final com o CTA e música baixa. Um MP4 pronto por roteiro.
 
@@ -8,7 +8,7 @@ cards de conversa/passos/frase, card final com o CTA e música baixa. Um MP4 pro
 | | |
 |---|---|
 | `SKILL.md` | O fluxo completo, com os pontos de aprovação (identidade, custo, teste) |
-| `references/` | Ficha de personagem, prompt de vídeo com bloco de expressões, geradores e custos, voz (ElevenLabs), roteiro e ganchos, pós-produção, checklist de QA, lições de um projeto real, ética |
+| `references/` | Ficha de personagem, UGC de produto (rótulo legível, cupom, #publi), prompt de vídeo com bloco de expressões, geradores e custos, voz (ElevenLabs), roteiro e ganchos, pós-produção, checklist de QA, lições de um projeto real, ética |
 | `scripts/` | Transcrição local, sincronia de voz, suavização de pele, cards, card final, montagem, QA, diagnóstico |
 | `examples/` | Perfil e notas para preencher, plano de montagem, cenas de cards, cores da marca |
 

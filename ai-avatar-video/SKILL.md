@@ -1,6 +1,6 @@
 ---
 name: ai-avatar-video
-description: Produce vertical 9:16 talking-head reels of a REAL person's AI avatar ("yap content", AI influencer, mentor or founder videos) that speak with that person's own cloned voice (ElevenLabs), with a locked identity, one consistent scene, five camera angles, natural-paced voice synced to the lips, lower-third cards (chat print, steps, quote), an end card with the CTA and low background music. Use when someone sends their photos/video + voice files + scripts and asks for avatar/influencer videos, a batch of reels, a character sheet for a consistent AI face, or fixes to such videos: face not matching, eyebrows/glasses/earrings wrong, aged look or wrinkles, background swap, voice out of sync or speeding up/slowing down, mispronounced words, clicks, cut-off CTA.
+description: Produce vertical 9:16 talking-head and UGC product reels of a REAL person's AI avatar ("yap content", AI influencer, mentor or founder videos) that speak with that person's own cloned voice (ElevenLabs), with a locked identity, one consistent scene, five camera angles, natural-paced voice synced to the lips, lower-third cards (chat print, steps, quote), an end card with the CTA and low background music. Use when someone sends their photos/video + voice files + scripts and asks for avatar/influencer videos, UGC/product videos with a coupon, a batch of reels, a character sheet for a consistent AI face, or fixes to such videos: face not matching, eyebrows/glasses/earrings wrong, aged look or wrinkles, background swap, voice out of sync or speeding up/slowing down, mispronounced words, clicks, cut-off CTA.
 ---
 # AI Avatar Video
 
@@ -24,6 +24,7 @@ Siga as etapas na ordem. Leia o arquivo de `references/` indicado em cada etapa 
 | 2 | Identidade | Ficha de personagem + imagem-base 9:16 → `references/ficha-de-personagem.md` | **sim, item a item** |
 | 3 | Voz | Um `Rxx.mp3` por roteiro → `references/voz-elevenlabs.md`. Arquivo sem nome? transcreva o início e mapeie. | não |
 | 4 | Plano | `scripts/words.py --lang pt R01.mp3`; blocos ≤ limite do gerador cortados em pausas; 5 planos; cards → `references/geradores.md`, `roteiro-e-ganchos.md` | não |
+| 4b | Produto (UGC) | Vídeo divulga produto/cupom? Siga `references/ugc-produto.md`: foto real do produto, nome da marca certo na voz, cupom da própria pessoa, #publi + rótulo de IA | **sim: confirme cupom e relação com a marca** |
 | 5 | Geração | Prompt de `references/prompt-video.md` com as frases EXATAS da transcrição; custo; 1 teste | **sim: custo e teste** |
 | 6 | Pós | `voice_sync` → (`soften_wrinkles`) → `endcard` → `assemble` → `references/pos-producao.md` | não |
 | 7 | QA | `scripts/qa_check.py final/R01.mp4` + `references/checklist-qa.md` | entrega com prova |
