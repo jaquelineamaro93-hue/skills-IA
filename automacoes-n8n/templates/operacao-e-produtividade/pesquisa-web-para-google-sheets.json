@@ -1,0 +1,290 @@
+{
+  "name": "Pesquisa (Formulario Web) -> Google Sheets (Template)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "SEU_WEBHOOK_PATH",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "9de27351-1ed2-4a40-a2dd-4f281a0d7f2c",
+      "name": "Webhook",
+      "webhookId": "SEU_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA_GOOGLE/edit?gid=SEU_GID_DA_ABA#gid=SEU_GID_DA_ABA",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=SEU_GID_DA_ABA",
+          "mode": "list",
+          "cachedResultName": "Sua aba ou planilha",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA_GOOGLE/edit#gid=SEU_GID_DA_ABA"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        576,
+        0
+      ],
+      "id": "5b258919-879d-4f87-9594-106c2e361f58",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9fca0dbe-a1a8-4387-a286-4296a8bf0955",
+              "name": "data",
+              "value": "={{ $now.format('dd/MM/yyyy') }}",
+              "type": "string"
+            },
+            {
+              "id": "1ec15866-a402-4bb1-b8af-7631ff8bc900",
+              "name": "is_aluno",
+              "value": "={{ $json.body.is_aluno }}",
+              "type": "boolean"
+            },
+            {
+              "id": "bad1838c-18f4-48e6-8446-f2fbd57a04ba",
+              "name": "tipo",
+              "value": "={{ $json.body.tipo }}",
+              "type": "string"
+            },
+            {
+              "id": "cfeaaaba-c1fe-4261-99ca-6123aa2abc8a",
+              "name": "nome",
+              "value": "={{ $json.body.nome }}",
+              "type": "string"
+            },
+            {
+              "id": "031dcb33-2265-4dfb-b459-efff1b2d9147",
+              "name": "email",
+              "value": "={{ $json.body.email }}",
+              "type": "string"
+            },
+            {
+              "id": "e20e6e6b-6b4a-4884-831a-f38ce7b64753",
+              "name": "whatsapp",
+              "value": "={{ $json.body.whatsapp }}",
+              "type": "string"
+            },
+            {
+              "id": "65c53d5d-95f6-4f16-96c7-c6654d3376ec",
+              "name": "tempo",
+              "value": "={{ $json.body.tempo }}",
+              "type": "string"
+            },
+            {
+              "id": "601be606-3ce5-47c5-8bbd-aa443eb378bf",
+              "name": "atuacao",
+              "value": "={{ $json.body.atuacao }}",
+              "type": "string"
+            },
+            {
+              "id": "8ef99970-da79-48b1-9016-90c493f79001",
+              "name": "qtd_alunos",
+              "value": "={{ $json.body.qtd_alunos }}",
+              "type": "string"
+            },
+            {
+              "id": "7530dcd4-5f9c-44b7-a186-2bc018d564f1",
+              "name": "faixa",
+              "value": "={{ $json.body.faixa }}",
+              "type": "string"
+            },
+            {
+              "id": "91fd7fb4-7d19-4035-96b4-849494f975e1",
+              "name": "desafio",
+              "value": "={{ $json.body.desafio }}",
+              "type": "string"
+            },
+            {
+              "id": "dc1fc06a-73f1-4165-a021-ad3fa9d4f5ae",
+              "name": "confianca",
+              "value": "={{ $json.body.confianca }}",
+              "type": "string"
+            },
+            {
+              "id": "7876ff4a-44d8-4a83-abed-95b2314a6357",
+              "name": "valoriza",
+              "value": "={{ $json.body.valoriza }}",
+              "type": "string"
+            },
+            {
+              "id": "3af63e9b-ca59-42ef-9452-6f98c08611e6",
+              "name": "investir",
+              "value": "={{ $json.body.investir }}",
+              "type": "string"
+            },
+            {
+              "id": "436f4487-bde8-402b-9423-4f677d483466",
+              "name": "temas",
+              "value": "={{ $json.body.temas }}",
+              "type": "string"
+            },
+            {
+              "id": "56436c63-1fbe-49e6-a189-54bc8605382a",
+              "name": "sugestao",
+              "value": "={{ $json.body.sugestao }}",
+              "type": "string"
+            },
+            {
+              "id": "6a510ff4-505f-43a0-b22d-93a2cefc0b63",
+              "name": "objetivo",
+              "value": "={{ $json.body.objetivo }}",
+              "type": "string"
+            },
+            {
+              "id": "2ad70cc5-32c3-460d-8289-f09e7c5c2ae0",
+              "name": "contato",
+              "value": "={{ $json.body.contato }}",
+              "type": "string"
+            },
+            {
+              "id": "96342f47-f197-4da2-8211-2d258863af61",
+              "name": "indicacao",
+              "value": "={{ $json.body.indicacao }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": "",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        256,
+        0
+      ],
+      "id": "dfdc90dc-28dd-4cab-9caf-7f44e5be3df2",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "content": "## README_SETUP — Pesquisa (Formulario Web) -> Google Sheets\n\nRecebe as respostas de um formulario/pesquisa hospedado na web (ex.: app no Vercel)\npor webhook e grava cada resposta numa planilha do Google Sheets (append ou update).\n\n**1. Credencial**\n- Google Sheets: reconfigure a credencial `[Reconfigurar] Google Sheets` (OAuth2) com a sua conta.\n\n**2. Trocar placeholders**\n- `SEU_ID_DA_PLANILHA_GOOGLE` -> id/URL da sua planilha (no no 'Append or update row in sheet').\n- `SEU_WEBHOOK_PATH` / `SEU_WEBHOOK_ID` -> regerados ao salvar; use a URL gerada como\n  endpoint de POST do seu formulario (front-end).\n- No front-end (`SEU_APP.vercel.app`), aponte o envio do formulario para essa URL.\n\n**3. Campos**\n- O no 'Edit Fields' mapeia os campos do corpo do POST (is_aluno, tipo, nome, email,\n  whatsapp, tempo, atuacao, faixa, desafio, temas, etc.). Ajuste conforme as chaves\n  que o seu formulario envia.\n- O modo `appendOrUpdate` requer coluna de correspondencia se voce quiser atualizar\n  em vez de sempre inserir — configure `matchingColumns` se necessario.\n\n**4. Ativar**\n- Teste com um envio real e so entao mude `active` para true.\n\nIMPORTANTE: a credencial Google que ja circulou deve ser REVOGADA/REGERADA.\nTrocar por placeholder NAO invalida o acesso antigo.",
+        "height": 380,
+        "width": 560,
+        "color": 5
+      },
+      "name": "README_SETUP",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        -460
+      ],
+      "id": "readme_setup"
+    },
+    {
+      "parameters": {
+        "content": "### ENTRADA — Webhook do formulario web\nRecebe o POST (JSON) do formulario hospedado (ex.: app Vercel).\nAjuste `SEU_WEBHOOK_PATH` e configure o front-end para enviar aqui.",
+        "height": 200,
+        "width": 380,
+        "color": 4
+      },
+      "name": "Nota - Entrada",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        220
+      ],
+      "id": "nota_-_entrada"
+    },
+    {
+      "parameters": {
+        "content": "### NORMALIZA — Edit Fields\nMonta a linha com data + todos os campos da pesquisa.\nAjuste os nomes conforme as chaves enviadas pelo seu formulario.",
+        "height": 200,
+        "width": 380,
+        "color": 3
+      },
+      "name": "Nota - Normaliza",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        236,
+        220
+      ],
+      "id": "nota_-_normaliza"
+    },
+    {
+      "parameters": {
+        "content": "### DESTINO — Google Sheets (appendOrUpdate)\nGrava/atualiza a linha na planilha. Troque `SEU_ID_DA_PLANILHA_GOOGLE`\ne reconfigure a credencial OAuth2 com a sua conta.",
+        "height": 200,
+        "width": 400,
+        "color": 6
+      },
+      "name": "Nota - Sheets",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        556,
+        220
+      ],
+      "id": "nota_-_sheets"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [],
+  "pinData": {}
+}

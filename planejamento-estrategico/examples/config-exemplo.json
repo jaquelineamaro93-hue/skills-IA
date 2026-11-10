@@ -1,0 +1,89 @@
+{
+  "area": "CRM — Rede Exemplo (fictícia)",
+  "ano": 2027,
+  "casa": {
+    "missao": "Aumentar o LTV, maximizando o valor do cliente ao longo do tempo.",
+    "visao": "Ser referência em CRM e fidelização no varejo até 2028.",
+    "metas": ["Consolidar os canais como plataforma de marketing de relacionamento", "Garantir a régua de relacionamento em 100% das jornadas prioritárias", "Reduzir churn em 25% até o fim do ano", "Aumentar o LTV médio em 30% nas categorias estratégicas"],
+    "enablers": {
+      "Processo": ["Base de dados unificada", "Jornadas automatizadas", "Régua padronizada"],
+      "Experiência": ["Personalização omnichannel", "Reengajamento por canais", "Voz do cliente no roadmap"],
+      "Produto": ["Clusters de ofertas por perfil", "Ações exclusivas via CRM", "Vitrine personalizada"],
+      "Pessoas": ["Capacitação", "Gestão por KPIs e OKRs", "Squads para campanhas"]
+    },
+    "fundamento": "Cultura centrada no cliente e orientação a dados."
+  },
+  "contexto": {
+    "sobre": "Centralizar a jornada do cliente (venda, pós-venda e retenção) para reduzir o churn em 15%.",
+    "dados": ["Cadastro de clientes", "Histórico de compras", "Interações por canal"],
+    "ferramentas": ["ERP", "CRM", "Ferramenta de automação", "Data lake"],
+    "fora_escopo": ["Gestão de preços das lojas", "Premissa: conformidade total com a LGPD"],
+    "comportamento_cliente": "Usa vários canais e precisa repetir a história em cada um.",
+    "como_deveria_ser": "Jornada fluida: o atendente já sabe o histórico quando o cliente chega.",
+    "dores_area": "Informação dividida entre vendas e pós-venda.",
+    "stakeholders": ["Diretoria comercial", "TI", "Atendimento", "Marketing"],
+    "necessidades": ["Automação de campanhas", "Régua de recompra"],
+    "integracoes": ["CRM ↔ ERP em tempo real", "Ferramenta de automação ↔ app"],
+    "entregaveis": ["Dashboard de retenção", "Réguas ativas", "Funil integrado"]
+  },
+  "jornada": {
+    "etapas": ["Busca", "Primeira compra", "Entrega", "Uso", "Recompra", "Fidelidade"],
+    "campos": {
+      "Busca": {"Pontos de contato e canais": "Google, redes sociais, site, indicação", "Dores": "Não achar o produto", "Métrica": "Visitas, cadastros"},
+      "Primeira compra": {"Momento da verdade": "★ Momento da verdade", "Oportunidades (CRM / CX)": "Cupom de boas-vindas, carrinho abandonado", "Métrica": "Conversão do primeiro pedido"},
+      "Recompra": {"Momento da verdade": "★ Momento da verdade", "Oportunidades (CRM / CX)": "Régua no tempo médio de recompra", "Métrica": "Recompra em 30 dias"}
+    }
+  },
+  "fases": {
+    "objetivo_area": "Mensagem certa, no momento certo, no canal de maior adesão.",
+    "fases": [
+      {"nome": "Captação", "publico": "Novos clientes", "output": ["ROI das ações de CRM por canal", "CAC por canal"], "input": ["Taxa de conversão dos leads"], "secundarios": ["Quantidade de novos clientes"], "acoes": ["Benefício na primeira compra"]},
+      {"nome": "Maximização de valor", "publico": "Clientes ativos", "output": ["LTV", "Ticket médio por canal"], "input": ["WAU de CRM (clientes engajados por semana)", "Taxa de abertura e de clique"], "secundarios": ["Frequência", "Recência"], "saude": ["Score de reputação do e-mail"], "acoes": ["Reforçar o app", "Personalizar ofertas"]},
+      {"nome": "Retenção / recuperação", "publico": "Sem compra há 1 ano", "output": ["% de churn"], "input": ["Clientes impactados pela régua de reativação"], "secundarios": ["NPS"], "acoes": ["Pesquisa de motivo", "Jornada de reativação"]}
+    ]
+  },
+  "arvore": {
+    "objetivo_central": "Maximizar a receita de CRM",
+    "okrs_central": ["KPI de INPUT: WAU de CRM", "KPI de OUTPUT: LTV"],
+    "pilares": [
+      {"nome": "WAU de CRM", "tipo": "INPUT", "objetivo": "Aumentar o engajamento nos canais de CRM", "krs": ["Taxa de abertura", "Taxa de clique"],
+       "grupos": [{"nome": "E-mail", "objetivo": "Engajar a base ativa", "krs": ["Abertura acima de 25%"]}, {"nome": "WhatsApp", "objetivo": "Conversa útil", "krs": ["Clique acima de 8%"]}]},
+      {"nome": "LTV", "tipo": "OUTPUT", "objetivo": "Aumentar o valor de cada cliente", "krs": ["Receita gerada por clique ou abertura"],
+       "grupos": [{"nome": "Recompra", "objetivo": "Trazer de volta no tempo certo", "krs": ["Recompra em 30 dias de 65%"]}, {"nome": "Clube", "objetivo": "Crescer o clube", "krs": ["70% dos clientes ativos no clube"]}]}
+    ]
+  },
+  "okr": {
+    "estrategia": "Crescimento com inteligência relacional: personalização, fidelização, eficiência operacional e engajamento do time.",
+    "meses": ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"],
+    "objetivos": [
+      {"nome": "Fidelizar a base", "peso": 0.45, "krs": [
+        {"nome": "% de clientes ativos no clube de fidelidade", "peso": 0.20, "alvo": 0.70, "formato": "0%", "realizado": {"Jan": 0.52, "Fev": 0.58, "Mar": 0.66}},
+        {"nome": "Recompra em até 30 dias", "peso": 0.15, "alvo": 0.65, "formato": "0%", "realizado": {"Jan": 0.40, "Fev": 0.44}},
+        {"nome": "NPS por canal de relacionamento", "peso": 0.10, "alvo": 75, "realizado": {"Jan": 71, "Fev": 78}}]},
+      {"nome": "Personalizar e crescer o valor", "peso": 0.35, "krs": [
+        {"nome": "% de ofertas personalizadas com conversão acima de 5%", "peso": 0.15, "alvo": 0.80, "formato": "0%", "realizado": {"Jan": 0.60}},
+        {"nome": "Churn de 60 dias", "peso": 0.20, "alvo": 0.12, "direcao": "Menor é melhor", "formato": "0%", "realizado": {"Jan": 0.18, "Fev": 0.15}}]},
+      {"nome": "Time preparado", "peso": 0.20, "krs": [
+        {"nome": "% do time treinado em CRM, dados e régua", "peso": 0.10, "alvo": 1, "formato": "0%", "realizado": {"Jan": 0.5}},
+        {"nome": "Clima do time (favorabilidade)", "peso": 0.10, "alvo": 0.85, "formato": "0%", "realizado": {"Jan": 0.88}}]}
+    ]
+  },
+  "pessoas": {
+    "funcoes": ["Coordenação CRM", "Analista de dados", "Analista de performance", "Especialista em automação", "Atendimento"],
+    "peso_esperado": {"Coordenação CRM": 1, "Analista de dados": 1, "Analista de performance": 0.7, "Especialista em automação": 1, "Atendimento": 0.7},
+    "pesos": {
+      "Coordenação CRM": {"KR 1.1": 0.15, "KR 1.2": 0.15, "KR 1.3": 0.15, "KR 2.1": 0.10, "KR 2.2": 0.20, "KR 3.1": 0.10, "KR 3.2": 0.15},
+      "Analista de dados": {"KR 1.1": 0.10, "KR 1.2": 0.15, "KR 1.3": 0.10, "KR 2.1": 0.20, "KR 2.2": 0.40},
+      "Analista de performance": {"KR 1.1": 0.05, "KR 1.2": 0.10, "KR 2.1": 0.30, "KR 2.2": 0.15, "KR 3.1": 0.10},
+      "Especialista em automação": {"KR 1.1": 0.25, "KR 1.2": 0.20, "KR 2.1": 0.15, "KR 2.2": 0.15, "KR 3.1": 0.20, "KR 3.2": 0.05},
+      "Atendimento": {"KR 1.1": 0.10, "KR 1.2": 0.10, "KR 1.3": 0.25, "KR 3.1": 0.20}
+    }
+  },
+  "perguntas": {
+    "hipoteses": [{"item": "Quem entra no clube no primeiro mês recompra mais.", "validar": "Comparar recompra de quem entrou no clube no mês 1 x depois (cohort)."}],
+    "perguntas": [{"item": "Qual canal o cliente realmente prefere para receber ofertas?", "validar": "Pesquisa + taxa de clique por canal."}],
+    "objecoes": [{"item": "'Personalizar dá trabalho demais para a operação.'", "validar": "Começar com 3 clusters e medir ganho antes de escalar."}],
+    "cenarios": [{"item": "E se o e-mail cair para a caixa de spam?", "validar": "Monitorar o score de reputação toda semana."}],
+    "riscos": [{"item": "Base com dados duplicados.", "validar": "Deduplicar antes de ativar as réguas."}]
+  }
+}

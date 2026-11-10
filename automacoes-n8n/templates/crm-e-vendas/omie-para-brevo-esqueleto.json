@@ -1,0 +1,196 @@
+{
+  "name": "[Template] Omie → Brevo — Sincronização de Contatos via Webhook",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "SEU_WEBHOOK_OMIE_AQUI",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1136,
+        -32
+      ],
+      "id": "e5624891-ecb3-4305-9b29-8dcc2c9e48b3",
+      "name": "Webhook",
+      "webhookId": "SEU_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -784,
+        -16
+      ],
+      "id": "25a859c1-f451-4637-80bb-b2116fa5ebe6",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -416,
+        -32
+      ],
+      "id": "19724ee3-d500-4494-9009-6c0ac8c45562",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "resource": "contact",
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.sendInBlue",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        -32
+      ],
+      "id": "b91f0203-2766-46e0-9957-4210aa2053bd",
+      "name": "Create a contact",
+      "credentials": {
+        "sendInBlueApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Brevo (SendinBlue)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## 📘 README_SETUP — Omie → Brevo (ESQUELETO / PONTO DE PARTIDA)\n\n### 🚧 ATENÇÃO, ALUNO: este template é um ESQUELETO, não um fluxo pronto.\nA estrutura de nós está montada e conectada, mas **a lógica ainda não foi construída**. Use-o como andaime para montar sua própria integração — não espere que funcione ao importar.\n\n**O que já está pronto:** o encadeamento Webhook → Set → Code → Brevo.\n**O que falta:** mapear os campos do Omie, escrever a transformação e configurar a operação do nó Brevo.\n\n---\n### ✅ Passo a passo\n\n**1. Credencial do Brevo**\nBrevo → SMTP & API → API Keys → gere uma chave v3.\nNo n8n: Credenciais → New → *SendinBlue API* → cole a chave.\nDepois abra o nó `Create a contact` e selecione a credencial nova (ela está marcada como `[Reconfigurar]`).\n\n**2. Webhook do Omie**\nCopie a URL de produção do nó `Webhook`.\nNo Omie: Configurações → Integrações → Webhooks → cadastre a URL e escolha o evento\n(ex.: cliente incluído / cliente alterado).\n\n**3. Mapeie os campos** — veja a nota no nó `Edit Fields`.\n\n**4. Configure o nó Brevo** — veja a nota no nó `Create a contact`.\n\n**5. Teste com dados reais** antes de ativar. O workflow vem com `active: false`.\n\n---\n### ⚠️ AVISO DE SEGURANÇA\nTemplate sanitizado: webhook, ID de credencial e nomes de cliente foram substituídos por placeholders.\n**Se você é o dono do arquivo original: revogue e gere novamente a API Key do Brevo** — trocar o rótulo aqui NÃO invalida a chave que já circulou.",
+        "height": 900,
+        "width": 620,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1800,
+        -460
+      ],
+      "id": "604df860-ed57-40fe-a0fc-296db3aa925f",
+      "name": "README_SETUP"
+    },
+    {
+      "parameters": {
+        "content": "### 1️⃣ Gatilho — Webhook do Omie\n\nPonto de entrada: o Omie faz um POST aqui a cada evento de cliente.\n\n**Ajuste:** copie a URL de produção deste nó e cadastre em\nOmie → Configurações → Integrações → Webhooks.\n\n💡 Antes de programar o resto, dispare um evento real e use\n*Listen for test event* para ver o payload que o Omie manda.\nÉ a partir dele que você monta o mapeamento do próximo nó.",
+        "height": 260,
+        "width": 400,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1180,
+        -320
+      ],
+      "id": "f88ee22d-e0c4-41ae-91b2-537ce84f4957",
+      "name": "Nota - Gatilho"
+    },
+    {
+      "parameters": {
+        "content": "### 2️⃣ ⚠️ VAZIO — mapeie os campos do Omie aqui\n\nEste nó Set está **sem nenhum campo configurado**. É aqui que você\ntraduz o payload do Omie para os campos que o Brevo espera.\n\n**Sugestão de mapeamento (confira os nomes reais no seu payload):**\n• `email` ← `{{ $json.body.email }}`\n• `nome` ← `{{ $json.body.nome_fantasia }}`\n• `telefone` ← `{{ $json.body.telefone1_ddd }}{{ $json.body.telefone1_numero }}`\n• `cnpj_cpf` ← `{{ $json.body.cnpj_cpf }}`\n• `cidade` / `estado` ← campos de endereço\n\n💡 O Brevo exige **e-mail válido** para criar contato. Vale colocar\num nó IF depois daqui para descartar registros sem e-mail.",
+        "height": 330,
+        "width": 440,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -880,
+        -380
+      ],
+      "id": "b6439468-d3c2-40cd-8033-6dd6f10a694c",
+      "name": "Nota - Mapeamento"
+    },
+    {
+      "parameters": {
+        "content": "### 3️⃣ ⚠️ CÓDIGO PADRÃO — substitua\n\nO nó `Code in JavaScript` ainda está com o exemplo automático\ndo n8n (`myNewField = 1`) — ele não faz nada útil.\n\n**Use este nó para o que o Set não dá conta:**\n• normalizar telefone (só dígitos, DDI 55)\n• validar/limpar e-mail\n• separar nome e sobrenome\n• montar os atributos do Brevo\n\nSe o mapeamento simples do `Edit Fields` já resolver,\nvocê pode simplesmente **deletar este nó** e ligar Set → Brevo direto.",
+        "height": 330,
+        "width": 400,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        -380
+      ],
+      "id": "19b89d50-804a-44ad-ba24-a223a1ac2d5e",
+      "name": "Nota - Code"
+    },
+    {
+      "parameters": {
+        "content": "### 4️⃣ Brevo (SendinBlue) — criar/atualizar contato\n\nO nó está com `resource: contact`, mas **sem operação nem campos definidos**.\n\n**Ajuste:**\n1. Selecione a credencial nova (a atual está como `[Reconfigurar]`)\n2. Escolha a operação — *Create* ou *Create/Update*\n3. Preencha `email` e os *Additional Fields* / atributos\n   (NOME, SOBRENOME, SMS…) com os valores vindos do mapeamento\n4. Informe o ID da lista de destino, se quiser segmentar\n\n💡 Prefira *Create/Update*: evita erro de contato duplicado\nquando o Omie reenvia o mesmo cliente.",
+        "height": 330,
+        "width": 420,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -120,
+        -380
+      ],
+      "id": "5a14d2d9-2704-40ba-b217-af69b70a60b5",
+      "name": "Nota - Brevo"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Create a contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a contact": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [],
+  "pinData": {}
+}

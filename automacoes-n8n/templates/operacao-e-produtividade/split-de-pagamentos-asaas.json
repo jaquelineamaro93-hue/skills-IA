@@ -1,0 +1,1020 @@
+{
+  "name": "Split de Pagamentos (Asaas) (Template)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "SEU_WEBHOOK_PATH",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1328,
+        -304
+      ],
+      "id": "0bccb101-250e-438f-982f-bd6d9a16bcbc",
+      "name": "Webhook",
+      "webhookId": "SEU_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        912,
+        -224
+      ],
+      "id": "ef2602d6-2dce-43f0-aabe-54944261626f",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "310f2044-e52c-4a2f-8716-1a9b976e1e22",
+              "name": "Chave API Asaas - Conta A",
+              "value": "$SUA_API_KEY_ASAAS_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "2e341dea-1455-4c53-a9b8-3aaa51cf4093",
+              "name": "Chave API Asaas - Conta B",
+              "value": "$SUA_API_KEY_ASAAS_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "eeb09784-c0f0-4eb4-a57c-960ec2a87322",
+              "name": "Wallet Conta A",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "4b05c0ba-b6d2-4551-855f-657d15a4a6c1",
+              "name": "customer_id",
+              "value": "={{ $json.id || $('Webhook').first().json.body.customer }}",
+              "type": "string"
+            },
+            {
+              "id": "c52712ba-4338-4a71-9b3d-68d18e35561d",
+              "name": "billingType",
+              "value": "={{ $json.body.billingType }}",
+              "type": "string"
+            },
+            {
+              "id": "59af85d8-a829-4c4d-9866-6cc59149a0d1",
+              "name": "value",
+              "value": "={{ \n  Number(\n    ($('Webhook').first().json.body.value || '0')\n      .toString()\n      .replace(',', '.')\n  ).toFixed(2)\n}}",
+              "type": "string"
+            },
+            {
+              "id": "cc4e4b14-9f88-4fcd-b7b5-381329fa6f6e",
+              "name": "dueDate",
+              "value": "={{ $('Webhook').first().json.body.dueDate || $('Webhook').first().json.body.nextDueDate }}",
+              "type": "string"
+            },
+            {
+              "id": "30dc3c42-610a-4003-8bd3-20a330e70d99",
+              "name": "description",
+              "value": "={{ $('Webhook').first().json.body.description }}",
+              "type": "string"
+            },
+            {
+              "id": "f3fe6165-2df1-4dc7-8ce9-4eb8fb5c16b2",
+              "name": "percentual",
+              "value": "={{ $('Webhook').first().json.body.splits[0].percentualValue }}",
+              "type": "string"
+            },
+            {
+              "id": "43a7623b-a13c-4683-bac8-e4e4ad82bf43",
+              "name": "installmentCount",
+              "value": "={{ $('Webhook').first().json.body.installmentCount || $('Webhook').first().json.body.cycle }}",
+              "type": "string"
+            },
+            {
+              "id": "4c199882-84cc-481a-b4d6-f95f7ec31617",
+              "name": "splits",
+              "value": "={{ $json.splits }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -432,
+        -336
+      ],
+      "id": "fd1ec824-98d2-4717-94ba-56a0ba3df42b",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.asaas.com/v3/payments",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"customer\": \"{{ $json.customer_id }}\",\n    \"billingType\": \"{{ $json.billingType }}\",\n    \"value\": {{ $json.value }},\n    \"dueDate\": \"{{ $json.dueDate }}\",\n    \"description\": \"{{ $json.description }}\",\n    \"splits\": {{ $json.splits }}\n  } ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        464,
+        -592
+      ],
+      "id": "1eb4d14c-b5c9-4834-a15b-b7961c6880df",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Asaas (Header Auth)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3be09c66-2f77-4494-a47f-464f68c96cae",
+              "leftValue": "={{ $json.billingType }}",
+              "rightValue": "PIX",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        16,
+        -432
+      ],
+      "id": "f035318a-3b7d-4a39-b808-3f22540354c5",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.asaas.com/v3/payments",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"customer\": \"{{ $json.customer_id }}\",\n  \"billingType\": \"{{ $json.billingType }}\",\n  \"totalValue\": {{ $json.value }},\n  \"dueDate\": \"{{ $json.dueDate }}\",\n  \"description\": \"{{ $json.description }}\",\n  \"installmentCount\": {{ $json.installmentCount }},\n  \"splits\": {{ $json.splits }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        464,
+        -400
+      ],
+      "id": "199b1ae9-3a65-4d86-aa1e-ca5c2fb5821b",
+      "name": "HTTP Request3",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Asaas (Header Auth)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cd8b26f6-9d01-4a8e-8f06-899414656048",
+              "leftValue": "={{ $('Edit Fields').first().json.installmentCount }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        240,
+        -336
+      ],
+      "id": "d461f592-cc02-4fdd-9460-78fc839c404b",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.asaas.com/v3/payments",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"customer\": \"{{ $json.customer_id }}\",\n    \"billingType\": \"{{ $json.billingType }}\",\n    \"value\": {{ $json.value }},\n    \"dueDate\": \"{{ $json.dueDate }}\",\n    \"description\": \"{{ $json.description }}\",\n    \"splits\": {{ $json.splits }}\n  } ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        464,
+        -208
+      ],
+      "id": "4ce1c60a-f95a-4db6-9c7e-4752cdc849cb",
+      "name": "HTTP Request4",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Asaas (Header Auth)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA_GOOGLE/edit?gid=SEU_GID_DA_ABA#gid=SEU_GID_DA_ABA",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=SEU_GID_DA_ABA",
+          "mode": "list",
+          "cachedResultName": "Sua aba ou planilha",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA_GOOGLE/edit#gid=SEU_GID_DA_ABA"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "name",
+              "lookupValue": "={{ $json.body.customer }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -944,
+        -304
+      ],
+      "id": "cab17577-ce02-4827-805f-fdf7adde45ce",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -656,
+        -336
+      ],
+      "id": "397139eb-c339-46aa-886c-344f00ef69fb",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ef1846c3-975d-4a92-ac78-b6ab53cf2a6e",
+              "leftValue": "={{ $('Webhook').item.json.body.type }}",
+              "rightValue": "payment",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -208,
+        -336
+      ],
+      "id": "0f7c619e-76af-441d-9520-989cbe92542b",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const splits = $input.first().json.body.splits;\n\nif (!Array.isArray(splits)) {\n  throw new Error('splits não encontrado ou não é um array');\n}\n\nreturn [\n  {\n    json: {\n      splits: JSON.stringify(\n        splits.map(split => ({\n          walletId: split.walletId,\n          percentualValue: split.percentualValue\n        }))\n      )\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1040,
+        -128
+      ],
+      "id": "936966d0-c277-48f7-9fb0-02b9864cf638",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3a39c891-af69-4712-82cf-0c47ae8df841",
+              "name": "link_pagamento",
+              "value": "={{ $json.invoiceUrl }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        688,
+        -432
+      ],
+      "id": "71b9cf3a-11fb-4505-ad12-4846e32f05c9",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.asaas.com/v3/subscriptions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"customer\": \"{{ $json.customer_id }}\",\n    \"billingType\": \"{{ $json.billingType }}\",\n    \"value\": {{ $json.value }},\n    \"nextDueDate\": \"{{ $json.dueDate }}\",\n    \"description\": \"{{ $json.description }}\",\n    \"cycle\": \"{{ $json.installmentCount }}\",\n    \"splits\": {{ $json.splits }}\n  } ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        240,
+        -16
+      ],
+      "id": "0c736551-b437-44e3-872f-c7f9ef2587dd",
+      "name": "HTTP Request1",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Asaas (Header Auth)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1328,
+        288
+      ],
+      "id": "723a16f2-39b4-4f8e-8337-3834432a5b9e",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -656,
+        288
+      ],
+      "id": "bf14528b-d1f6-49a5-9f73-1e53045a3e1e",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.asaas.com/v3/customers?limit=100&offset={{ $json.off }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -432,
+        208
+      ],
+      "id": "3593e13c-9645-4fda-860f-f5cf4e5cf215",
+      "name": "HTTP Request2",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Asaas (Header Auth)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        208
+      ],
+      "id": "8681bb41-92a9-486f-96e1-55cd066dd1d1",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA_GOOGLE/edit?gid=SEU_GID_DA_ABA#gid=SEU_GID_DA_ABA",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=SEU_GID_DA_ABA",
+          "mode": "list",
+          "cachedResultName": "Sua aba ou planilha",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA_GOOGLE/edit#gid=SEU_GID_DA_ABA"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        16,
+        288
+      ],
+      "id": "5a33eae3-0833-4377-a87d-11639e8155d0",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.asaas.com/v3/customers?limit=100&offset=0",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -1104,
+        288
+      ],
+      "id": "c01b0088-8553-4ecc-8373-693ed12b2b88",
+      "name": "HTTP Request5",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Asaas (Header Auth)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const totalCount = $input.first().json.totalCount;\nconst limit = 100;\n\nconst items = Array.from(\n  { length: Math.ceil(totalCount / limit) },\n  (_, i) => ({\n    json: {\n      off: i * limit\n    }\n  })\n);\n\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -880,
+        288
+      ],
+      "id": "f452ae60-3d77-44ee-907a-a814cc5eb1ad",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cee8169a-c92b-4361-b2db-54f9aafd9a4d",
+              "leftValue": "={{ $json.body.customer }}",
+              "rightValue": "cus_",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1136,
+        -448
+      ],
+      "id": "e6604b04-ebda-49f6-ba15-ed1652a2eeb9",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.asaas.com/v3/payments?subscription={{ $json.id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        464,
+        -16
+      ],
+      "id": "0443aec5-94b1-4073-8d31-f8ae27cdc0aa",
+      "name": "HTTP Request6",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Asaas (Header Auth)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3a39c891-af69-4712-82cf-0c47ae8df841",
+              "name": "link_pagamento",
+              "value": "={{ $json.data[0].invoiceUrl }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        688,
+        -16
+      ],
+      "id": "5db28365-51e5-42ce-9e1f-9343ace3aaef",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.asaas.com/v3/installments/SEU_INSTALLMENT_ID/payments",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -704,
+        688
+      ],
+      "id": "23908031-320d-427a-8cc2-de182ad58af8",
+      "name": "HTTP Request7",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Asaas (Header Auth)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## README_SETUP — Split de Pagamentos (Asaas)\n\nGerencia cobrancas/assinaturas na Asaas com split de pagamento (repasse para uma\ncarteira). Recebe o gatilho (webhook/agenda), cria/consulta pagamentos, assinaturas e\nclientes na API da Asaas e registra o resultado no Google Sheets.\n\n**1. Credenciais**\n- Asaas: reconfigure `[Reconfigurar] Asaas (Header Auth)` (havia 2 credenciais no original)\n  com a SUA API key no header `access_token`.\n- Google Sheets: reconfigure `[Reconfigurar] Google Sheets` (havia 2, uma de outro cliente).\n\n**2. Trocar placeholders**\n- `SUA_API_KEY_ASAAS_AQUI` -> sua API key da Asaas (estava HARDCODED no no 'Edit Fields';\n  o correto e usar a credencial Header Auth, nao deixar a chave no Set).\n- `SEU_WALLET_ID_ASAAS` -> id da carteira que recebe o split.\n- `SEU_INSTALLMENT_ID` -> so se usar o endpoint de parcelamento especifico.\n- `SEU_ID_DA_PLANILHA_GOOGLE` -> planilha de registro.\n- `SEU_APP.vercel.app` -> aponte o front-end de pagamento para o webhook.\n- `SEU_WEBHOOK_PATH` / `SEU_WEBHOOK_ID`, `SEU_ERROR_WORKFLOW_ID`.\n\n**3. Producao x Sandbox**\n- As URLs usam api.asaas.com (PRODUCAO). Para testar, troque por sandbox.asaas.com\n  e use uma chave de sandbox.\n\n**4. Ativar**\n- Teste com valores baixos em sandbox e so entao mude `active` para true.\n\nIMPORTANTE (URGENTE): as chaves de PRODUCAO da Asaas estavam expostas neste arquivo.\nDevem ser REVOGADAS/REGERADAS imediatamente no painel da Asaas. Uma API key de producao\npermite movimentar dinheiro — placeholder NAO invalida a chave antiga.",
+        "height": 500,
+        "width": 640,
+        "color": 5
+      },
+      "name": "README_SETUP",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1368,
+        -1192
+      ],
+      "id": "readme_setup"
+    },
+    {
+      "parameters": {
+        "content": "### ATENCAO — Chaves de PRODUCAO expostas\nHavia 2 API keys `aact_prod_...` da Asaas HARDCODED no no 'Edit Fields' e credenciais\nHeader Auth de contas diferentes (Conta A e Conta A), alem de uma credencial Google de\noutro cliente (Outro Cliente) no no de leitura da planilha.\nREVOGUE as chaves de producao da Asaas AGORA e confira o acesso cruzado entre projetos.",
+        "height": 230,
+        "width": 470,
+        "color": 1
+      },
+      "name": "Nota - ATENCAO Chaves",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1368,
+        -662
+      ],
+      "id": "nota_-_atencao_chaves"
+    },
+    {
+      "parameters": {
+        "content": "### ASAAS — Pagamentos / Assinaturas / Clientes\nOs HTTP Request chamam api.asaas.com/v3 (payments, subscriptions, customers, installments).\nAutenticam pelo header access_token (credencial). O split usa `SEU_WALLET_ID_ASAAS`.\nNunca coloque a API key no no Set — use a credencial.",
+        "height": 220,
+        "width": 460,
+        "color": 6
+      },
+      "name": "Nota - Asaas",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -708,
+        -662
+      ],
+      "id": "nota_-_asaas"
+    },
+    {
+      "parameters": {
+        "content": "### REGISTRO — Google Sheets\n'Get row(s)' e 'Append or update row' consultam/gravam o controle na planilha.\nTroque `SEU_ID_DA_PLANILHA_GOOGLE` e use UMA credencial sua em ambos os nos.",
+        "height": 200,
+        "width": 440,
+        "color": 3
+      },
+      "name": "Nota - Registro Sheets",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -228,
+        -662
+      ],
+      "id": "nota_-_registro_sheets"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request4": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request5": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request6": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "SEU_ERROR_WORKFLOW_ID"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [],
+  "pinData": {}
+}

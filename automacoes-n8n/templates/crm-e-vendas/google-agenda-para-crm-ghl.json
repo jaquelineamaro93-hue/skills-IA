@@ -1,0 +1,227 @@
+{
+  "name": "Google Calendar → CRM (Enviar Participantes de Eventos via Webhook)",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            },
+            {}
+          ]
+        },
+        "calendarId": {
+          "__rl": true,
+          "value": "SEU_EMAIL_DO_CALENDARIO_AQUI",
+          "mode": "list",
+          "cachedResultName": "Sua aba ou planilha"
+        },
+        "triggerOn": "eventCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "6f86aacc-ffbd-4c33-8258-db3a753f2848",
+      "name": "Google Calendar Trigger",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Google Calendar"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const EXCLUIR_DOMINIOS = ['SEU_DOMINIO_INTERNO'];\nconst EXCLUIR_EMAILS = ['email_a_excluir@exemplo.com'];\nconst LIMITE = 10;\n\nfunction excluir(email) {\n  const dominio = email.split('@')[1] || '';\n  return EXCLUIR_EMAILS.includes(email) || EXCLUIR_DOMINIOS.some(d => dominio.includes(d));\n}\n\nreturn $input.all().flatMap(item => {\n  const ev = item.json;\n  const emails = [...new Set(\n    (ev.attendees || [])\n      .filter(p => !p.resource && p.responseStatus !== 'declined')\n      .map(p => (p.email || '').trim().toLowerCase())\n      .filter(email => email && !excluir(email))\n  )];\n\n  if (emails.length >= LIMITE) return [];\n\n  return emails.map(email => ({\n    json: { id: ev.id, summary: ev.summary, email }\n  }));\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "9bec6545-0651-4e66-acbb-1e74c46ba5d7",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/hooks/SEU_LOCATION_ID/webhook-trigger/SEU_WEBHOOK_TRIGGER_ID",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $json.email }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        672,
+        16
+      ],
+      "id": "d0b46f71-1ed0-4675-8c55-2410c6dfa048",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "e9ee0c4e-ad74-4b98-a051-108d5177046f",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "content": "## 📘 README_SETUP — Google Calendar → CRM (LeadConnector/GoHighLevel)\n\n**O que este fluxo faz:** monitora um Google Calendar e, sempre que um evento novo é criado, extrai os e-mails dos participantes externos (filtrando equipe interna e e-mails específicos) e envia cada um, individualmente, para um webhook de entrada do CRM (LeadConnector/GoHighLevel) — útil para cadastrar/ativar automações de quem foi convidado para reuniões, mentorias ou calls.\n\n### Passo a passo para usar\n1. **Importe** este JSON no seu n8n.\n2. **Credencial Google Calendar:** religue o nó de trigger com sua conta Google (OAuth2). O nó aponta para `[Reconfigurar] Google Calendar`.\n3. **Calendário monitorado:** no trigger, troque `SEU_EMAIL_DO_CALENDARIO_AQUI` pelo e-mail/ID do calendário que deseja monitorar.\n4. **Filtros no nó de Código:**\n   - `EXCLUIR_DOMINIOS`: troque `SEU_DOMINIO_INTERNO` pelo domínio da sua empresa (ex.: `'minhaempresa'`) para não enviar sua própria equipe ao CRM.\n   - `EXCLUIR_EMAILS`: liste e-mails avulsos a ignorar.\n   - `LIMITE`: eventos com esse nº de participantes ou mais são ignorados por completo (proteção contra eventos em massa/webinars). Ajuste se quiser.\n5. **Webhook do CRM:** no nó HTTP Request, troque `SEU_LOCATION_ID` e `SEU_WEBHOOK_TRIGGER_ID` pela URL do seu Inbound Webhook no LeadConnector/GoHighLevel (Automations → Workflow → Trigger \"Inbound Webhook\").\n6. **Teste** criando um evento com 1 convidado externo e confira se o e-mail chegou no CRM.\n7. **Ative** o workflow (importado desativado).",
+        "width": 520,
+        "height": 760,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        -420
+      ],
+      "id": "sticky-README_SETUP",
+      "name": "README_SETUP"
+    },
+    {
+      "parameters": {
+        "content": "### 📅 Gatilho (Google Calendar)\nVerifica a cada minuto se um evento novo foi criado no calendário configurado.\n**Ajustar:** credencial Google + e-mail do calendário.",
+        "width": 260,
+        "height": 170,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -64,
+        -200
+      ],
+      "id": "sticky-Nota_Trigger",
+      "name": "Nota_Trigger"
+    },
+    {
+      "parameters": {
+        "content": "### 🧮 Filtro de participantes (Code)\nPega os convidados do evento, remove: recursos (salas), quem recusou, duplicados, e-mails da lista de exclusão e do domínio interno.\nSe o evento tiver participantes ≥ LIMITE (10), **nada é enviado** — evita disparar CRM em eventos grandes.\n**Ajustar:** EXCLUIR_DOMINIOS, EXCLUIR_EMAILS e LIMITE.",
+        "width": 280,
+        "height": 230,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        144,
+        -260
+      ],
+      "id": "sticky-Nota_Code",
+      "name": "Nota_Code"
+    },
+    {
+      "parameters": {
+        "content": "### 🔁 Loop (Split in Batches)\nProcessa um e-mail por vez e volta ao loop após cada envio — garante 1 requisição por participante.",
+        "width": 240,
+        "height": 140,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        384,
+        -180
+      ],
+      "id": "sticky-Nota_Loop",
+      "name": "Nota_Loop"
+    },
+    {
+      "parameters": {
+        "content": "### 📤 Envio ao CRM (HTTP Request)\nPOST com o campo `email` para o Inbound Webhook do LeadConnector/GoHighLevel, que dispara a automação configurada lá dentro.\n**Ajustar:** URL do webhook (Location ID + Trigger ID).",
+        "width": 270,
+        "height": 180,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        -180
+      ],
+      "id": "sticky-Nota_HTTP",
+      "name": "Nota_HTTP"
+    }
+  ],
+  "connections": {
+    "Google Calendar Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [],
+  "pinData": {}
+}

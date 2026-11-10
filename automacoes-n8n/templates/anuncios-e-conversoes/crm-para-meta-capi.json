@@ -1,0 +1,904 @@
+{
+  "name": "Integração CRM → Meta Conversions API (CAPI) (TEMPLATE - Sanitizado)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "SEU_PATH_DO_WEBHOOK",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -160,
+        352
+      ],
+      "id": "052c98b5-09e7-40c2-9de5-f2d5319837f3",
+      "name": "Webhook2",
+      "webhookId": "SEU_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "77775875-fff9-4792-9778-a8f2d4deb7d4",
+              "name": "user_data.first_name",
+              "value": "={{ /* Get only the first name, make lowercase, remove spaces and special characters and convert to UTF-8 */\n\nencodeURIComponent(\n   $('Definir Campos2').first().json.name.trim().split(\" \").first()\n        .toLowerCase()\n        .replace(/\\s+/g, '')\n        .replace(/[^\\p{L}\\p{N}]/gu, '')\n)\n\n}}",
+              "type": "string"
+            },
+            {
+              "id": "aca1383e-3d9f-4d1b-b4d5-f8754d409298",
+              "name": "user_data.last_name",
+              "value": "={{ /* Get only the last name, make lowercase, remove spaces and special characters and convert to UTF-8 */\n\nencodeURIComponent(\n   $('Definir Campos2').first().json.name.split(\" \").last()\n        .toLowerCase()\n        .replace(/\\s+/g, '')\n        .replace(/[^\\p{L}\\p{N}]/gu, '')\n)\n\n}}",
+              "type": "string"
+            },
+            {
+              "id": "6a315617-d1c9-4320-b851-e3dcc5207b4b",
+              "name": "user_data.email",
+              "value": "={{ /* Remove spaces and make lowercase */\n\n$('Definir Campos2').first().json.email.trim().toLowerCase()\n\n}}",
+              "type": "string"
+            },
+            {
+              "id": "65d1994d-f4b8-478a-8cf1-490990e6639d",
+              "name": "user_data.phone",
+              "value": "={{ \n  (\n     $('Definir Campos2').first().json.phone\n      ? $('Definir Campos2').first().json.phone.replace(/\\D/g, '').replace(/^0+/, '') \n      : ''\n  ) || '' \n}}\n\n\n}}",
+              "type": "string"
+            },
+            {
+              "id": "5650546d-f0ad-4c69-829c-3e4283e16ac7",
+              "name": "event_time",
+              "value": "={{ /* Convert to Unix timestamp integer */\n\nMath.floor(new Date($('Code8').first().json.event_time).getTime() / 1000)\n\n}}",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "include": "except",
+        "excludeFields": "user_data.name",
+        "options": {}
+      },
+      "id": "2e72def9-cd8d-43a6-a5a7-e53ff0ab76a2",
+      "name": "Normalize data4",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        800,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "097ed7ff-c076-454e-930c-1f4820ac6e2e",
+              "name": "user_data.first_name",
+              "value": "={{ $json.user_data.first_name.hash(\"sha256\") }}",
+              "type": "string"
+            },
+            {
+              "id": "e285fa12-d272-48a0-a583-5e90b394fd74",
+              "name": "user_data.last_name",
+              "value": "={{ $json.user_data.last_name.hash(\"sha256\") }}",
+              "type": "string"
+            },
+            {
+              "id": "e0e524cf-62cc-4ca3-a469-4caa2ffcab62",
+              "name": "user_data.email",
+              "value": "={{ $json.user_data.email.hash(\"sha256\") }}",
+              "type": "string"
+            },
+            {
+              "id": "1e87a997-5b78-48d8-9616-edfb1b910743",
+              "name": "user_data.phone",
+              "value": "={{ $json.user_data.phone.hash(\"sha256\") }}",
+              "type": "string"
+            },
+            {
+              "id": "9915acbf-1f58-4dea-86ae-cd2dc15eaef3",
+              "name": "user_data.facebook_click_id",
+              "value": "={{ \"fb.1.\" + $('Code8').first().json.event_time + \".\" + $('Definir Campos2').first().json.fbclid }}",
+              "type": "string"
+            },
+            {
+              "id": "ad1e345d-be56-441c-872c-d1fbd9ab3c29",
+              "name": "user_data.facebook_browser_id",
+              "value": "={{ \"fb.1.\" + $('Code8').first().json.event_time + \".\" + $('Code9').first().json.randomnumber }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "30df9814-76bf-447a-940c-c0f96e571030",
+      "name": "Encrypt data4",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1024,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "=v20.0",
+        "node": "={{ $('Definir Campos2').first().json.pixel }}",
+        "edge": "events",
+        "options": {
+          "queryParametersJson": "={\n  \"data\": [\n    {\n      \"event_name\": \"{{ $('Definir Campos2').first().json.event_name }}\",\n      \"event_time\": {{ $json.event_time }},\n      \"action_source\": \"{{ $('Definir Campos2').first().json.action_source }}\",\n      \"user_data\": {\n        \"em\": \"{{ $json.user_data.email }}\",\n        \"ph\": \"{{ $json.user_data.phone }}\",\n        \"fn\": \"{{ $json.user_data.first_name }}\",\n        \"ln\": \"{{ $json.user_data.last_name }}\",\n        \"fbc\": \"{{ $json.user_data.facebook_click_id }}\",\n        \"fbp\": \"{{ $json.user_data.facebook_browser_id }}\",\n        \"client_ip_address\": \"{{ $('Definir Campos2').first().json.client_ip_address }}\",\n        \"client_user_agent\": \"{{ $('Definir Campos2').first().json.client_user_agent }}\"\n      },\n      \"custom_data\": {\n        \"value\": {{ $('Definir Campos2').first().json.valor }},\n        \"currency\": \"{{ $('Definir Campos2').first().json.moeda }}\"\n  }\n    }\n  ]\n}"
+        }
+      },
+      "id": "e80d5892-01f0-4bbf-b55c-333835bf39a1",
+      "name": "Send event to Meta8",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        1472,
+        64
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Meta / Facebook Graph API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "=v20.0",
+        "node": "={{ $('Definir Campos2').first().json.pixel }}",
+        "edge": "events",
+        "options": {
+          "queryParametersJson": "={\n  \"data\": [\n    {\n      \"event_name\": \"{{ $('Definir Campos2').first().json.event_name }}\",\n      \"event_time\": {{ $json.event_time }},\n      \"action_source\": \"website\",\n      \"user_data\": {\n        \"em\": \"{{ $json.user_data.email }}\",\n        \"ph\": \"{{ $json.user_data.phone }}\",\n        \"fn\": \"{{ $json.user_data.first_name }}\",\n        \"ln\": \"{{ $json.user_data.last_name }}\",\n        \"fbp\": \"fb.1.{{ $json.event_time }}.{{ Math.floor(Math.random() * 9000000000) + 1000000000 }}\",\n        \"client_ip_address\": \"{{ $('Definir Campos2').first().json.client_ip_address }}\",\n        \"client_user_agent\": \"{{ $('Definir Campos2').first().json.client_user_agent }}\"\n      },\n      \"custom_data\": {\n        \"value\": {{ $('Definir Campos2').first().json.valor }},\n        \"currency\": \"{{ $('Definir Campos2').first().json.moeda }}\"\n      }\n    }\n  ]\n}"
+        }
+      },
+      "id": "a0933fce-fc78-42dd-bf15-d975da1c465b",
+      "name": "Send event to Meta9",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        1472,
+        256
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Meta / Facebook Graph API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const eventTime = Date.now(); // Obtém o timestamp atual em milissegundos\nreturn [{ json: { event_time: eventTime } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        352,
+        160
+      ],
+      "id": "9502c908-7c78-4dc5-804e-f8285a5c1615",
+      "name": "Code8"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Função para gerar o número aleatório\nfunction generateRandomNumber() {\n  return Math.floor(Math.random() * 1000000); // Gera um número aleatório entre 0 e 999999\n}\n\n// Gera o número aleatório\nconst randomnumber = generateRandomNumber();\n\n// Retorna o item no formato esperado pelo n8n\nreturn [{\n  json: {\n    randomnumber: randomnumber\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        576,
+        160
+      ],
+      "id": "34ad1704-a610-47a2-aea8-bccbcf7a4650",
+      "name": "Code9"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2cbe6b37-f62c-491f-ba8a-7a8e3bac4b1c",
+              "leftValue": "={{ $('Definir Campos2').first().json.fbclid }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1248,
+        160
+      ],
+      "id": "415d3c18-eee6-4e13-8c28-9b38675b301d",
+      "name": "If4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "77775875-fff9-4792-9778-a8f2d4deb7d4",
+              "name": "user_data.first_name",
+              "value": "={{ /* Get only the first name, make lowercase, remove spaces and special characters and convert to UTF-8 */\n\nencodeURIComponent(\n   $('Edit Fields2').first().json.name.trim().split(\" \").first()\n        .toLowerCase()\n        .replace(/\\s+/g, '')\n        .replace(/[^\\p{L}\\p{N}]/gu, '')\n)\n\n}}",
+              "type": "string"
+            },
+            {
+              "id": "aca1383e-3d9f-4d1b-b4d5-f8754d409298",
+              "name": "user_data.last_name",
+              "value": "={{ /* Get only the last name, make lowercase, remove spaces and special characters and convert to UTF-8 */\n\nencodeURIComponent(\n   $('Edit Fields2').first().json.name.split(\" \").last()\n        .toLowerCase()\n        .replace(/\\s+/g, '')\n        .replace(/[^\\p{L}\\p{N}]/gu, '')\n)\n\n}}",
+              "type": "string"
+            },
+            {
+              "id": "6a315617-d1c9-4320-b851-e3dcc5207b4b",
+              "name": "user_data.email",
+              "value": "={{ /* Remove spaces and make lowercase */\n\n$('Edit Fields2').first().json.email.trim().toLowerCase()\n\n}}",
+              "type": "string"
+            },
+            {
+              "id": "65d1994d-f4b8-478a-8cf1-490990e6639d",
+              "name": "user_data.phone",
+              "value": "={{ \n  (\n     $('Edit Fields2').first().json.phone\n      ? $('Edit Fields2').first().json.phone.replace(/\\D/g, '').replace(/^0+/, '') \n      : ''\n  ) || '' \n}}\n\n\n}}",
+              "type": "string"
+            },
+            {
+              "id": "5650546d-f0ad-4c69-829c-3e4283e16ac7",
+              "name": "event_time",
+              "value": "={{ /* Convert to Unix timestamp integer */\n\nMath.floor(new Date($('Code10').first().json.event_time).getTime() / 1000)\n\n}}",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "include": "except",
+        "excludeFields": "user_data.name",
+        "options": {}
+      },
+      "id": "063cf22e-1ee1-44d1-a67f-75a526361add",
+      "name": "Normalize data5",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        800,
+        544
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "097ed7ff-c076-454e-930c-1f4820ac6e2e",
+              "name": "user_data.first_name",
+              "value": "={{ $json.user_data.first_name.hash(\"sha256\") }}",
+              "type": "string"
+            },
+            {
+              "id": "e285fa12-d272-48a0-a583-5e90b394fd74",
+              "name": "user_data.last_name",
+              "value": "={{ $json.user_data.last_name.hash(\"sha256\") }}",
+              "type": "string"
+            },
+            {
+              "id": "e0e524cf-62cc-4ca3-a469-4caa2ffcab62",
+              "name": "user_data.email",
+              "value": "={{ $json.user_data.email.hash(\"sha256\") }}",
+              "type": "string"
+            },
+            {
+              "id": "1e87a997-5b78-48d8-9616-edfb1b910743",
+              "name": "user_data.phone",
+              "value": "={{ $json.user_data.phone.hash(\"sha256\") }}",
+              "type": "string"
+            },
+            {
+              "id": "0b2035a4-a52e-4345-bddd-fbafe845ec4b",
+              "name": "user_data.facebook_click_id",
+              "value": "={{ \"fb.1.\" + $('Code10').first().json.event_time + \".\" + $('Edit Fields2').first().json.fbclid }}",
+              "type": "string"
+            },
+            {
+              "id": "c8941ffe-f9a0-4070-b082-140b1dadf9aa",
+              "name": "user_data.facebook_browser_id",
+              "value": "={{ \"fb.1.\" + $('Code10').first().json.event_time + \".\" + $('Code11').first().json.randomnumber }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "9acad96a-b6ad-4c15-b782-ed59818e1cbf",
+      "name": "Encrypt data5",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1024,
+        544
+      ]
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "=v20.0",
+        "node": "={{ $('Edit Fields2').first().json.pixel }}",
+        "edge": "events",
+        "options": {
+          "queryParametersJson": "={\n  \"data\": [\n    {\n      \"event_name\": \"{{ $('Edit Fields2').first().json.event_name }}\",\n      \"event_time\": {{ $('Encrypt data5').first().json.event_time }},\n      \"action_source\": \"{{ $('Edit Fields2').first().json.action_source }}\",\n      \"user_data\": {\n        \"em\": \"{{ $json.user_data.email }}\",\n        \"ph\": \"{{ $json.user_data.phone }}\",\n        \"fn\": \"{{ $json.user_data.first_name }}\",\n        \"ln\": \"{{ $json.user_data.last_name }}\",\n        \"fbc\": \"{{ $json.user_data.facebook_click_id }}\",\n        \"fbp\": \"{{ $json.user_data.facebook_browser_id }}\",\n        \"client_ip_address\": \"{{ $('Edit Fields2').first().json.client_ip_address }}\",\n        \"client_user_agent\": \"{{ $('Edit Fields2').first().json.client_user_agent }}\"\n      },\n      \"custom_data\": {\n        \"value\": {{ $('Edit Fields2').first().json.valor }},\n        \"currency\": \"{{ $('Edit Fields2').first().json.moeda }}\"\n  }\n    }\n  ],\n  \"test_event_code\": \"{{ $('Edit Fields2').first().json.Teste }}\"\n}"
+        }
+      },
+      "id": "2c11e47c-cced-489f-9f7b-fcd52f1daac5",
+      "name": "Send event to Meta10",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        1472,
+        448
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Meta / Facebook Graph API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "=v20.0",
+        "node": "={{ $('Edit Fields2').first().json.pixel }}",
+        "edge": "events",
+        "options": {
+          "queryParametersJson": "={\n  \"data\": [\n    {\n      \"event_name\": \"{{ $('Edit Fields2').first().json.event_name }}\",\n      \"event_time\": {{ $json.event_time }},\n      \"action_source\": \"website\",\n      \"user_data\": {\n        \"em\": \"{{ $json.user_data.email }}\",\n        \"ph\": \"{{ $json.user_data.phone }}\",\n        \"fn\": \"{{ $json.user_data.first_name }}\",\n        \"ln\": \"{{ $json.user_data.last_name }}\",\n        \"fbp\": \"fb.1.{{ $json.event_time }}.{{ Math.floor(Math.random() * 9000000000) + 1000000000 }}\",\n        \"client_ip_address\": \"{{ $('Edit Fields2').first().json.client_ip_address }}\",\n        \"client_user_agent\": \"{{ $('Edit Fields2').first().json.client_user_agent }}\"\n      },\n      \"custom_data\": {\n        \"value\": {{ $('Edit Fields2').first().json.valor }},\n        \"currency\": \"{{ $('Edit Fields2').first().json.moeda }}\"\n      }\n    }\n  ],\n  \"test_event_code\": \"{{ $('Edit Fields2').first().json.Teste }}\"\n}"
+        }
+      },
+      "id": "cd1ddcde-ffbf-4f99-ba54-5318f741d0c2",
+      "name": "Send event to Meta11",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        1472,
+        640
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Meta / Facebook Graph API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const eventTime = Date.now(); // Obtém o timestamp atual em milissegundos\nreturn [{ json: { event_time: eventTime } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        352,
+        544
+      ],
+      "id": "ce1e65a1-ee19-4bb4-8ada-c06dbbeb0458",
+      "name": "Code10"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Função para gerar o número aleatório\nfunction generateRandomNumber() {\n  return Math.floor(Math.random() * 1000000); // Gera um número aleatório entre 0 e 999999\n}\n\n// Gera o número aleatório\nconst randomnumber = generateRandomNumber();\n\n// Retorna o item no formato esperado pelo n8n\nreturn [{\n  json: {\n    randomnumber: randomnumber\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        576,
+        544
+      ],
+      "id": "36df71f5-b847-46ef-96e2-152036a5599c",
+      "name": "Code11"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2cbe6b37-f62c-491f-ba8a-7a8e3bac4b1c",
+              "leftValue": "={{ $('Edit Fields2').first().json.fbclid }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1248,
+        544
+      ],
+      "id": "799d2f64-1896-4f4a-979b-52b47aec0b68",
+      "name": "If5"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e95597ca-3f0f-431c-86c3-db73fb424275",
+              "name": "name",
+              "value": "={{ $json.body['contact[first_name]'] }} {{ $json.body['contact[last_name]'] }}",
+              "type": "string"
+            },
+            {
+              "id": "1a2d2871-b53d-4eee-be77-21a56f6cd000",
+              "name": "email",
+              "value": "={{ $json.body['contact[email]'] }}",
+              "type": "string"
+            },
+            {
+              "id": "0453719a-d709-470b-bae9-f19cd9442f04",
+              "name": "phone",
+              "value": "={{ $json.body['contact[phone]'] }}",
+              "type": "string"
+            },
+            {
+              "id": "ceec879a-19e9-49ba-91d0-be219c5e137c",
+              "name": "client_ip_address",
+              "value": "={{ $json.body['contact[ip4]'] || $json.headers['x-real-ip']}}",
+              "type": "string"
+            },
+            {
+              "id": "3e62d825-f1d4-4e9c-92e2-5b134c165030",
+              "name": "client_user_agent",
+              "value": "={{ $json.headers['user-agent'] }}",
+              "type": "string"
+            },
+            {
+              "id": "ad7c31b9-7c18-4140-9fc1-6dabba6b4d3a",
+              "name": "fbclid",
+              "value": "={{ $json.body['contact[fields][fbclid]'] }}",
+              "type": "string"
+            },
+            {
+              "id": "1a027cd6-efd4-4d25-9cb2-4eb09c1f328e",
+              "name": "pixel",
+              "value": "SEU_PIXEL_ID_META_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "53d52fe0-058b-47ee-9220-be9588a907c8",
+              "name": "event_name",
+              "value": "lead_qualificado",
+              "type": "string"
+            },
+            {
+              "id": "e1fa954f-aa39-4e23-8783-f9f061e8fae6",
+              "name": "valor",
+              "value": "={{ $json.query.valor || 0 }}",
+              "type": "string"
+            },
+            {
+              "id": "1c592dab-b4a1-42a0-a7f6-c469508c39f0",
+              "name": "moeda",
+              "value": "BRL",
+              "type": "string"
+            },
+            {
+              "id": "5327057b-78e9-4b60-915d-2405b0b4d5c0",
+              "name": "Teste",
+              "value": "SEU_TEST_EVENT_CODE_META_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "92d1d8d1-7089-4f88-908d-e62ec243aa42",
+              "name": "action_source",
+              "value": "system_generated",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        128,
+        544
+      ],
+      "id": "da81ee45-533e-4336-b231-1f0b4bb95830",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "content": "### Teste",
+        "height": 384,
+        "width": 1680,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        416
+      ],
+      "typeVersion": 1,
+      "id": "9adeab44-0f02-4c42-a296-96c9d61a6dad",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "### purchase - Produção",
+        "height": 400,
+        "width": 1680,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        16
+      ],
+      "typeVersion": 1,
+      "id": "20c7abe2-e2b7-4357-a4b3-11a3a89460c7",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e95597ca-3f0f-431c-86c3-db73fb424275",
+              "name": "name",
+              "value": "={{ $json.body['contact[first_name]'] }} {{ $json.body['contact[last_name]'] }}",
+              "type": "string"
+            },
+            {
+              "id": "1a2d2871-b53d-4eee-be77-21a56f6cd000",
+              "name": "email",
+              "value": "={{ $json.body['contact[email]'] }}",
+              "type": "string"
+            },
+            {
+              "id": "0453719a-d709-470b-bae9-f19cd9442f04",
+              "name": "phone",
+              "value": "={{ $json.body['contact[phone]'] }}",
+              "type": "string"
+            },
+            {
+              "id": "ceec879a-19e9-49ba-91d0-be219c5e137c",
+              "name": "client_ip_address",
+              "value": "={{ $json.query.ip || $json.headers['x-real-ip']}}",
+              "type": "string"
+            },
+            {
+              "id": "3e62d825-f1d4-4e9c-92e2-5b134c165030",
+              "name": "client_user_agent",
+              "value": "={{ $json.headers['user-agent'] }}",
+              "type": "string"
+            },
+            {
+              "id": "ad7c31b9-7c18-4140-9fc1-6dabba6b4d3a",
+              "name": "fbclid",
+              "value": "={{ $json.body['contact[fields][fbclid]'] }}",
+              "type": "string"
+            },
+            {
+              "id": "1a027cd6-efd4-4d25-9cb2-4eb09c1f328e",
+              "name": "pixel",
+              "value": "SEU_PIXEL_ID_META_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "53d52fe0-058b-47ee-9220-be9588a907c8",
+              "name": "event_name",
+              "value": "lead_qualificado",
+              "type": "string"
+            },
+            {
+              "id": "e1fa954f-aa39-4e23-8783-f9f061e8fae6",
+              "name": "valor",
+              "value": "={{ $json.query.valor || 0}}",
+              "type": "string"
+            },
+            {
+              "id": "1c592dab-b4a1-42a0-a7f6-c469508c39f0",
+              "name": "moeda",
+              "value": "BRL",
+              "type": "string"
+            },
+            {
+              "id": "49fb53aa-d8c2-418a-a3b4-bfcbd83481bf",
+              "name": "action_source",
+              "value": "system_generated",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        128,
+        160
+      ],
+      "id": "72e572d5-d09a-4658-a151-3438b33fa75b",
+      "name": "Definir Campos2"
+    },
+    {
+      "parameters": {
+        "content": "## 🛠️ README_SETUP — Configuração do Template\n\nEste workflow envia eventos de conversão para a **Meta Conversions API (CAPI)** a partir de um webhook do CRM. Antes de usar:\n\n**1. Credencial da Meta (Facebook Graph API)**\n- Todos os nós \"Send event to Meta\" usam a credencial marcada como `[Reconfigurar] Meta / Facebook Graph API`.\n- Crie/religue sua própria credencial Facebook Graph API no n8n (com seu Access Token da Meta) e selecione-a nos 4 nós.\n\n**2. Pixel ID e Test Event Code**\n- Nos nós \"Edit Fields2\" e \"Definir Campos2\", troque:\n  - `pixel` → SEU_PIXEL_ID_META_AQUI (ID do seu Pixel/Dataset da Meta)\n  - `Teste` → SEU_TEST_EVENT_CODE_META_AQUI (código de teste da aba Test Events; remova em produção)\n\n**3. Webhook**\n- No nó \"Webhook2\", defina seu próprio `path` (SEU_PATH_DO_WEBHOOK). Copie a URL gerada e configure-a no seu CRM/plataforma de origem.\n\n**4. errorWorkflow**\n- Em Settings, ajuste `errorWorkflow` (SEU_ID_WORKFLOW_DE_ERRO) para o seu workflow de tratamento de erros, ou deixe em branco.\n\n**5. Ativar**\n- O workflow vem com `active: false`. Só ative depois de testar no bloco \"Teste\".\n\n⚠️ **Segurança:** o Access Token da Meta e o Pixel ID originais que já circularam devem ser **regenerados/revogados** no Gerenciador de Eventos da Meta. Trocar por placeholder NÃO invalida a chave antiga.\n",
+        "height": 620,
+        "width": 720,
+        "color": 7
+      },
+      "id": "readme-setup-0001",
+      "name": "README_SETUP",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1000,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "content": "### 📥 ENTRADA — Webhook\nRecebe o POST do CRM (payload com contact[first_name], email, phone, fbclid, ip, etc.). Configure o `path` e cadastre a URL no seu CRM.",
+        "height": 260,
+        "width": 420,
+        "color": 5
+      },
+      "id": "sticky-help-0000",
+      "name": "Ajuda 1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "content": "### 🔀 Com ou sem fbclid\nO nó IF verifica se `fbclid` existe: se existe, envia `fbc` (clique no anúncio); se não, envia só `fbp`. O bloco de cima (Produção) recebe o webhook; o de baixo (Teste) envia com `test_event_code` e é para rodar manualmente.",
+        "height": 260,
+        "width": 420,
+        "color": 6
+      },
+      "id": "sticky-help-0001",
+      "name": "Ajuda 2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "content": "### 🧮 Normalize + Encrypt\nNormaliza nome/email/telefone e aplica **hash SHA-256** (exigência da Meta CAPI para dados pessoais). Não precisa ajustar — é padrão da API.",
+        "height": 260,
+        "width": 420,
+        "color": 7
+      },
+      "id": "sticky-help-0002",
+      "name": "Ajuda 3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        560,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "content": "### 🔒 Onde vão suas credenciais\nOs nós 'Send event to Meta' usam a credencial Facebook Graph API + o Pixel ID. Religue a credencial e troque o Pixel/Test Event Code aqui.",
+        "height": 260,
+        "width": 420,
+        "color": 4
+      },
+      "id": "sticky-help-0003",
+      "name": "Ajuda 4",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1300,
+        40
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook2": {
+      "main": [
+        [
+          {
+            "node": "Definir Campos2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize data4": {
+      "main": [
+        [
+          {
+            "node": "Encrypt data4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Encrypt data4": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code8": {
+      "main": [
+        [
+          {
+            "node": "Code9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code9": {
+      "main": [
+        [
+          {
+            "node": "Normalize data4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Send event to Meta8",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send event to Meta9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize data5": {
+      "main": [
+        [
+          {
+            "node": "Encrypt data5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Encrypt data5": {
+      "main": [
+        [
+          {
+            "node": "If5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code10": {
+      "main": [
+        [
+          {
+            "node": "Code11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code11": {
+      "main": [
+        [
+          {
+            "node": "Normalize data5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If5": {
+      "main": [
+        [
+          {
+            "node": "Send event to Meta10",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send event to Meta11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Code10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Definir Campos2": {
+      "main": [
+        [
+          {
+            "node": "Code8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "SEU_ID_WORKFLOW_DE_ERRO"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [],
+  "pinData": {}
+}

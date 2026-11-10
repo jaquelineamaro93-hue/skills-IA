@@ -1,0 +1,469 @@
+{
+  "name": "[TEMPLATE] CRM/E-mail Marketing ---> Manychat (aula ao vivo, BR + PT)",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "// Obtém o número do primeiro input\nconst phone = $input.first().json.telefone || null;\n\nif (phone) {\n    const trimmed = phone.toString().trim();\n\n    // Verifica se é número de Portugal (prefixo +351)\n    if (trimmed.startsWith(\"+351\")) {\n        const sanitized = trimmed.replace(/[^\\d]/g, \"\"); // remove símbolos\n        return [{ json: { phone: sanitized, country: \"PT\" } }];\n    }\n\n    // Caso contrário, assume-se que é Brasil\n    let sanitizedPhone = trimmed.replace(/[^\\d]/g, \"\");\n\n    // Adiciona DDI 55 se for número nacional (10 ou 11 dígitos)\n    if (sanitizedPhone.length === 10 || sanitizedPhone.length === 11) {\n        sanitizedPhone = \"55\" + sanitizedPhone;\n    }\n\n    return [{ json: { phone: sanitizedPhone, country: \"BR\" } }];\n}\n\n// Retorna array vazio se o número não for válido\nreturn [];\n"
+      },
+      "id": "5b55854b-5e1f-4368-90ff-27d3e3e205e7",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2448,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "caa3b2f3-0381-482f-8e35-d23f8702e102",
+              "name": "telefone",
+              "value": "={{ $json.body['contact[phone]'] }}",
+              "type": "string"
+            },
+            {
+              "id": "7ed101a8-5880-45b9-a769-f86dbeb5b3ee",
+              "name": "Email",
+              "value": "={{ $('Webhook').item.json.body['contact[email]'] }}",
+              "type": "string"
+            },
+            {
+              "id": "d9617674-1df9-4ae8-9673-c3e536b947f2",
+              "name": "Nome",
+              "value": "={{ $('Webhook').item.json.body['contact[first_name]'] }}",
+              "type": "string"
+            },
+            {
+              "id": "b692628a-c64e-4f65-a940-e5852d37c972",
+              "name": "Id_many",
+              "value": "={{ $('Webhook').item.json.body['contact[fields][id_manychat]'] || 0 }}",
+              "type": "string"
+            },
+            {
+              "id": "c9785976-f3bd-477a-8d35-6267ed152a5e",
+              "name": "Telefone ID",
+              "value": "SEU_ID_CAMPO_TELEFONE_MANYCHAT",
+              "type": "string"
+            },
+            {
+              "id": "66a28e3e-a348-4f3e-9f6f-32c2e37d531b",
+              "name": "Token",
+              "value": "SEU_TOKEN_MANYCHAT_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "546608b9-9c15-4241-b60c-e626d1ceecc9",
+              "name": "ID da Mensagem",
+              "value": "={{ $json.body['contact[fields][mensagem]'] }}",
+              "type": "string"
+            },
+            {
+              "id": "df09b070-8d27-4705-bc94-a29a87c3210a",
+              "name": "ID campo Mensagem",
+              "value": "SEU_ID_CAMPO_MENSAGEM_MANYCHAT",
+              "type": "string"
+            },
+            {
+              "id": "c9b1348f-44b0-49ae-9c87-1ffaef821338",
+              "name": "email",
+              "value": "SEU_ID_CAMPO_EMAIL_MANYCHAT",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4ac2cb7c-359c-4217-ba0a-ec6f7b62e370",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2640,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.manychat.com/fb/subscriber/addTag",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n  \"accept\": \"application/json\",\n  \"Authorization\": \"Bearer {{ $('Edit Fields').item.json.Token }}\",\n  \"content-type\": \"application/json\"\n}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"subscriber_id\": {{ $('HTTP Request').item.json[\"data\"][\"id\"] }},\n  \"tag_id\": SEU_ID_TAG_MANYCHAT\n}",
+        "options": {}
+      },
+      "id": "826d6933-84d0-4c86-a22c-d67cb41d9212",
+      "name": "HTTP Request2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1072,
+        576
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.manychat.com/fb/subscriber/createSubscriber",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n  \"accept\": \"application/json\",\n  \"Authorization\": \"Bearer {{ $('Edit Fields').first().json.Token }}\",\n  \"content-type\": \"application/json\"\n}\n",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"first_name\": \"{{ $('Edit Fields').first().json.Nome }}\",\n  \"whatsapp_phone\": \"{{$('Code').first().json[\"phone\"]}}\",\n  \"email\": \"{{ $('Edit Fields').first().json.Email }}\",\n  \"has_opt_in_sms\": false,\n  \"has_opt_in_email\": true,\n  \"consent_phrase\": \"SUA_CONSENT_PHRASE_AQUI\"\n}  ",
+        "options": {}
+      },
+      "id": "64bed33a-102f-4463-9bba-f51baf5b4250",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1648,
+        -48
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.manychat.com/fb/subscriber/setCustomFields",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n  \"accept\": \"application/json\",\n  \"Authorization\": \"Bearer {{ $('Edit Fields').first().json.Token }}\",\n  \"content-type\": \"application/json\"\n} ",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"subscriber_id\": \"{{ $json.data[0].id }}\",\n  \"fields\": [\n    {\n      \"field_id\": {{ $('Edit Fields').first().json['ID campo Mensagem'] }},\n      \"field_value\": \"{{ $('Edit Fields').first().json['ID da Mensagem'] }}\"\n    },\n    {\n      \"field_id\": {{ $('Edit Fields').first().json.email }},\n      \"field_value\": \"{{ $('Edit Fields').first().json.Email }}\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "38b9110d-a8de-432d-a628-0efac354ee38",
+      "name": "HTTP Request4",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1648,
+        256
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.manychat.com/fb/subscriber/findByCustomField?field_id={{ $('Edit Fields').item.json['Telefone ID'] }}&field_value={{ $('Code').item.json.phone }}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n  \"accept\": \"application/json\",\n  \"Authorization\": \"Bearer {{ $('Edit Fields').item.json.Token }}\",\n  \"content-type\": \"application/json\"\n}\n",
+        "options": {}
+      },
+      "id": "bf3ebdbb-b67e-450d-83de-ff499e0eb607",
+      "name": "HTTP Request1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2208,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "45bb1199-be09-4f7e-b978-c3651f09044d",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1952,
+        128
+      ],
+      "id": "4c98c577-b9c3-44eb-b6f9-c047b3754fe4",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "SEU_WEBHOOK_PATH_AQUI",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -2864,
+        128
+      ],
+      "id": "7afdf28a-d35c-445f-bde6-a4296d8d5f40",
+      "name": "Webhook",
+      "webhookId": "SEU_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.manychat.com/fb/subscriber/setCustomFields",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n  \"accept\": \"application/json\",\n  \"Authorization\": \"Bearer {{ $('Edit Fields').first().json.Token }}\",\n  \"content-type\": \"application/json\"\n} ",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"subscriber_id\": \"{{ $json.data.id }}\",\n  \"fields\": [\n    {\n      \"field_id\": {{ $('Edit Fields').first().json['ID campo Mensagem'] }},\n      \"field_value\": \"{{ $('Edit Fields').first().json['ID da Mensagem'] }}\"\n    },\n    {\n      \"field_id\": {{ $('Edit Fields').first().json.email }},\n      \"field_value\": \"{{ $('Edit Fields').first().json.Email }}\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "1f7dc79e-4d6e-4ded-8e25-a97c8b8f496a",
+      "name": "HTTP Request5",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1344,
+        -80
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "content": "## 📘 README_SETUP — CRM/E-mail Marketing → Manychat (aula ao vivo, BR + PT)\n\nQuando um contato entra numa automação do seu CRM, este fluxo garante que ele exista\ncomo **assinante no Manychat**, grava o **\"ID da Mensagem\"** e aplica uma **tag** —\nque é o gatilho do fluxo de WhatsApp lá no Manychat.\n\nÉ o padrão de aviso de **aula ao vivo / evento**: o CRM decide *quem* e *quando*,\no Manychat entrega no WhatsApp.\n\n### 🌍 Diferencial: trata número de Portugal\nO nó de normalização detecta o prefixo **+351** e não aplica o DDI brasileiro.\nÚtil para audiências que misturam Brasil e Portugal — algo que a maioria dos\nfluxos de WhatsApp quebra silenciosamente.\n\n---\n\n### ✅ Passo a passo de configuração\n\n**1. Trocar o token no nó `Edit Fields`**\n- `SEU_TOKEN_MANYCHAT_AQUI` → sua API Key\n  (Manychat → Settings → API → *API Key*). Formato: `pageid:token`.\n- ⚠️ Fica em **texto puro** num nó Set e é usado em **5 requisições**.\n  Prefira uma credencial **Header Auth** do n8n.\n\n**2. Trocar os IDs de campo, ainda no `Edit Fields`**\n- `SEU_ID_CAMPO_TELEFONE_MANYCHAT` — usado na **busca** do contato\n- `SEU_ID_CAMPO_MENSAGEM_MANYCHAT` — o campo que aciona a mensagem\n- `SEU_ID_CAMPO_EMAIL_MANYCHAT`\n\n> Como achar o ID: Manychat → Settings → Fields → clique no campo → o número\n> aparece na URL. Ou use `GET /fb/page/getCustomFields` na API.\n\n**3. Trocar `SEU_ID_TAG_MANYCHAT`** no nó `HTTP Request2`\n- É a tag aplicada ao assinante — normalmente o gatilho do fluxo no Manychat.\n\n**4. Trocar `SUA_CONSENT_PHRASE_AQUI`** no nó `HTTP Request`\n- O Manychat exige uma *consent phrase* para criar assinante de WhatsApp via API.\n  Use exatamente a frase cadastrada na sua conta.\n\n**5. Configurar o Webhook**\n- Gere um path novo e copie a **Production URL**.\n- No seu CRM, adicione a ação **Webhook** na automação e cole a URL.\n- Payload esperado em `application/x-www-form-urlencoded`:\n  `contact[first_name]`, `contact[email]`, `contact[phone]`,\n  `contact[fields][mensagem]`.\n- 🔧 Se os seus campos tiverem outros nomes, ajuste o nó `Edit Fields`.\n\n**6. Testar antes de ativar** — o workflow já vem com `active: false`.\n\n---\n\n### 🔐 Segurança\n⚠️ Se você recebeu este arquivo de terceiros, **revogue e gere uma nova API Key**\nno Manychat. Trocar o valor no JSON não invalida a chave antiga.\n\nO webhook **não valida origem**: quem tiver a URL consegue injetar contatos na sua\nbase do Manychat e — como este fluxo aplica a tag disparadora — **enviar WhatsApp\nem nome da sua marca**. Considere checar um token antes de processar.",
+        "height": 840,
+        "width": 480,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3450,
+        -420
+      ],
+      "id": "sticky-README_SETUP",
+      "name": "README_SETUP"
+    },
+    {
+      "parameters": {
+        "content": "### 1️⃣ Gatilho + variáveis\n\n**Webhook** recebe o POST do CRM/e-mail\nmarketing quando o contato entra na automação.\n\n📌 O payload vem **form-urlencoded**, por isso\nas chaves chegam como `contact[email]`,\n`contact[phone]`, `contact[fields][mensagem]`.\n\n**Edit Fields** faz duas coisas ao mesmo tempo:\n- **extrai** Nome, Email, telefone e ID da Mensagem\n- **guarda** o token e os IDs dos custom fields\n\n⚠️ O campo `Id_many` é definido mas **nunca\nusado** por nenhum nó. Aproveite ou apague.\n\n🔧 Troque o token e os três `SEU_ID_CAMPO_*`.",
+        "height": 320,
+        "width": 400,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2930,
+        -420
+      ],
+      "id": "sticky-Nota_1_Entrada",
+      "name": "Nota_1_Entrada"
+    },
+    {
+      "parameters": {
+        "content": "### 2️⃣ Normalizar telefone 🇧🇷 🇵🇹\n\nO nó **Code** trata **dois países**:\n\n**Portugal** — se o número começa com `+351`,\napenas limpa os símbolos e marca `country: \"PT\"`.\nNão força o DDI brasileiro.\n\n**Brasil** — limpa os símbolos e, se sobrarem\n10 ou 11 dígitos, prefixa `55`.\nEx.: `SEU_ID_AQUI` → `SEU_ID_AQUI`\n\n💡 Esse tratamento por país é o diferencial\ndeste template. A maioria dos fluxos assume\nBrasil e corrompe números estrangeiros.\n\n⚠️ Telefone vazio → o nó devolve array **vazio**\ne a execução **para em silêncio**.",
+        "height": 320,
+        "width": 380,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2500,
+        -420
+      ],
+      "id": "sticky-Nota_2_Telefone",
+      "name": "Nota_2_Telefone"
+    },
+    {
+      "parameters": {
+        "content": "### 3️⃣ O contato já existe?\n\n**HTTP Request1** consulta\n`findByCustomField` buscando pelo campo\nde telefone com o número normalizado.\n\n**If** verifica se `data` voltou vazio:\n- **vazio** → precisa **criar**\n- **com dados** → só **atualizar**\n\n⚠️ Este nó de busca **não tem retry**.\nA API do Manychat limita requisições;\nem pico, uma falha aqui manda o contato\npara o caminho errado (tenta criar alguém\nque já existe). Considere ativar\n`retryOnFail` com 5 tentativas.",
+        "height": 320,
+        "width": 340,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2260,
+        -420
+      ],
+      "id": "sticky-Nota_3_Busca",
+      "name": "Nota_3_Busca"
+    },
+    {
+      "parameters": {
+        "content": "### 4️⃣ Criar assinante (novo)\n\n**HTTP Request** chama `createSubscriber`\ncom nome, telefone, e-mail e a\n`consent_phrase` (exigência do Manychat\npara WhatsApp).\n\n🔧 Ajuste `SUA_CONSENT_PHRASE_AQUI`.\n\n**HTTP Request5** grava os campos usando\n`$json.data.id` — o `createSubscriber`\ndevolve `data` como **objeto**.\n\n✅ **Correção aplicada:** este nó tinha\n`field_id` e `field_value` **duplicados\ndentro do mesmo objeto JSON**. Em JSON a\núltima chave vence — então o **ID da\nMensagem era descartado** e só o e-mail\nera gravado. Reescrito como dois objetos\nseparados.",
+        "height": 300,
+        "width": 420,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1750,
+        -560
+      ],
+      "id": "sticky-Nota_4_Criar",
+      "name": "Nota_4_Criar"
+    },
+    {
+      "parameters": {
+        "content": "### 5️⃣ Aplicar a tag 🏷️\n\n**HTTP Request2** chama `addTag` — é essa\ntag que dispara o fluxo de mensagem lá\ndentro do Manychat.\n\n✅ **Correção aplicada:** este nó estava\n**órfão**, sem nenhuma conexão de entrada.\nOu seja: a tag **nunca era aplicada** e a\nmensagem nunca saía. Foi ligado após o\n`HTTP Request5`.\n\n⚠️ **Decisão para você:** hoje só o contato\n**recém-criado** recebe a tag. Quem já existia\n(caminho do `HTTP Request4`) fica de fora.\nSe a mensagem deve ir para todos, replique\neste nó também naquele ramo.",
+        "height": 280,
+        "width": 420,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1180,
+        440
+      ],
+      "id": "sticky-Nota_5_Tag",
+      "name": "Nota_5_Tag"
+    },
+    {
+      "parameters": {
+        "content": "### 6️⃣ Atualizar quem já existe\n\n**HTTP Request4** chama `setCustomFields`\ngravando o **ID da Mensagem** e o **e-mail**\nno contato encontrado.\n\nRepare na diferença de caminho entre os\nramos — é sutil e derruba muita gente:\n- aqui: `$json.data[0].id` → o\n  `findByCustomField` devolve **array**\n- no outro ramo: `$json.data.id` → o\n  `createSubscriber` devolve **objeto**\n\n📌 Este ramo **não aplica a tag**. Veja a\nnota do `HTTP Request2` ao lado.",
+        "height": 280,
+        "width": 400,
+        "color": 1
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1750,
+        400
+      ],
+      "id": "sticky-Nota_6_Atualizar",
+      "name": "Nota_6_Atualizar"
+    },
+    {
+      "parameters": {
+        "content": "### ⚠️ Antes de ativar em produção\n\n- **Token em texto puro**, usado em 5 requisições. Migre para credencial **Header Auth**\n  e revogue a chave antiga no Manychat.\n\n- **Webhook sem validação de origem.** Como este fluxo aplica a tag que dispara mensagem,\n  quem tiver a URL consegue **enviar WhatsApp em nome da sua marca**.\n\n- **Saídas de erro desconectadas.** Os nós de criação e de campos têm\n  `onError: continueErrorOutput`, mas a saída de erro não vai a lugar nenhum —\n  falhas somem sem alerta. Ligue num Slack/e-mail.\n\n- **Sem retry na busca.** O `HTTP Request1` não tem `retryOnFail`; um 429 do Manychat\n  faz o fluxo tratar contato existente como novo.\n\n- **Parada silenciosa:** contato sem telefone simplesmente some do fluxo.",
+        "height": 280,
+        "width": 620,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2500,
+        400
+      ],
+      "id": "sticky-Nota_7_Avisos",
+      "name": "Nota_7_Avisos"
+    }
+  ],
+  "connections": {
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request5": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": ""
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [],
+  "pinData": {}
+}

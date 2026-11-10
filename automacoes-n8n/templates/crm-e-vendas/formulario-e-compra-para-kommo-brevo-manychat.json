@@ -1,0 +1,2271 @@
+{
+  "name": "Formulário do site + Compra → CRM (Kommo) + Email Marketing (Brevo) + WhatsApp (Manychat)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "SEU_WEBHOOK_PATH_SITE",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -320,
+        1184
+      ],
+      "id": "c127d32b-5d2f-4902-b5f9-63cd2ae33445",
+      "name": "Webhook",
+      "webhookId": "SEU_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1606022-b2fb-4c48-9bbe-0ae164c769ef",
+              "name": "URL",
+              "value": "https://SEU_SUBDOMINIO_KOMMO.kommo.com/api/v4",
+              "type": "string"
+            },
+            {
+              "id": "17b30a88-4979-4676-ae67-1542df20df54",
+              "name": "Token",
+              "value": "SEU_TOKEN_KOMMO_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "cd0bfe58-d404-4afd-82e8-fd0ad96f330a",
+              "name": "stage - checkout pre populado",
+              "value": "ID_ETAPA_KOMMO_CHECKOUT",
+              "type": "string"
+            },
+            {
+              "id": "f88a7851-c1a0-461a-ab20-ac4b80b96f2e",
+              "name": "Pipeline",
+              "value": "ID_PIPELINE_KOMMO_PRINCIPAL",
+              "type": "string"
+            },
+            {
+              "id": "9877097a-84dd-4e2b-919b-42611bd6de76",
+              "name": "utm_source",
+              "value": "=ID_CAMPO_KOMMO_UTM_SOURCE",
+              "type": "string"
+            },
+            {
+              "id": "b1a3b949-23a7-42c3-a524-efd8f2f838e6",
+              "name": "utm_medium",
+              "value": "=ID_CAMPO_KOMMO_UTM_MEDIUM",
+              "type": "string"
+            },
+            {
+              "id": "a7eac3e3-77a5-4c34-b823-fec5486469ce",
+              "name": "utm_campaign",
+              "value": "=ID_CAMPO_KOMMO_UTM_CAMPAIGN",
+              "type": "string"
+            },
+            {
+              "id": "fff198ab-7961-4916-b21e-99e4c500796f",
+              "name": "utm_term",
+              "value": "=ID_CAMPO_KOMMO_UTM_TERM",
+              "type": "string"
+            },
+            {
+              "id": "e7b096d5-d2b1-46e6-aeea-f3abd2954c85",
+              "name": "utm_content",
+              "value": "=ID_CAMPO_KOMMO_UTM_CONTENT",
+              "type": "string"
+            },
+            {
+              "id": "e9ae9d1a-20da-44c2-b047-f889a8d83143",
+              "name": "evento",
+              "value": "ID_CAMPO_KOMMO_EVENTO",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        128,
+        704
+      ],
+      "id": "e0cf4562-2cd6-46ac-b67c-d8830ac0fbbe",
+      "name": "Edit Fields12"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Edit Fields12').item.json.URL }}/contacts?query={{ $('Code24').item.json.TelefoneUltimos8 }}&with=leads",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields12').item.json.Token }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        576,
+        704
+      ],
+      "id": "4534b738-6a25-4ea3-8065-6e5caaf99a0d",
+      "name": "HTTP Request27"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript)\n\n// Número original vindo do Edit Fields\nlet numeroOriginal = $('Edit Fields1').first().json.Telefone || \"\";\n\n// Limpa tudo que não for dígito\nlet numeroLimpo = numeroOriginal.replace(/\\D/g, \"\");\n\n// Se tiver 10 ou 11 dígitos, adiciona 55 na frente\nif (numeroLimpo.length === 10 || numeroLimpo.length === 11) {\n  numeroLimpo = \"55\" + numeroLimpo;\n}\n\n// Monta o número corrigido\nconst telefoneCorrigido = numeroLimpo;\n\n// Pega os últimos 8 dígitos\nconst telefoneUltimos8 = telefoneCorrigido.slice(-8);\n\nreturn [\n  {\n    json: {\n      TelefoneCorrigido: telefoneCorrigido,\n      TelefoneUltimos8: telefoneUltimos8\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        352,
+        704
+      ],
+      "id": "370447ab-4baa-462a-b0d5-e776d035f566",
+      "name": "Code24"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "eeb66677-acd0-4825-a24f-30e8e8007e6b",
+              "name": "Nome",
+              "value": "={{ $json.body.Name }}",
+              "type": "string"
+            },
+            {
+              "id": "742dfe46-5fcd-45f4-b5ab-ce4d75ec0bb3",
+              "name": "Telefone",
+              "value": "={{ $json.body.WhatsApp }}",
+              "type": "string"
+            },
+            {
+              "id": "a7cb1e93-c6a1-4d65-a2cc-a62f228c0693",
+              "name": "Email",
+              "value": "={{ $json.body.Email }}",
+              "type": "string"
+            },
+            {
+              "id": "30db1001-8a11-4ab7-b5db-c17134a9b837",
+              "name": "Utm_source",
+              "value": "={{ $json.body.Utm_source }}",
+              "type": "string"
+            },
+            {
+              "id": "249069ad-c88a-46e7-8068-745dc5e7a806",
+              "name": "Utm_medium",
+              "value": "={{ $json.body.Utm_medium }}",
+              "type": "string"
+            },
+            {
+              "id": "e8549e5d-04a4-452c-8f5b-e140cba2535e",
+              "name": "Utm_campaign",
+              "value": "={{ $json.body.Utm_campaign }}",
+              "type": "string"
+            },
+            {
+              "id": "49b7e16e-f9aa-419b-9ec5-1df8dfacfd40",
+              "name": "Utm_content",
+              "value": "={{ $json.body.Utm_content.replace(/\"/g, '') }}",
+              "type": "string"
+            },
+            {
+              "id": "ba2cb044-c66f-43fb-9ce4-faddf56d9adf",
+              "name": "Utm_term",
+              "value": "={{ $json.body.Utm_term }}",
+              "type": "string"
+            },
+            {
+              "id": "362e0cf8-42f1-439b-bc59-e4f290fbe9b5",
+              "name": "evento",
+              "value": "={{ $json.body.form_name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -96,
+        704
+      ],
+      "id": "c3026da1-f5bc-4e9c-be68-a446d0219167",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript)\n\n// ---- helpers ----\nfunction safeParse(v) {\n  if (v == null) return null;\n  if (typeof v === 'object') return v;\n  try { return JSON.parse(String(v)); } catch { return null; }\n}\n\nfunction getFirstByField(cf = [], wanted = []) {\n  if (!Array.isArray(cf)) return null;\n  const f = cf.find(x =>\n    wanted.includes(x.field_code) ||\n    wanted.includes(x.field_name)\n  );\n  return f?.values?.[0]?.value ?? null;\n}\n\nfunction getFirstPhone(cf = []) {\n  return getFirstByField(cf, ['PHONE', 'Phone']);\n}\n\nfunction getFirstEmail(cf = []) {\n  return getFirstByField(cf, ['EMAIL', 'Email', 'E-mail']);\n}\n\nfunction scoreContact(c) {\n  if (!c || typeof c !== 'object') return -1;\n  let s = 0;\n  if (c.name) s += 2;\n  if (getFirstPhone(c.custom_fields_values)) s += 2;\n  s += Array.isArray(c.custom_fields_values) ? c.custom_fields_values.length : 0;\n  s += Array.isArray(c._embedded?.tags) ? c._embedded.tags.length : 0;\n  s += Array.isArray(c._embedded?.companies) ? c._embedded.companies.length : 0;\n  if (c.first_name) s += 1;\n  if (c.last_name) s += 1;\n  if (c.responsible_user_id) s += 1;\n  return s;\n}\n\n// ---- main ----\nconst out = [];\n\nfor (const item of $input.all()) {\n  const data = safeParse(item.json?.data) || safeParse(item.json) || item.json;\n  if (!data || typeof data !== 'object') continue;\n\n  const contacts = data._embedded?.contacts ?? [];\n  const leadRows = [];\n\n  for (const contact of contacts) {\n    const leads = contact._embedded?.leads ?? [];\n    for (const ld of leads) {\n      leadRows.push({\n        json: {\n          contact_id: contact.id ?? null,\n          contact_name: contact.name ?? null,\n          phone: getFirstPhone(contact.custom_fields_values) ?? null,\n          email: getFirstEmail(contact.custom_fields_values) ?? null, // sempre presente\n          contact_link: contact._links?.self?.href ?? null,\n          lead_id: ld?.id ?? null,\n          lead_link: ld?._links?.self?.href ?? null,\n        }\n      });\n    }\n  }\n\n  if (leadRows.length > 0) {\n    out.push(...leadRows);\n  } else {\n    if (contacts.length > 0) {\n      let best = contacts[0];\n      let bestScore = scoreContact(best);\n      for (let i = 1; i < contacts.length; i++) {\n        const sc = scoreContact(contacts[i]);\n        if (sc > bestScore) {\n          best = contacts[i];\n          bestScore = sc;\n        }\n      }\n      out.push({\n        json: {\n          contact_id: best.id ?? null,\n          contact_name: best.name ?? null,\n          phone: getFirstPhone(best.custom_fields_values) ?? null,\n          email: getFirstEmail(best.custom_fields_values) ?? null, // sempre presente\n          contact_link: best._links?.self?.href ?? null,\n          lead_id: null,\n          lead_link: null,\n          _note: \"Sem leads; retornado contato mais completo\"\n        }\n      });\n    }\n  }\n}\n\nreturn out;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1024,
+        608
+      ],
+      "id": "36bc4463-4007-4d8b-9a8a-ef6f2f273086",
+      "name": "Code25"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e0c834e3-6193-4aeb-9c11-046de160e6d9",
+              "leftValue": "={{ $json.lead_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1248,
+        608
+      ],
+      "id": "619905f8-07af-4152-afc8-fc192eb5af57",
+      "name": "If9"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript) — retorna 1 lead aberto e não perdido\n// Mantém todos os campos anteriores + tags_string (com vírgula no final quando não-vazio)\n// Extrai \"agendamento {1..4}\" e AGORA também \"Token {1..4}\"\n\nfunction parseMaybeJson(v) {\n  if (v == null) return null;\n  if (typeof v === 'object') return v;\n  try { return JSON.parse(String(v)); } catch { return null; }\n}\n\nfunction escapeJsonString(s) {\n  // Escapa \\ e \" para uso seguro dentro de aspas duplas\n  return String(s).replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"');\n}\n\nfunction extractTags(lead) {\n  const arr = lead?._embedded?.tags;\n  if (!Array.isArray(arr)) {\n    return {\n      tags_raw: [], tag_ids: [], tag_names: [],\n      tag_names_csv: \"\", tags_string: \"\"\n    };\n  }\n\n  const names = arr\n    .filter(t => t && (t.name != null || t.id != null))\n    .map(t => String(t.name ?? \"\").trim())\n    .filter(name => name.length > 0);\n\n  // dedup por nome (case-insensitive)\n  const seen = new Set();\n  const dedupNames = names.filter(name => {\n    const key = name.toLowerCase();\n    if (seen.has(key)) return false;\n    seen.add(key);\n    return true;\n  });\n\n  const tags_raw = dedupNames.map(name => ({ name }));\n  const tag_names = dedupNames;\n  const tag_ids = arr.map(t => t?.id).filter(v => v != null);\n\n  // Monta a string no formato { \"name\": \"X\" },{ \"name\": \"Y\" },  (com vírgula final)\n  let tags_string = \"\";\n  if (tag_names.length) {\n    const parts = tag_names.map(n => `{ \"name\": \"${escapeJsonString(n)}\" }`);\n    tags_string = parts.join(\",\") + \",\"; // vírgula no final\n  }\n\n  return {\n    tags_raw,\n    tag_ids,\n    tag_names,\n    tag_names_csv: tag_names.join(\", \"),\n    tags_string\n  };\n}\n\n// --- IDs de campos conhecidos ---\nconst AGENDAMENTO_FIELD_IDS = {\n  agendamento1: 0 /* ID_CAMPO_KOMMO_AGENDAMENTO_1 */,\n  agendamento2: 0 /* SEU_ID_AQUI */,\n  agendamento3: 0 /* SEU_ID_AQUI */,\n  agendamento4: 0 /* SEU_ID_AQUI */,\n};\n\n// --- NOVO: IDs de Token ---\nconst TOKEN_FIELD_IDS = {\n  token1: 0 /* SEU_ID_AQUI */,\n  token2: 0 /* SEU_ID_AQUI */,\n  token3: 0 /* SEU_ID_AQUI */,\n  token4: 0 /* SEU_ID_AQUI */,\n};\n\nfunction extractAgendamentos(lead) {\n  const cfv = Array.isArray(lead?.custom_fields_values) ? lead.custom_fields_values : [];\n  const out = { agendamento1: null, agendamento2: null, agendamento3: null, agendamento4: null };\n\n  // indexa por field_id\n  const byId = new Map(cfv.map(f => [Number(f.field_id), f]));\n\n  for (const key of Object.keys(AGENDAMENTO_FIELD_IDS)) {\n    const id = AGENDAMENTO_FIELD_IDS[key];\n    const f = byId.get(Number(id));\n    const val = f?.values?.[0]?.value ?? null;\n    out[key] = (val !== undefined && val !== null && String(val).trim() !== \"\") ? String(val) : null;\n  }\n\n  // array em ordem 1..4, apenas com os existentes\n  const agendamentos = [out.agendamento1, out.agendamento2, out.agendamento3, out.agendamento4].filter(v => v != null);\n\n  return { ...out, agendamentos };\n}\n\n// --- NOVO: extrator de Tokens 1..4 ---\nfunction extractTokens(lead) {\n  const cfv = Array.isArray(lead?.custom_fields_values) ? lead.custom_fields_values : [];\n  const out = { token1: null, token2: null, token3: null, token4: null };\n\n  const byId = new Map(cfv.map(f => [Number(f.field_id), f]));\n\n  for (const key of Object.keys(TOKEN_FIELD_IDS)) {\n    const id = TOKEN_FIELD_IDS[key];\n    const f = byId.get(Number(id));\n    const val = f?.values?.[0]?.value ?? null;\n    out[key] = (val !== undefined && val !== null && String(val).trim() !== \"\") ? String(val) : null;\n  }\n\n  const tokens = [out.token1, out.token2, out.token3, out.token4].filter(v => v != null);\n\n  return { ...out, tokens };\n}\n\nconst pipelineTarget = $('Edit Fields12').first().json['pipeline - vendas'];\n\n// Converte cada item em objeto\nconst all = $input.all()\n  .map(it => parseMaybeJson(it.json?.data) || it.json)\n  .filter(o => o && typeof o === 'object');\n\n// Filtra abertos + não perdidos\nlet eligible = all.filter(l =>\n  l &&\n  l.id != null &&\n  l.closed_at == null &&\n  !l.is_deleted &&\n  l.loss_reason_id == null\n);\n\n// Prioriza pipeline alvo, se houver\nconst inTarget = eligible.filter(l => String(l.pipeline_id) === String(pipelineTarget));\nif (inTarget.length > 0) eligible = inTarget;\n\n// Ordena pelo updated_at (mais recente primeiro)\neligible.sort((a, b) => (Number(b.updated_at) || 0) - (Number(a.updated_at) || 0));\n\n// Sem elegíveis: retorna item “sentinela”\nif (!eligible.length) {\n  return [{\n    json: {\n      found: false,\n      id: null,\n      name: null,\n      pipeline_id: null,\n      status_id: null,\n      updated_at_unix: null,\n      link_self: null,\n      tags_raw: [],\n      tag_ids: [],\n      tag_names: [],\n      tag_names_csv: \"\",\n      tags_string: \"\",\n      agendamento1: null,\n      agendamento2: null,\n      agendamento3: null,\n      agendamento4: null,\n      agendamentos: [],\n      // NOVO: tokens\n      token1: null,\n      token2: null,\n      token3: null,\n      token4: null,\n      tokens: []\n    }\n  }];\n}\n\nconst lead = eligible[0];\nconst tagsInfo = extractTags(lead);\nconst agds = extractAgendamentos(lead);\nconst toks = extractTokens(lead);\n\nreturn [{\n  json: {\n    found: true,\n    id: lead.id,\n    name: lead.name ?? null,\n    pipeline_id: lead.pipeline_id ?? null,\n    status_id: lead.status_id ?? null,\n    updated_at_unix: Number(lead.updated_at) || null,\n    link_self: lead._links?.self?.href ?? null,\n    // tags\n    ...tagsInfo,\n    // agendamentos\n    ...agds,\n    // NOVO: tokens\n    ...toks\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1696,
+        512
+      ],
+      "id": "dda0a90c-cad7-44c3-b450-05c790edd5f8",
+      "name": "Code26"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Edit Fields12').first().json['URL'] }}/contacts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields12').first().json['Token'] }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"name\": \"{{ $('Edit Fields1').first().json.Nome }}\",\n    \"custom_fields_values\": [\n      {\n        \"field_code\": \"PHONE\",\n        \"values\": [\n          {\n            \"value\": \"{{ $('Edit Fields1').first().json.Telefone }}\"\n          }\n        ]\n      },\n      {\n        \"field_code\": \"EMAIL\",\n        \"values\": [\n          {\n            \"value\": \"{{ $('Edit Fields1').first().json.Email }}\"\n          }\n        ]\n      }\n    ]\n  }\n]\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1024,
+        896
+      ],
+      "id": "d477f8f0-5708-4927-baac-98ed0cfa21d9",
+      "name": "HTTP Request28"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().flatMap(item => {\n  let data;\n  try {\n    data = JSON.parse(item.json.data);\n  } catch (err) {\n    return [];\n  }\n\n  const contacts = data._embedded?.contacts || [];\n\n  return contacts.map(contact => {\n    const result = { ...contact };\n\n    // Adiciona lead_id (do primeiro lead)\n    result.lead_id = contact._embedded?.leads?.[0]?.id || null;\n\n    // Adiciona link direto para o contato\n    result.contact_link = contact._links?.self?.href || null;\n\n    return result;\n  });\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1248,
+        896
+      ],
+      "id": "b4e29723-2686-42e5-95d0-29eccd3d36a1",
+      "name": "Code27"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Edit Fields12').item.json.URL }}/leads",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields12').item.json.Token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"name\": \"{{ $('Edit Fields1').first().json.Nome }}\",\n    \"pipeline_id\": {{ $('Edit Fields12').item.json['Pipeline'] }},\n    \"status_id\": {{ $('Edit Fields12').item.json['stage - checkout pre populado'] }},\n    \"custom_fields_values\": [\n      {\n        \"field_id\": {{ $('Edit Fields12').item.json.utm_medium }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').item.json.Utm_medium }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').item.json.utm_campaign }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').item.json.Utm_campaign }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').item.json.utm_term }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').item.json.Utm_term }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').item.json.utm_content }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').item.json.Utm_content.replaceAll('\"', '') }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').item.json.utm_source }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').item.json.Utm_source }}\" }\n        ]\n      }\n    ],\n    \"_embedded\": {\n      \"contacts\": [\n        { \"id\":{{ $json.id }} }\n      ]\n    }\n  }\n]\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1472,
+        896
+      ],
+      "id": "9be63a04-e4ec-4277-b1bc-7b348452ac9d",
+      "name": "HTTP Request29"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Edit Fields12').item.json.URL }}/leads/{{ $json.lead_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields12').item.json.Token }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1472,
+        512
+      ],
+      "id": "c752d029-4b48-4f1c-9775-029db7e4ade5",
+      "name": "HTTP Request33"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ebfdc0e7-0b15-45db-b0d8-d890e76d1d14",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "=",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        800,
+        704
+      ],
+      "id": "bbc720f1-ebe7-4819-8765-44cdfafaaaf2",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Edit Fields12').first().json.URL }}/leads",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields12').first().json.Token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"name\": \"{{ $('Edit Fields1').first().json.Nome }}\",\n    \"pipeline_id\": {{ $('Edit Fields12').item.json['Pipeline'] }},\n    \"status_id\": {{ $('Edit Fields12').item.json['stage - checkout pre populado'] }},\n    \"custom_fields_values\": [\n      {\n        \"field_id\": {{ $('Edit Fields12').item.json.utm_medium }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').item.json.Utm_medium }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').item.json.utm_campaign }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').item.json.Utm_campaign }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').item.json.utm_term }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').item.json.Utm_term }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').item.json.utm_content }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').item.json.Utm_content }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').item.json.utm_source }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').item.json.Utm_source }}\" }\n        ]\n      }\n    ],\n    \"_embedded\": {\n      \"contacts\": [\n        { \"id\": {{ $('Code25').first().json.contact_id }} }\n      ]\n    }\n  }\n]\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1472,
+        704
+      ],
+      "id": "d7a061dd-491c-4c90-b189-bdd94b1385ad",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Edit Fields12').first().json.URL }}/leads",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields12').first().json.Token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"name\": \"{{ $('Edit Fields13').first().json.nome }}\",\n    \"pipeline_id\": {{ $('Edit Fields12').item.json['pipeline - curso presencial'] }},\n    \"status_id\": {{ $('Edit Fields12').first().json['stage - Hotmart'] }},\n    \"custom_fields_values\": [\n      {\n        \"field_id\": {{ $('Edit Fields12').item.json['objetivo curso'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields13').item.json.objetivo_curso }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').item.json.utm_medium }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields13').item.json.utm_medium }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').item.json.utm_campaign }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields13').item.json.utm_campaign }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').item.json.utm_term }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields13').item.json.utm_term }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').item.json.utm_content }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields13').item.json.utm_content }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').item.json.utm_source }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields13').item.json.utm_source }}\" }\n        ]\n      }\n    ],\n    \"_embedded\": {\n      \"contacts\": [\n        { \"id\": {{ $('Code25').first().json.contact_id }} }\n      ]\n    }\n  }\n]\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -512,
+        384
+      ],
+      "id": "10163623-d7c9-4623-b750-cac5314d46d7",
+      "name": "HTTP Request34"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ $('Edit Fields12').first().json.URL }}/leads/{{ $json.id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields12').first().json.Token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"name\": \"{{ $('Edit Fields1').first().json.Nome }}\",\n    \"custom_fields_values\": [\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.utm_medium }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.Utm_medium }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.utm_campaign }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.Utm_campaign }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.utm_term }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.Utm_term }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.utm_content }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.Utm_content }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.utm_source }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.Utm_source }}\" }\n        ]\n      }\n    ],\n    \"_embedded\": {\n      \"contacts\": [\n        { \"id\": {{ $('Code25').first().json.contact_id }} }\n      ]\n    }\n  }\n]\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1920,
+        512
+      ],
+      "id": "6f315ade-2a9d-481a-a73a-8808d567c380",
+      "name": "HTTP Request32"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ $('Edit Fields12').first().json.URL }}/leads/{{ $('If10').first().json.id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields12').first().json.Token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=  {\n    \"name\": \"{{ $('Edit Fields13').first().json.nome }}\",\n       \"pipeline_id\":ID_PIPELINE_KOMMO_PRINCIPAL,\n    \"status_id\": 142,\n    \"custom_fields_values\": [\n             {\n        \"field_id\": {{ $('Edit Fields12').item.json['objetivo curso'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields13').item.json.objetivo_curso }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').item.json.utm_medium }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields13').item.json.utm_medium }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').item.json.utm_campaign }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields13').item.json.utm_campaign }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').item.json.utm_term }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields13').item.json.utm_term }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').item.json.utm_content }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields13').item.json.utm_content }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').item.json.utm_source }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields13').item.json.utm_source }}\" }\n        ]\n      }\n        ]\n      }\n    ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -736,
+        384
+      ],
+      "id": "628a51ab-7e35-440d-8834-040b4626d5c3",
+      "name": "HTTP Request30"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "14fd3ce7-f127-4fa9-8dd2-296ec0435663",
+              "leftValue": "={{ String($json.pipeline_id) }}",
+              "rightValue": "=ID_PIPELINE_KOMMO_FILTRO",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -736,
+        160
+      ],
+      "id": "835dae93-5868-4476-935d-03d512929413",
+      "name": "If10"
+    },
+    {
+      "parameters": {
+        "resource": "contact",
+        "operation": "upsert",
+        "email": "={{ $('Edit Fields').item.json.email }}",
+        "upsertAttributes": {
+          "upsertAttributesValues": [
+            {
+              "fieldName": "FIRSTNAME",
+              "fieldValue": "={{ $('Edit Fields').item.json.Nome }}"
+            },
+            {
+              "fieldName": "LASTNAME",
+              "fieldValue": "={{ $('Edit Fields').item.json.Sobrenome }}"
+            },
+            {
+              "fieldName": "UTM_SOURCE",
+              "fieldValue": "={{ $('Edit Fields').item.json.utm_source }}"
+            },
+            {
+              "fieldName": "UTM_MEDIUM",
+              "fieldValue": "={{ $('Edit Fields').item.json.utm_medium }}"
+            },
+            {
+              "fieldName": "UTM_CAMPAIGN",
+              "fieldValue": "={{ $('Edit Fields').item.json.utm_campaign }}"
+            },
+            {
+              "fieldName": "UTM_TERM",
+              "fieldValue": "={{ $('Edit Fields').item.json.utm_term }}"
+            },
+            {
+              "fieldName": "UTM_CONTENT",
+              "fieldValue": "={{ $('Edit Fields').item.json.utm_content }}"
+            }
+          ]
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.sendInBlue",
+      "typeVersion": 1,
+      "position": [
+        352,
+        1184
+      ],
+      "id": "1b211430-be3e-48ab-ac30-2dcd030b733e",
+      "name": "Upsert a contact",
+      "credentials": {
+        "sendInBlueApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Brevo (SendinBlue)"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.manychat.com/fb/subscriber/createSubscriber",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n  \"accept\": \"application/json\",\n  \"Authorization\": \"Bearer {{ $('Edit Fields2').first().json['API Manychat'] }}\",\n  \"content-type\": \"application/json\"\n}\n",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"first_name\": \"{{ $('Edit Fields').first().json.Nome }}\",\n  \"whatsapp_phone\": \"{{ $('Code').item.json.TelefoneCorrigido }}\",\n  \"email\": \"{{ $('Edit Fields').item.json.email }}\",\n  \"has_opt_in_sms\": false,\n  \"has_opt_in_email\": true,\n  \"consent_phrase\": \"SUA_CONSENT_PHRASE_MANYCHAT\"\n}  ",
+        "options": {}
+      },
+      "id": "3f9ae034-9b3c-486b-bbba-b9cd12456e76",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1472,
+        1088
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.manychat.com/fb/subscriber/findByCustomField?field_id={{ $json.Telefone }}&field_value={{ $('Code').item.json.TelefoneCorrigido }}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n  \"accept\": \"application/json\",\n  \"Authorization\": \"Bearer {{ $json['API Manychat'] }}\"\n}\n",
+        "options": {}
+      },
+      "id": "f39d6d59-e7bf-456a-9de1-635e82642bd6",
+      "name": "HTTP Request1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1024,
+        1184
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "90f6b23d-5e05-4d93-a653-4005e7c03ce2",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1248,
+        1184
+      ],
+      "id": "24677851-67a7-4336-adf2-632413f16a06",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.manychat.com/fb/subscriber/setCustomFields",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n  \"accept\": \"application/json\",\n  \"Authorization\": \"Bearer {{ $('Edit Fields2').first().json['API Manychat'] }}\",\n  \"content-type\": \"application/json\"\n}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"subscriber_id\": \"{{ $json.data[0].id }}\",\n  \"fields\": [\n    {\n      \"field_id\": \"{{ $('Edit Fields2').first().json.Email }}\",\n      \"field_value\": \"{{ $('Edit Fields').first().json.email }}\"\n    },\n    {\n      \"field_id\": \"{{ $('Edit Fields2').first().json['Inscritos do site'] }}\",\n      \"field_value\": \"Sim\"\n    },\n    {\n      \"field_id\": \"{{ $('Edit Fields2').first().json['id Mensagem'] }}\",\n      \"field_value\": \"{{ $('Edit Fields').first().json.ID_mensagem }}\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "c3554fef-12dc-4b56-a65e-2ccf897d4351",
+      "name": "HTTP Request4",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1472,
+        1280
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d2dd480d-7bc7-4c45-9cd0-88c2895ab40d",
+              "name": "id Mensagem",
+              "value": "=ID_CAMPO_MANYCHAT_ID_MENSAGEM",
+              "type": "string"
+            },
+            {
+              "id": "c32d8a42-7b15-4578-8196-469f5ba88709",
+              "name": "Email",
+              "value": "ID_CAMPO_MANYCHAT_EMAIL",
+              "type": "string"
+            },
+            {
+              "id": "90ebdbd2-74fc-4af7-96f3-5b31ad44d12a",
+              "name": "Telefone",
+              "value": "ID_CAMPO_MANYCHAT_TELEFONE",
+              "type": "string"
+            },
+            {
+              "id": "76fd38bd-daa7-4304-81a7-880b9258e9b1",
+              "name": "API Manychat",
+              "value": "SEU_TOKEN_MANYCHAT_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "aca98da6-194a-459a-b19d-132ead1c1cc7",
+              "name": "Inscritos do site",
+              "value": "=ID_CAMPO_MANYCHAT_INSCRITOS_SITE",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        800,
+        1184
+      ],
+      "id": "86e0baea-9817-453a-80ae-faaaef3c177e",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.manychat.com/fb/subscriber/setCustomFields",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n  \"accept\": \"application/json\",\n  \"Authorization\": \"Bearer {{ $('Edit Fields2').first().json['API Manychat'] }}\",\n  \"content-type\": \"application/json\"\n}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"subscriber_id\": \"{{ $json.data.id }}\",\n  \"fields\": [\n    {\n      \"field_id\": \"{{ $('Edit Fields2').first().json.Email }}\",\n      \"field_value\": \"{{ $('Edit Fields').first().json.email }}\"\n    },\n    {\n      \"field_id\": \"{{ $('Edit Fields2').first().json['Inscritos do site'] }}\",\n      \"field_value\": \"Sim\"\n    },\n    {\n      \"field_id\": \"{{ $('Edit Fields2').first().json['id Mensagem'] }}\",\n      \"field_value\": \"{{ $('Edit Fields').first().json.ID_mensagem }}\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "22674e2f-1599-42d2-92c9-f3bd2563cbd8",
+      "name": "HTTP Request5",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1696,
+        1088
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.brevo.com/v3/contacts/lists/SEU_ID_LISTA_BREVO/contacts/add",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            },
+            {
+              "name": "api-key",
+              "value": "SUA_API_KEY_BREVO_AQUI"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"emails\": [\"{{ $('Edit Fields').first().json.email }}\"]\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        576,
+        1184
+      ],
+      "id": "fb2c7ce8-8168-4c88-a986-d8fc3a220fa5",
+      "name": "HTTP Request3",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "64ab587b-2777-492d-84db-9046181ed3a3",
+              "name": "email",
+              "value": "={{ $json.body.Email }}",
+              "type": "string"
+            },
+            {
+              "id": "7adadfd8-35c1-4959-9381-5511e86530a6",
+              "name": "Nome",
+              "value": "={{ $json.body.Name.split(\" \")[0] }}",
+              "type": "string"
+            },
+            {
+              "id": "0be2c05c-7059-442c-8e8a-599c11492277",
+              "name": "Sobrenome",
+              "value": "={{ $json.body.Name.split(\" \").slice(1).join(\" \") }}",
+              "type": "string"
+            },
+            {
+              "id": "5767fdec-e12f-40de-8373-8f524e0927d9",
+              "name": "Telefone",
+              "value": "={{ $json.body.WhatsApp }}",
+              "type": "string"
+            },
+            {
+              "id": "edb9cff9-d67e-4e12-9b3c-0311cf59faea",
+              "name": "utm_source",
+              "value": "={{ $json.body.Utm_source }}",
+              "type": "string"
+            },
+            {
+              "id": "da248162-c224-4386-afdf-e74506fe93d1",
+              "name": "utm_medium",
+              "value": "={{ $json.body.Utm_medium }}",
+              "type": "string"
+            },
+            {
+              "id": "2c2bdad5-e4cb-4fd8-a782-d5e8abfac964",
+              "name": "utm_campaign",
+              "value": "={{ $json.body.Utm_campaign }}",
+              "type": "string"
+            },
+            {
+              "id": "da0bc581-faea-4794-9e78-e4ae1bd905c5",
+              "name": "utm_term",
+              "value": "={{ $json.body.Utm_term }}",
+              "type": "string"
+            },
+            {
+              "id": "2f45f7fd-a05e-41d1-917e-51319ab2a820",
+              "name": "utm_content",
+              "value": "={{ $json.body.Utm_content.replace(/\"/g, '') }}",
+              "type": "string"
+            },
+            {
+              "id": "8501fd08-c590-4669-84f6-bc3c3d0f81b5",
+              "name": "ID_mensagem",
+              "value": "Inscritos do site",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -96,
+        1184
+      ],
+      "id": "0942d96f-7e87-4c72-848f-7c49eb20b547",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "url": "https://api.brevo.com/v3/contacts/lists",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            },
+            {
+              "name": "api-key",
+              "value": "SUA_API_KEY_BREVO_AQUI"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1024,
+        448
+      ],
+      "id": "5f3ba3ca-a86c-4961-bb08-ecab0b524404",
+      "name": "ID Listas",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript)\n\n// Número original vindo do Edit Fields\nlet numeroOriginal = $('Edit Fields').first().json.Telefone || \"\";\n\n// Limpa tudo que não for dígito\nlet numeroLimpo = numeroOriginal.replace(/\\D/g, \"\");\n\n// Se tiver 10 ou 11 dígitos, adiciona 55 na frente\nif (numeroLimpo.length === 10 || numeroLimpo.length === 11) {\n  numeroLimpo = \"55\" + numeroLimpo;\n}\n\n// Monta o número corrigido\nconst telefoneCorrigido = numeroLimpo;\n\n// Pega os últimos 8 dígitos\nconst telefoneUltimos8 = telefoneCorrigido.slice(-8);\n\nreturn [\n  {\n    json: {\n      TelefoneCorrigido: telefoneCorrigido,\n      TelefoneUltimos8: telefoneUltimos8\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        128,
+        1184
+      ],
+      "id": "876b9fd8-1681-4fe0-bcb1-66c1b6f26d94",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA_GOOGLE/edit?gid=SEU_GID_DA_ABA#gid=SEU_GID_DA_ABA",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=SEU_GID_DA_ABA",
+          "mode": "list",
+          "cachedResultName": "Sua aba ou planilha",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA_GOOGLE/edit#gid=SEU_GID_DA_ABA"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Data": "={{ $now.format('dd/MM/yyyy') }}",
+            "Nome": "={{ $json.body.Name }}",
+            "Whats": "={{ $json.body.WhatsApp }}",
+            "E-mail": "={{ $json.body.Email }}",
+            "Utm_content": "={{ $json.body.Utm_content }}",
+            "Utm_campaign": "={{ $json.body.Utm_campaign }}",
+            "Utm_source": "={{ $json.body.Utm_source }}",
+            "Utm_medium": "={{ $json.body.Utm_medium }}",
+            "Utm_term": "={{ $json.body.Utm_term }}",
+            "form_name": "={{ $json.body.form_name }}"
+          },
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -80,
+        1424
+      ],
+      "id": "c623bcea-03ff-4164-b832-a639c86ae4a8",
+      "name": "Append row in sheet"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "SEU_WEBHOOK_PATH_HOTMART",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -432,
+        1888
+      ],
+      "id": "0501b687-3d1f-4fe2-9fa0-a236e556ab4d",
+      "name": "Webhook1",
+      "webhookId": "SEU_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1606022-b2fb-4c48-9bbe-0ae164c769ef",
+              "name": "URL",
+              "value": "https://SEU_SUBDOMINIO_KOMMO.kommo.com/api/v4",
+              "type": "string"
+            },
+            {
+              "id": "17b30a88-4979-4676-ae67-1542df20df54",
+              "name": "Token",
+              "value": "SEU_TOKEN_KOMMO_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "cd0bfe58-d404-4afd-82e8-fd0ad96f330a",
+              "name": "stage - checkout pre populado",
+              "value": "=ID_ETAPA_KOMMO_CHECKOUT",
+              "type": "string"
+            },
+            {
+              "id": "f88a7851-c1a0-461a-ab20-ac4b80b96f2e",
+              "name": "Pipeline",
+              "value": "ID_PIPELINE_KOMMO_PRINCIPAL",
+              "type": "string"
+            },
+            {
+              "id": "9877097a-84dd-4e2b-919b-42611bd6de76",
+              "name": "utm_source",
+              "value": "=ID_CAMPO_KOMMO_UTM_SOURCE",
+              "type": "string"
+            },
+            {
+              "id": "b1a3b949-23a7-42c3-a524-efd8f2f838e6",
+              "name": "utm_medium",
+              "value": "=ID_CAMPO_KOMMO_UTM_MEDIUM",
+              "type": "string"
+            },
+            {
+              "id": "a7eac3e3-77a5-4c34-b823-fec5486469ce",
+              "name": "utm_campaign",
+              "value": "=ID_CAMPO_KOMMO_UTM_CAMPAIGN",
+              "type": "string"
+            },
+            {
+              "id": "fff198ab-7961-4916-b21e-99e4c500796f",
+              "name": "utm_term",
+              "value": "=ID_CAMPO_KOMMO_UTM_TERM",
+              "type": "string"
+            },
+            {
+              "id": "e7b096d5-d2b1-46e6-aeea-f3abd2954c85",
+              "name": "utm_content",
+              "value": "=ID_CAMPO_KOMMO_UTM_CONTENT",
+              "type": "string"
+            },
+            {
+              "id": "21ee1bc8-5833-46a0-a868-926b225a0064",
+              "name": "evento",
+              "value": "ID_CAMPO_KOMMO_EVENTO",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        256,
+        1888
+      ],
+      "id": "13523676-d2de-4f48-8d7d-437f4a1a5baa",
+      "name": "Edit Fields13"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Edit Fields13').item.json.URL }}/contacts?query={{ $('Code28').item.json.TelefoneUltimos8 }}&with=leads",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields13').item.json.Token }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        704,
+        1888
+      ],
+      "id": "e49c3efd-d514-42c5-bf50-0700d9943335",
+      "name": "HTTP Request31"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript)\n\n// Número original vindo do Edit Fields\nlet numeroOriginal = $('Edit Fields3').first().json.Telefone || \"\";\n\n// Limpa tudo que não for dígito\nlet numeroLimpo = numeroOriginal.replace(/\\D/g, \"\");\n\n// Se tiver 10 ou 11 dígitos, adiciona 55 na frente\nif (numeroLimpo.length === 10 || numeroLimpo.length === 11) {\n  numeroLimpo = \"55\" + numeroLimpo;\n}\n\n// Monta o número corrigido\nconst telefoneCorrigido = numeroLimpo;\n\n// Pega os últimos 8 dígitos\nconst telefoneUltimos8 = telefoneCorrigido.slice(-8);\n\nreturn [\n  {\n    json: {\n      TelefoneCorrigido: telefoneCorrigido,\n      TelefoneUltimos8: telefoneUltimos8\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        1888
+      ],
+      "id": "944adf1f-6835-4374-8e2e-8f50296c41ca",
+      "name": "Code28"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "eeb66677-acd0-4825-a24f-30e8e8007e6b",
+              "name": "Nome",
+              "value": "={{ $json.body.Data.Buyer.Name }}",
+              "type": "string"
+            },
+            {
+              "id": "742dfe46-5fcd-45f4-b5ab-ce4d75ec0bb3",
+              "name": "Telefone",
+              "value": "={{ $json.body.Data.Buyer.PhoneNumber }}",
+              "type": "string"
+            },
+            {
+              "id": "a7cb1e93-c6a1-4d65-a2cc-a62f228c0693",
+              "name": "Email",
+              "value": "={{ $json.body.Data.Buyer.Email }}",
+              "type": "string"
+            },
+            {
+              "id": "30db1001-8a11-4ab7-b5db-c17134a9b837",
+              "name": "Utm_source",
+              "value": "={{ $json.body.Data.Utm.UtmSource }}",
+              "type": "string"
+            },
+            {
+              "id": "249069ad-c88a-46e7-8068-745dc5e7a806",
+              "name": "Utm_medium",
+              "value": "={{ $json.body.Data.Utm.UtmMedium }}",
+              "type": "string"
+            },
+            {
+              "id": "e8549e5d-04a4-452c-8f5b-e140cba2535e",
+              "name": "Utm_campaign",
+              "value": "={{ $json.body.Data.Utm.UtmCampaign }}",
+              "type": "string"
+            },
+            {
+              "id": "49b7e16e-f9aa-419b-9ec5-1df8dfacfd40",
+              "name": "Utm_content",
+              "value": "={{ $json.body.Data.Utm.UtmContent }}",
+              "type": "string"
+            },
+            {
+              "id": "ba2cb044-c66f-43fb-9ce4-faddf56d9adf",
+              "name": "Utm_term",
+              "value": "={{ $json.body.Data.Utm.UtmTerm }}",
+              "type": "string"
+            },
+            {
+              "id": "362e0cf8-42f1-439b-bc59-e4f290fbe9b5",
+              "name": "evento",
+              "value": "={{ $json.body.Event }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -192,
+        1888
+      ],
+      "id": "0b046014-8056-446c-8cf2-f70e05b4096d",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript)\n\n// ---- helpers ----\nfunction safeParse(v) {\n  if (v == null) return null;\n  if (typeof v === 'object') return v;\n  try { return JSON.parse(String(v)); } catch { return null; }\n}\n\nfunction getFirstByField(cf = [], wanted = []) {\n  if (!Array.isArray(cf)) return null;\n  const f = cf.find(x =>\n    wanted.includes(x.field_code) ||\n    wanted.includes(x.field_name)\n  );\n  return f?.values?.[0]?.value ?? null;\n}\n\nfunction getFirstPhone(cf = []) {\n  return getFirstByField(cf, ['PHONE', 'Phone']);\n}\n\nfunction getFirstEmail(cf = []) {\n  return getFirstByField(cf, ['EMAIL', 'Email', 'E-mail']);\n}\n\nfunction scoreContact(c) {\n  if (!c || typeof c !== 'object') return -1;\n  let s = 0;\n  if (c.name) s += 2;\n  if (getFirstPhone(c.custom_fields_values)) s += 2;\n  s += Array.isArray(c.custom_fields_values) ? c.custom_fields_values.length : 0;\n  s += Array.isArray(c._embedded?.tags) ? c._embedded.tags.length : 0;\n  s += Array.isArray(c._embedded?.companies) ? c._embedded.companies.length : 0;\n  if (c.first_name) s += 1;\n  if (c.last_name) s += 1;\n  if (c.responsible_user_id) s += 1;\n  return s;\n}\n\n// ---- main ----\nconst out = [];\n\nfor (const item of $input.all()) {\n  const data = safeParse(item.json?.data) || safeParse(item.json) || item.json;\n  if (!data || typeof data !== 'object') continue;\n\n  const contacts = data._embedded?.contacts ?? [];\n  const leadRows = [];\n\n  for (const contact of contacts) {\n    const leads = contact._embedded?.leads ?? [];\n    for (const ld of leads) {\n      leadRows.push({\n        json: {\n          contact_id: contact.id ?? null,\n          contact_name: contact.name ?? null,\n          phone: getFirstPhone(contact.custom_fields_values) ?? null,\n          email: getFirstEmail(contact.custom_fields_values) ?? null, // sempre presente\n          contact_link: contact._links?.self?.href ?? null,\n          lead_id: ld?.id ?? null,\n          lead_link: ld?._links?.self?.href ?? null,\n        }\n      });\n    }\n  }\n\n  if (leadRows.length > 0) {\n    out.push(...leadRows);\n  } else {\n    if (contacts.length > 0) {\n      let best = contacts[0];\n      let bestScore = scoreContact(best);\n      for (let i = 1; i < contacts.length; i++) {\n        const sc = scoreContact(contacts[i]);\n        if (sc > bestScore) {\n          best = contacts[i];\n          bestScore = sc;\n        }\n      }\n      out.push({\n        json: {\n          contact_id: best.id ?? null,\n          contact_name: best.name ?? null,\n          phone: getFirstPhone(best.custom_fields_values) ?? null,\n          email: getFirstEmail(best.custom_fields_values) ?? null, // sempre presente\n          contact_link: best._links?.self?.href ?? null,\n          lead_id: null,\n          lead_link: null,\n          _note: \"Sem leads; retornado contato mais completo\"\n        }\n      });\n    }\n  }\n}\n\nreturn out;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1152,
+        1792
+      ],
+      "id": "700bc97e-37b7-41f7-9433-0bc87bdf6f29",
+      "name": "Code29"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e0c834e3-6193-4aeb-9c11-046de160e6d9",
+              "leftValue": "={{ $json.lead_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1376,
+        1792
+      ],
+      "id": "690f0a82-a9c3-4bac-8749-2ba18fa58937",
+      "name": "If11"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Edit Fields13').first().json['URL'] }}/contacts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields13').first().json['Token'] }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"name\": \"{{ $('Edit Fields3').first().json.Nome }}\",\n    \"custom_fields_values\": [\n      {\n        \"field_code\": \"PHONE\",\n        \"values\": [\n          {\n            \"value\": \"{{ $('Edit Fields3').first().json.Telefone }}\"\n          }\n        ]\n      },\n      {\n        \"field_code\": \"EMAIL\",\n        \"values\": [\n          {\n            \"value\": \"{{ $('Edit Fields3').first().json.Email }}\"\n          }\n        ]\n      }\n    ]\n  }\n]\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1152,
+        2080
+      ],
+      "id": "407ad7f6-96ce-46bd-a942-72ad559ce5bc",
+      "name": "HTTP Request35"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().flatMap(item => {\n  let data;\n  try {\n    data = JSON.parse(item.json.data);\n  } catch (err) {\n    return [];\n  }\n\n  const contacts = data._embedded?.contacts || [];\n\n  return contacts.map(contact => {\n    const result = { ...contact };\n\n    // Adiciona lead_id (do primeiro lead)\n    result.lead_id = contact._embedded?.leads?.[0]?.id || null;\n\n    // Adiciona link direto para o contato\n    result.contact_link = contact._links?.self?.href || null;\n\n    return result;\n  });\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1376,
+        2080
+      ],
+      "id": "56943808-fa19-4e3f-93e8-8efbd13331bb",
+      "name": "Code31"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Edit Fields13').item.json.URL }}/leads",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields13').item.json.Token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"name\": \"{{ $('Edit Fields3').first().json.Nome }}\",\n    \"pipeline_id\": {{ $('Edit Fields13').first().json['Pipeline'] }},\n    \"status_id\": {{ $('Edit Fields13').first().json['stage - checkout pre populado'] }},\n    \"custom_fields_values\": [\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json.utm_medium }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields3').first().json.Utm_medium }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json.utm_campaign }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields3').first().json.Utm_campaign }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json.utm_term }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields3').first().json.Utm_term }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json.evento }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields3').first().json.evento }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json.utm_content }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields3').first().json.Utm_content }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json.utm_source }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields3').first().json.Utm_source }}\" }\n        ]\n      }\n    ],\n    \"_embedded\": {\n      \"contacts\": [\n        { \"id\":{{ $json.id }} }\n      ]\n    }\n  }\n]\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1600,
+        2080
+      ],
+      "id": "28591b87-cc5f-4cab-80b4-570a9a9eceda",
+      "name": "HTTP Request36"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Edit Fields13').item.json.URL }}/leads/{{ $json.lead_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields13').item.json.Token }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1600,
+        1696
+      ],
+      "id": "4e97cb12-2175-4625-b2a6-6930fe8d2b6e",
+      "name": "HTTP Request37"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ebfdc0e7-0b15-45db-b0d8-d890e76d1d14",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "=",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        928,
+        1888
+      ],
+      "id": "5b5c029b-dd35-4abf-83a3-c5bce2f2953d",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Edit Fields13').first().json.URL }}/leads",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields13').first().json.Token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"name\": \"{{ $('Edit Fields3').first().json.Nome }}\",\n    \"pipeline_id\": {{ $('Edit Fields13').item.json['Pipeline'] }},\n    \"status_id\": {{ $('Edit Fields13').item.json['stage - checkout pre populado'] }},\n    \"custom_fields_values\": [\n      {\n        \"field_id\": {{ $('Edit Fields13').item.json.utm_medium }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields3').item.json.Utm_medium }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json.evento }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields3').first().json.evento }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').item.json.utm_campaign }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields3').item.json.Utm_campaign }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').item.json.utm_term }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields3').item.json.Utm_term }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').item.json.utm_content }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields3').item.json.Utm_content }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').item.json.utm_source }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields3').item.json.Utm_source }}\" }\n        ]\n      }\n    ],\n    \"_embedded\": {\n      \"contacts\": [\n        { \"id\": {{ $('Code29').first().json.contact_id }} }\n      ]\n    }\n  }\n]\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1600,
+        1888
+      ],
+      "id": "ce9f35bb-9779-4412-ad1c-3a31c614c880",
+      "name": "HTTP Request6"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ $('Edit Fields13').first().json.URL }}/leads/{{ $json.id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields13').first().json.Token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"name\": \"{{ $('Edit Fields3').first().json.Nome }}\",\n    \"custom_fields_values\": [\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json.utm_medium }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields3').first().json.Utm_medium }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json.utm_campaign }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields3').first().json.Utm_campaign }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json.evento }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields3').first().json.evento }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json.utm_term }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields3').first().json.Utm_term }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json.utm_content }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields3').first().json.Utm_content }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json.utm_source }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields3').first().json.Utm_source }}\" }\n        ]\n      }\n    ],\n    \"_embedded\": {\n      \"contacts\": [\n        { \"id\": {{ $('Code29').first().json.contact_id }} }\n      ]\n    }\n  }\n]\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2048,
+        1696
+      ],
+      "id": "030e0581-306a-458f-8a43-a8c70c52aab3",
+      "name": "HTTP Request38"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript)\n// Entrada esperada (exemplo):\n// [\n//   { json: { data: \"<string JSON do /api/v4/leads/custom_fields>\" } }\n// ]\n// Saída: um item por custom field com informações úteis.\n\nfunction parseMaybeJson(v) {\n  if (v == null) return null;\n  if (typeof v === 'object') return v;\n  try { return JSON.parse(String(v)); } catch { return null; }\n}\n\nconst inputItems = $input.all();\nconst out = [];\n\nfor (const it of inputItems) {\n  const root = parseMaybeJson(it.json?.data);\n  if (!root) {\n    out.push({ json: { error: 'Não foi possível parsear json.data' } });\n    continue;\n  }\n\n  const fields = root?._embedded?.custom_fields || [];\n  if (!Array.isArray(fields) || fields.length === 0) {\n    out.push({ json: { warning: 'Nenhum custom field encontrado em _embedded.custom_fields' } });\n    continue;\n  }\n\n  for (const f of fields) {\n    const enumsArr = Array.isArray(f.enums)\n      ? f.enums.map(e => ({\n          id: e.id ?? null,\n          value: e.value ?? null,\n          sort: e.sort ?? null,\n        }))\n      : null;\n\n    const enum_values = enumsArr ? enumsArr.map(e => e.value).join(', ') : null;\n\n    out.push({\n      json: {\n        id: f.id ?? null,\n        name: f.name ?? null,\n        type: f.type ?? null,\n        code: f.code ?? null,\n        entity_type: f.entity_type ?? null,\n        group_id: f.group_id ?? null,\n        sort: f.sort ?? null,\n\n        is_api_only: !!f.is_api_only,\n        is_predefined: !!f.is_predefined,\n        is_deletable: !!f.is_deletable,\n\n        required_statuses: Array.isArray(f.required_statuses) ? f.required_statuses : [],\n        hidden_statuses: Array.isArray(f.hidden_statuses) ? f.hidden_statuses : [],\n        chained_lists: f.chained_lists ?? null,\n\n        link: f._links?.self?.href ?? null,\n\n        // enums já prontos para planilha\n        enums: enumsArr,\n        enum_values, // \"valor1, valor2, ...\"\n      }\n    });\n  }\n}\n\nreturn out;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        0
+      ],
+      "id": "bc0bd863-32a4-472a-85e1-ebff145e84cc",
+      "name": "Code5"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Obtém os dados do primeiro item da entrada\nlet inputData = $input.first().json;\n\n// Verifica se os dados estão em formato de string JSON e converte para objeto\nif (typeof inputData.data === \"string\") {\n    inputData = JSON.parse(inputData.data);\n}\n\n// Verifica a estrutura do JSON\nif (!inputData || !inputData._embedded || !inputData._embedded.statuses) {\n    throw new Error(\"Estrutura do JSON inválida ou sem statuses.\");\n}\n\n// Criar um objeto para armazenar os statuses\nlet statusMap = {};\n\n// Percorre os statuses e armazena no objeto\ninputData._embedded.statuses.forEach(status => {\n    statusMap[status.name] = status.id;\n});\n\n// Retorna o objeto contendo os nomes como chaves e os IDs como valores\nreturn [{ statuses: statusMap }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1840,
+        0
+      ],
+      "id": "fde200cb-78a1-42e0-8f5e-a42e9646ab5f",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        944,
+        0
+      ],
+      "id": "9793501c-5671-41be-8faf-20da5b2bcfdb",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Obtém os dados do primeiro item da entrada\nlet inputData = $input.first().json;\n\n// Verifica se os dados estão em formato de string JSON e converte para objeto\nif (typeof inputData.data === \"string\") {\n    inputData = JSON.parse(inputData.data);\n}\n\n// Verifica a estrutura do JSON\nif (!inputData || !inputData._embedded || !inputData._embedded.pipelines) {\n    throw new Error(\"Estrutura do JSON inválida ou sem pipelines.\");\n}\n\n// Criar um objeto para armazenar os pipelines\nlet pipelineMap = {};\n\n// Percorre os pipelines e armazena no objeto\ninputData._embedded.pipelines.forEach(pipeline => {\n    pipelineMap[pipeline.name] = pipeline.id;\n});\n\n// Retorna o objeto contendo os nomes como chaves e os IDs como valores\nreturn [{ pipelines: pipelineMap }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1392,
+        0
+      ],
+      "id": "8e121065-683e-419e-9cb2-0ddd12adee60",
+      "name": "Code6"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "cf2996a1-4d8b-43a4-ac1f-8c98ad4b4556",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.URL }}/leads/custom_fields",
+        "sendHeaders": true,
+        "specifyHeaders": "=json",
+        "headerParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "jsonHeaders": "={\n  \"Content-Type\": \"application/json\",\n  \"Authorization\": \"Bearer {{ $json.Token }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        496,
+        0
+      ],
+      "id": "9eaa6644-a736-412b-94a8-dd7d3c15ddf8",
+      "name": "HTTP Request7"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Edit Fields4').item.json.URL }}/leads/pipelines/{{ $json.pipelines['Funil de vendas'] }}/statuses",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n  \"Content-Type\": \"application/json\",\n  \"Authorization\": \"Bearer {{ $('Edit Fields4').item.json.Token }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1616,
+        0
+      ],
+      "id": "a1d42b42-9b4e-4b7f-aa7e-b43556b5d202",
+      "name": "HTTP Request8"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Edit Fields4').item.json.URL }}/leads/pipelines",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n  \"Content-Type\": \"application/json\",\n  \"Authorization\": \"Bearer {{ $('Edit Fields4').item.json.Token }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1168,
+        0
+      ],
+      "id": "c462832c-556e-40be-8ff4-f4e3ffa5437d",
+      "name": "HTTP Request9"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1606022-b2fb-4c48-9bbe-0ae164c769ef",
+              "name": "URL",
+              "value": "https://SEU_SUBDOMINIO_KOMMO.kommo.com/api/v4",
+              "type": "string"
+            },
+            {
+              "id": "17b30a88-4979-4676-ae67-1542df20df54",
+              "name": "Token",
+              "value": "SEU_TOKEN_KOMMO_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "cd0bfe58-d404-4afd-82e8-fd0ad96f330a",
+              "name": "pipeline - vendas",
+              "value": "ID_PIPELINE_KOMMO_VENDAS",
+              "type": "string"
+            },
+            {
+              "id": "f88a7851-c1a0-461a-ab20-ac4b80b96f2e",
+              "name": "stage - Hotmart",
+              "value": "ID_ETAPA_KOMMO_COMPRA",
+              "type": "string"
+            },
+            {
+              "id": "f3d79721-9f99-4396-ab59-89ef505ea257",
+              "name": "agendamento1",
+              "value": "SEU_TOKEN_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "bb047d04-5a53-491f-bfe8-9281b0dc425f",
+              "name": "tipo consulta 1",
+              "value": "SEU_TOKEN_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "b01ee19e-7007-4873-91a9-20401337c879",
+              "name": "confirmado1",
+              "value": "ID_CAMPO_KOMMO_CONFIRMADO_1",
+              "type": "string"
+            },
+            {
+              "id": "1359a2c0-e317-4033-a82b-45a463ac283b",
+              "name": "tipo agendamento 1",
+              "value": "SEU_TOKEN_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "a7ac3856-1c4c-4479-a223-44731fcf64e6",
+              "name": "obs 1",
+              "value": "ID_CAMPO_KOMMO_OBS_1",
+              "type": "string"
+            },
+            {
+              "id": "7ccb8a20-3ff4-4c73-bc60-75a410b06cc3",
+              "name": "tipos 1",
+              "value": "ID_CAMPO_KOMMO_TIPOS_1",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        272,
+        0
+      ],
+      "id": "3fcdbe8f-8797-4dbb-a480-f582d8e60178",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript) — retorna 1 lead aberto e não perdido\n// Mantém todos os campos anteriores + tags_string (com vírgula no final quando não-vazio)\n// Extrai \"agendamento {1..4}\" e AGORA também \"Token {1..4}\"\n\nfunction parseMaybeJson(v) {\n  if (v == null) return null;\n  if (typeof v === 'object') return v;\n  try { return JSON.parse(String(v)); } catch { return null; }\n}\n\nfunction escapeJsonString(s) {\n  // Escapa \\ e \" para uso seguro dentro de aspas duplas\n  return String(s).replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"');\n}\n\nfunction extractTags(lead) {\n  const arr = lead?._embedded?.tags;\n  if (!Array.isArray(arr)) {\n    return {\n      tags_raw: [], tag_ids: [], tag_names: [],\n      tag_names_csv: \"\", tags_string: \"\"\n    };\n  }\n\n  const names = arr\n    .filter(t => t && (t.name != null || t.id != null))\n    .map(t => String(t.name ?? \"\").trim())\n    .filter(name => name.length > 0);\n\n  // dedup por nome (case-insensitive)\n  const seen = new Set();\n  const dedupNames = names.filter(name => {\n    const key = name.toLowerCase();\n    if (seen.has(key)) return false;\n    seen.add(key);\n    return true;\n  });\n\n  const tags_raw = dedupNames.map(name => ({ name }));\n  const tag_names = dedupNames;\n  const tag_ids = arr.map(t => t?.id).filter(v => v != null);\n\n  // Monta a string no formato { \"name\": \"X\" },{ \"name\": \"Y\" },  (com vírgula final)\n  let tags_string = \"\";\n  if (tag_names.length) {\n    const parts = tag_names.map(n => `{ \"name\": \"${escapeJsonString(n)}\" }`);\n    tags_string = parts.join(\",\") + \",\"; // vírgula no final\n  }\n\n  return {\n    tags_raw,\n    tag_ids,\n    tag_names,\n    tag_names_csv: tag_names.join(\", \"),\n    tags_string\n  };\n}\n\n// --- IDs de campos conhecidos ---\nconst AGENDAMENTO_FIELD_IDS = {\n  agendamento1: 0 /* ID_CAMPO_KOMMO_AGENDAMENTO_1 */,\n  agendamento2: 0 /* SEU_ID_AQUI */,\n  agendamento3: 0 /* SEU_ID_AQUI */,\n  agendamento4: 0 /* SEU_ID_AQUI */,\n};\n\n// --- NOVO: IDs de Token ---\nconst TOKEN_FIELD_IDS = {\n  token1: 0 /* SEU_ID_AQUI */,\n  token2: 0 /* SEU_ID_AQUI */,\n  token3: 0 /* SEU_ID_AQUI */,\n  token4: 0 /* SEU_ID_AQUI */,\n};\n\nfunction extractAgendamentos(lead) {\n  const cfv = Array.isArray(lead?.custom_fields_values) ? lead.custom_fields_values : [];\n  const out = { agendamento1: null, agendamento2: null, agendamento3: null, agendamento4: null };\n\n  // indexa por field_id\n  const byId = new Map(cfv.map(f => [Number(f.field_id), f]));\n\n  for (const key of Object.keys(AGENDAMENTO_FIELD_IDS)) {\n    const id = AGENDAMENTO_FIELD_IDS[key];\n    const f = byId.get(Number(id));\n    const val = f?.values?.[0]?.value ?? null;\n    out[key] = (val !== undefined && val !== null && String(val).trim() !== \"\") ? String(val) : null;\n  }\n\n  // array em ordem 1..4, apenas com os existentes\n  const agendamentos = [out.agendamento1, out.agendamento2, out.agendamento3, out.agendamento4].filter(v => v != null);\n\n  return { ...out, agendamentos };\n}\n\n// --- NOVO: extrator de Tokens 1..4 ---\nfunction extractTokens(lead) {\n  const cfv = Array.isArray(lead?.custom_fields_values) ? lead.custom_fields_values : [];\n  const out = { token1: null, token2: null, token3: null, token4: null };\n\n  const byId = new Map(cfv.map(f => [Number(f.field_id), f]));\n\n  for (const key of Object.keys(TOKEN_FIELD_IDS)) {\n    const id = TOKEN_FIELD_IDS[key];\n    const f = byId.get(Number(id));\n    const val = f?.values?.[0]?.value ?? null;\n    out[key] = (val !== undefined && val !== null && String(val).trim() !== \"\") ? String(val) : null;\n  }\n\n  const tokens = [out.token1, out.token2, out.token3, out.token4].filter(v => v != null);\n\n  return { ...out, tokens };\n}\n\nconst pipelineTarget = $('Edit Fields13').first().json['pipeline - vendas'];\n\n// Converte cada item em objeto\nconst all = $input.all()\n  .map(it => parseMaybeJson(it.json?.data) || it.json)\n  .filter(o => o && typeof o === 'object');\n\n// Filtra abertos + não perdidos\nlet eligible = all.filter(l =>\n  l &&\n  l.id != null &&\n  l.closed_at == null &&\n  !l.is_deleted &&\n  l.loss_reason_id == null\n);\n\n// Prioriza pipeline alvo, se houver\nconst inTarget = eligible.filter(l => String(l.pipeline_id) === String(pipelineTarget));\nif (inTarget.length > 0) eligible = inTarget;\n\n// Ordena pelo updated_at (mais recente primeiro)\neligible.sort((a, b) => (Number(b.updated_at) || 0) - (Number(a.updated_at) || 0));\n\n// Sem elegíveis: retorna item “sentinela”\nif (!eligible.length) {\n  return [{\n    json: {\n      found: false,\n      id: null,\n      name: null,\n      pipeline_id: null,\n      status_id: null,\n      updated_at_unix: null,\n      link_self: null,\n      tags_raw: [],\n      tag_ids: [],\n      tag_names: [],\n      tag_names_csv: \"\",\n      tags_string: \"\",\n      agendamento1: null,\n      agendamento2: null,\n      agendamento3: null,\n      agendamento4: null,\n      agendamentos: [],\n      // NOVO: tokens\n      token1: null,\n      token2: null,\n      token3: null,\n      token4: null,\n      tokens: []\n    }\n  }];\n}\n\nconst lead = eligible[0];\nconst tagsInfo = extractTags(lead);\nconst agds = extractAgendamentos(lead);\nconst toks = extractTokens(lead);\n\nreturn [{\n  json: {\n    found: true,\n    id: lead.id,\n    name: lead.name ?? null,\n    pipeline_id: lead.pipeline_id ?? null,\n    status_id: lead.status_id ?? null,\n    updated_at_unix: Number(lead.updated_at) || null,\n    link_self: lead._links?.self?.href ?? null,\n    // tags\n    ...tagsInfo,\n    // agendamentos\n    ...agds,\n    // NOVO: tokens\n    ...toks\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1824,
+        1696
+      ],
+      "id": "bba5cfca-1b55-4f77-bd48-66c2f8ab6f67",
+      "name": "Code30"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8a4c9e74-3d90-4c3e-8c32-01eb91ec0ff0",
+              "leftValue": "={{ $json.Telefone }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        16,
+        1888
+      ],
+      "id": "819e2001-fb53-45eb-b363-989fa86e453e",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "content": "## 📘 README_SETUP — Leia antes de usar\n\nEste template conecta **formulário do site (WordPress) → Kommo (CRM) → Brevo (email) → Manychat (WhatsApp)** e também trata **compras (Hotmart) → Kommo**.\n\n### 1. Substitua os placeholders\n| Onde | Campo | Trocar por |\n|---|---|---|\n| Edit Fields12 / 13 / 4 | `URL` | `https://SEU_SUBDOMINIO_KOMMO.kommo.com/api/v4` → seu subdomínio |\n| Edit Fields12 / 13 / 4 | `Token` | `SEU_TOKEN_KOMMO_AQUI` (token de longa duração da integração Kommo) |\n| Edit Fields12 / 13 / 4 | IDs `ID_PIPELINE_...`, `ID_ETAPA_...`, `ID_CAMPO_...` | IDs da SUA conta Kommo |\n| Edit Fields2 | `API Manychat` | `SEU_TOKEN_MANYCHAT_AQUI` |\n| Edit Fields2 | `ID_CAMPO_MANYCHAT_...` | IDs dos custom fields da sua conta Manychat |\n| ID Listas / HTTP Request3 | header `api-key` | `SUA_API_KEY_BREVO_AQUI` |\n| HTTP Request3 | `SEU_ID_LISTA_BREVO` na URL | ID da lista do Brevo |\n| HTTP Request (createSubscriber) | `SUA_CONSENT_PHRASE_MANYCHAT` | sua frase de consentimento |\n| Webhook / Webhook1 | `path` | `SEU_WEBHOOK_PATH_SITE` e `SEU_WEBHOOK_PATH_HOTMART` |\n| Append row in sheet | `documentId` | `SEU_ID_DA_PLANILHA_GOOGLE` |\n\n### 2. Religue as credenciais\n- **Brevo (SendinBlue)** no nó `Upsert a contact` → hoje está como `[Reconfigurar] Brevo (SendinBlue)`\n- **Google Sheets (OAuth2)** no nó `Append row in sheet`\n- Os demais serviços autenticam por **header** dentro dos nós HTTP (não usam credencial do n8n)\n\n### 3. Descubra os IDs do Kommo automaticamente\nRode manualmente o bloco do canto superior esquerdo (`Execute workflow` → `Edit Fields4`).\nEle lista **custom fields**, **pipelines** e **etapas** da sua conta. Copie os IDs para os nós `Edit Fields12` e `Edit Fields13`.\n\n### 4. Ative\nSó ative o workflow (`active: true`) **depois** de trocar todos os placeholders e testar com dados fictícios.\n\n### ⚠️ Segurança\nEste template foi sanitizado. Se você é o dono da conta original, **revogue e gere novamente** o token do Kommo, a API key do Brevo e o token do Manychat — trocar por placeholder aqui NÃO invalida a chave antiga.",
+        "height": 900,
+        "width": 800,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1900,
+        320
+      ],
+      "id": "0584248e-6bfa-4951-b867-731e9bbbc6f5",
+      "name": "Sticky Note c349"
+    },
+    {
+      "parameters": {
+        "content": "## 🚀 Descoberta de IDs do Kommo (execução manual)\nBloco auxiliar — não faz parte do fluxo automático.\n\nRode o `Execute workflow` para consultar na API do Kommo:\n- `/leads/custom_fields` → IDs dos campos personalizados\n- `/leads/pipelines` → IDs dos funis\n- `/leads/pipelines/{id}/statuses` → IDs das etapas\n\n👉 Ajuste `URL` e `Token` no **Edit Fields4** antes de rodar.\nUse o resultado para preencher os IDs dos nós Edit Fields12 e Edit Fields13.",
+        "height": 300,
+        "width": 620,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        -260
+      ],
+      "id": "cb6d89b5-14dd-4d5a-8fca-a8b38da84178",
+      "name": "Sticky Note d7a5"
+    },
+    {
+      "parameters": {
+        "content": "## 1️⃣ Entrada: formulário do site (WordPress)\nO `Webhook` recebe o POST do formulário (nome, WhatsApp, e-mail e UTMs).\n\n👉 Troque o `path` por `SEU_WEBHOOK_PATH_SITE` e cole a URL de produção do n8n no plugin de formulário do WordPress.\n\nO gatilho dispara **3 trilhas em paralelo**:\nKommo (CRM) · Google Sheets (backup) · Brevo + Manychat.",
+        "height": 300,
+        "width": 460,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        940
+      ],
+      "id": "3a2c589f-d2eb-446b-9235-614ac738328a",
+      "name": "Sticky Note 7197"
+    },
+    {
+      "parameters": {
+        "content": "## 🔑 Configuração do Kommo (trilha do site)\nAqui ficam TODOS os parâmetros da conta:\n`URL`, `Token`, ID do funil, ID da etapa e os IDs dos campos de UTM.\n\n👉 Substitua `SEU_SUBDOMINIO_KOMMO`, `SEU_TOKEN_KOMMO_AQUI` e todos os `ID_PIPELINE_*` / `ID_ETAPA_*` / `ID_CAMPO_*`.\nO `Code24` normaliza o telefone (adiciona +55 e isola os últimos 8 dígitos) para a busca por duplicidade.",
+        "height": 280,
+        "width": 480,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        60,
+        400
+      ],
+      "id": "6990451c-52a9-4e15-96d5-6c77798afbf4",
+      "name": "Sticky Note 256e"
+    },
+    {
+      "parameters": {
+        "content": "## 2️⃣ Deduplicação e criação no Kommo\nLógica anti-duplicidade:\n1. Busca o contato pelos últimos 8 dígitos do telefone\n2. **If1** — existe contato?\n   • Não → cria contato + cria negócio\n   • Sim → **If9** verifica se já tem negócio\n      – tem → atualiza (PATCH) o negócio existente\n      – não tem → cria um negócio novo para o contato\n\n👉 Nada a configurar aqui além dos IDs herdados do Edit Fields12.",
+        "height": 300,
+        "width": 520,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        900,
+        260
+      ],
+      "id": "6085273e-8b6f-4410-93b8-fa76b03717c3",
+      "name": "Sticky Note d056"
+    },
+    {
+      "parameters": {
+        "content": "## 3️⃣ Backup no Google Sheets\nGrava uma linha por lead recebido (data, nome, WhatsApp, e-mail, UTMs e nome do formulário).\nServe como histórico independente do CRM.\n\n👉 Troque `SEU_ID_DA_PLANILHA_GOOGLE` e religue a credencial **Google Sheets OAuth2**.\nA planilha precisa ter as colunas: Data, Nome, Whats, E-mail, Utm_source, Utm_medium, Utm_campaign, Utm_term, Utm_content, form_name.",
+        "height": 260,
+        "width": 460,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -420,
+        1420
+      ],
+      "id": "907fffa4-8c91-4869-918f-a1d65532aab3",
+      "name": "Sticky Note 62df"
+    },
+    {
+      "parameters": {
+        "content": "## 4️⃣ Brevo (e-mail) + Manychat (WhatsApp)\n• `Upsert a contact` cria/atualiza o contato no Brevo com nome, sobrenome e UTMs → credencial `[Reconfigurar] Brevo (SendinBlue)`\n• `HTTP Request3` adiciona o contato à lista `SEU_ID_LISTA_BREVO`\n• `HTTP Request1` procura o assinante no Manychat pelo telefone\n   – não existe → `createSubscriber`\n   – existe → `setCustomFields`\n\n👉 Troque `SUA_API_KEY_BREVO_AQUI`, `SEU_TOKEN_MANYCHAT_AQUI` e os `ID_CAMPO_MANYCHAT_*`.",
+        "height": 320,
+        "width": 560,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        540,
+        1420
+      ],
+      "id": "52f0e282-c03d-4502-8c12-2d97ea93cce3",
+      "name": "Sticky Note 1a86"
+    },
+    {
+      "parameters": {
+        "content": "## 5️⃣ Entrada: compra confirmada (Hotmart)\nO `Webhook1` recebe o postback de compra (comprador + UTMs) e repete a mesma lógica de deduplicação da trilha do site, criando/atualizando o negócio no Kommo com o evento da compra.\n\n👉 Troque o `path` por `SEU_WEBHOOK_PATH_HOTMART` e cadastre essa URL como postback/webhook na plataforma de vendas.\n👉 Configure `Edit Fields13` com URL, Token e IDs (pode usar um funil/etapa diferentes da trilha do site).",
+        "height": 320,
+        "width": 480,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -700,
+        1620
+      ],
+      "id": "4d94e427-ff18-4b14-a0e4-4c7df1ee0c8d",
+      "name": "Sticky Note b33b"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields12": {
+      "main": [
+        [
+          {
+            "node": "Code24",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code24": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request27",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code25": {
+      "main": [
+        [
+          {
+            "node": "If9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If9": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request33",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code26": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request32",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request28": {
+      "main": [
+        [
+          {
+            "node": "Code27",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code27": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request29",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request33": {
+      "main": [
+        [
+          {
+            "node": "Code26",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Code25",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request28",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request27": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request30": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request34",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upsert a contact": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Upsert a contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields13": {
+      "main": [
+        [
+          {
+            "node": "Code28",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request31": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code28": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request31",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code29": {
+      "main": [
+        [
+          {
+            "node": "If11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If11": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request37",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request35": {
+      "main": [
+        [
+          {
+            "node": "Code31",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code31": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request36",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request37": {
+      "main": [
+        [
+          {
+            "node": "Code30",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Code29",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request35",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code5": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code6": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request7": {
+      "main": [
+        [
+          {
+            "node": "Code5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request8": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request9": {
+      "main": [
+        [
+          {
+            "node": "Code6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code30": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request38",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [],
+  "pinData": {}
+}

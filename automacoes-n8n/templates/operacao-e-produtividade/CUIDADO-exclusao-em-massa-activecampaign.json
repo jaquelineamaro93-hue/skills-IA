@@ -1,0 +1,354 @@
+{
+  "name": "[Template] Exclusão em Massa de Contatos no ActiveCampaign a partir de Google Sheets",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        -16
+      ],
+      "id": "6eafac4b-0f3f-4d97-9db6-a7a0ac919192",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA_GOOGLE/edit?gid=SEU_GID_DA_ABA_AQUI#gid=SEU_GID_DA_ABA_AQUI",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "SEU_GID_DA_ABA_AQUI",
+          "mode": "list",
+          "cachedResultName": "Sua aba ou planilha",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA_GOOGLE/edit#gid=SEU_GID_DA_ABA_AQUI"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -32,
+        -16
+      ],
+      "id": "81dfa190-2bb0-4560-baab-b4631dc54708",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 2,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        624,
+        0
+      ],
+      "id": "2a581e58-9320-4cb6-adce-ae9082e58a66",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "=https://SUA_CONTA.api-us1.com/api/3/contacts/{{ $json.ID }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "activeCampaignApi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1136,
+        0
+      ],
+      "id": "86fe9211-b294-4ecf-ad02-b01b7806bd8d",
+      "name": "HTTP Request",
+      "credentials": {
+        "activeCampaignApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] ActiveCampaign"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "amount": 2,
+        "unit": "seconds"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        912,
+        0
+      ],
+      "id": "ce1a8116-d383-416d-8841-453f98f300e0",
+      "name": "Wait",
+      "webhookId": "SEU_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA_GOOGLE/edit?gid=SEU_GID_DA_ABA_AQUI#gid=SEU_GID_DA_ABA_AQUI",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "SEU_GID_DA_ABA_AQUI",
+          "mode": "list",
+          "cachedResultName": "Sua aba ou planilha",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA_GOOGLE/edit#gid=SEU_GID_DA_ABA_AQUI"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID": "={{ $('Loop Over Items').item.json.ID }}",
+            "Nome": "X"
+          },
+          "matchingColumns": [
+            "ID"
+          ],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1520,
+        32
+      ],
+      "id": "3099ab9e-84eb-4e11-ab07-d57f9b01defa",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cb5878aa-5232-4d47-bbad-1f40d1f49777",
+              "leftValue": "={{ $json.Nome }}",
+              "rightValue": "=X",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        176,
+        -16
+      ],
+      "id": "14a20ff3-0d31-4bad-b099-e465577ead92",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "content": "## 🛑 README_SETUP — Exclusão em Massa no ActiveCampaign\n\n# ⚠️⚠️ FLUXO DESTRUTIVO — LEIA ANTES DE EXECUTAR ⚠️⚠️\nEste workflow **APAGA CONTATOS PERMANENTEMENTE** do ActiveCampaign\nvia `DELETE /api/3/contacts/{id}`.\n**Não existe desfazer. Não existe lixeira.** Contato apagado leva junto\nhistórico, tags, automações e métricas.\n\n**NUNCA rode este fluxo sem antes:**\n1. Exportar um backup completo dos contatos do ActiveCampaign\n2. Conferir linha por linha a planilha de entrada\n3. Testar com **2 ou 3 IDs descartáveis** primeiro\n4. Confirmar que o campo `ID` é o ID do contato no AC — e não o ID da linha,\n   nem o ID de outro objeto\n\n---\n### ✅ Passo a passo\n\n**1. Planilha Google**\nCrie uma planilha com no mínimo as colunas `ID` (ID do contato no ActiveCampaign)\ne `Nome`. Troque `SEU_ID_DA_PLANILHA_GOOGLE` e `SEU_GID_DA_ABA_AQUI` nos dois\nnós de Google Sheets.\n\n**2. Credencial Google Sheets**\nn8n → Credenciais → Google Sheets OAuth2. Selecione nos dois nós\n(estão marcados como `[Reconfigurar]`).\n\n**3. Credencial ActiveCampaign**\nAC → Configurações → Desenvolvedor → copie **URL da conta** e **Chave de API**.\nn8n → Credenciais → ActiveCampaign API. Selecione no nó `HTTP Request`.\n\n**4. URL da sua conta**\nNo nó `HTTP Request`, troque `SUA_CONTA.api-us1.com` pelo subdomínio real\n(pode ser `api-us1`, `api-us2` etc. — confira na tela de Desenvolvedor).\n\n**5. Rode manualmente**, acompanhando a execução. Não coloque em agendamento.\n\n---\n### ⚠️ AVISO DE SEGURANÇA\nTemplate sanitizado: IDs de planilha, subdomínio da conta, IDs de credenciais e\nnomes de cliente foram substituídos por placeholders.\n**Se você é o dono do arquivo original: revogue e gere novamente a Chave de API\ndo ActiveCampaign e revise o acesso OAuth do Google** — trocar o rótulo aqui\nNÃO invalida credenciais que já circularam.",
+        "height": 1000,
+        "width": 620,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        -780
+      ],
+      "id": "1b840b23-be17-4506-b5a5-eaf9df0065f9",
+      "name": "README_SETUP"
+    },
+    {
+      "parameters": {
+        "content": "### 1️⃣ Entrada — lista de IDs na planilha\n\n`Get row(s) in sheet` lê todas as linhas da aba.\n`Filter` deixa passar só as linhas em que a coluna `Nome` **não é \"X\"**.\n\nO \"X\" é o marcador de \"já processado\": ao final do ciclo, o fluxo\nescreve \"X\" na coluna `Nome` da linha, para que ela não seja\nreprocessada numa próxima execução.\n\n**Ajuste:** troque o ID da planilha e o GID da aba nos DOIS nós de Sheets.\nA planilha precisa ter as colunas `ID` e `Nome`.\n\n⚠️ Confira que a coluna `ID` contém o **ID do contato no ActiveCampaign**.\nUm ID errado aqui = contato errado apagado.",
+        "height": 380,
+        "width": 460,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        -460
+      ],
+      "id": "6f42c073-8d79-46f9-893d-bf6c288690cd",
+      "name": "Nota - Entrada"
+    },
+    {
+      "parameters": {
+        "content": "### 2️⃣ Loop + Wait — respeitando o limite da API\n\n`Loop Over Items` processa em lotes de **2 itens** por vez.\n`Wait` dá uma pausa entre os lotes para não estourar o rate limit\ndo ActiveCampaign (5 req/s no plano padrão).\n\n⚠️ **CORREÇÃO APLICADA:** no arquivo original o `Wait` estava com\n`amount: 2` e **sem a unidade definida** — o padrão do n8n nesse caso\né **horas**, o que faria o fluxo levar horas por lote.\nFoi ajustado para **2 segundos**, que é o comportamento provável desejado.\nConfira se é o que você quer antes de rodar.\n\n**Ajuste:** aumente o `batchSize` se sua base for grande e a API aguentar.",
+        "height": 380,
+        "width": 460,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        560,
+        -460
+      ],
+      "id": "c51d1e05-8e18-4b91-baba-990d312f7d79",
+      "name": "Nota - Loop e Wait"
+    },
+    {
+      "parameters": {
+        "content": "### 3️⃣ 🛑 AQUI O CONTATO É APAGADO\n\n`DELETE /api/3/contacts/{{ $json.ID }}` — **exclusão permanente e irreversível**\nno ActiveCampaign. Sem lixeira, sem rollback.\n\nO nó está com `onError: continueErrorOutput`: se o DELETE falhar\n(ID inexistente, permissão, rate limit), o item vai pela saída de erro\ne volta para o loop **sem ser marcado como processado** — então será\ntentado de novo numa próxima execução.\n\n**Ajuste:**\n• Troque `SUA_CONTA.api-us1.com` pelo subdomínio da sua conta\n• Selecione a credencial ActiveCampaign (está como `[Reconfigurar]`)\n\n💡 **Alternativa mais segura:** em vez de DELETE, considere usar\n`PUT /api/3/contacts/{id}/status` para descadastrar, ou aplicar uma tag\nde exclusão. Você mantém o histórico e consegue voltar atrás.",
+        "height": 420,
+        "width": 480,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1060,
+        -500
+      ],
+      "id": "9d434ab4-4625-47ce-89cd-0b20b351d259",
+      "name": "Nota - DELETE"
+    },
+    {
+      "parameters": {
+        "content": "### 4️⃣ Marcação de processados\n\n`Append or update row in sheet` volta na planilha e escreve **\"X\"** na\ncoluna `Nome` da linha correspondente (casando pela coluna `ID`).\nÉ isso que faz o `Filter` do início ignorar a linha numa próxima rodada.\n\n⚠️ Repare que essa marcação **sobrescreve o nome real** da pessoa na planilha.\nSe você precisa manter o nome para auditoria, crie uma coluna separada\n(ex.: `Status` = \"excluído\") e ajuste o mapeamento deste nó e a condição\ndo `Filter` para usar essa coluna.\n\nDepois de marcar, o item volta ao `Loop Over Items` para o próximo lote.",
+        "height": 400,
+        "width": 460,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        -500
+      ],
+      "id": "5a49db07-fe78-4002-b480-3c875bb3f89d",
+      "name": "Nota - Marcacao"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [],
+  "pinData": {}
+}

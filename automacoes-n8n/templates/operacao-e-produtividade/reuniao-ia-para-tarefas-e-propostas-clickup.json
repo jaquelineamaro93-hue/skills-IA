@@ -1,0 +1,1206 @@
+{
+  "name": "[TEMPLATE] Reunião -> IA -> Tarefas e Propostas no ClickUp",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.clickup.com/api/v3/workspaces/SEU_WORKSPACE_ID_CLICKUP/docs/{{ $('Edit Fields4').first().json.clickup_reunioes_page_id }}/pages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "clickUpOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"name\": \"{{ $json.payload.name }}\",\n  \"content_format\": \"text/md\",\n  \"content\": \"{{ $json.payload.content.replace(/\\\\#/g, '#').replace(/\"/g, '\\\\\"') }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        368,
+        224
+      ],
+      "id": "a350ba00-2f4a-4a8a-8b6f-c225d3758c2e",
+      "name": "HTTP Request11",
+      "retryOnFail": false,
+      "alwaysOutputData": false,
+      "credentials": {
+        "clickUpOAuth2Api": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] ClickUp OAuth2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const meetingTitle = $('Webhook - Tarefa').first().json.body.meeting_title;\n\n// Data formatada\nconst createdAt = new Date(\n  $('Webhook - Tarefa').first().json.body.created_at\n).toLocaleDateString('pt-BR');\n\n// 👉 name da página = título + data (ou só data, se preferir)\nconst pageName = `${meetingTitle} - ${createdAt}`;\n// Se quiser SÓ data, use:\n// const pageName = createdAt;\n\n// Duração\nconst start = new Date(\n  $('Webhook - Tarefa').first().json.body.recording_start_time\n).getTime();\n\nconst end = new Date(\n  $('Webhook - Tarefa').first().json.body.recording_end_time\n).getTime();\n\nconst diffMinutes = Math.floor((end - start) / 60000);\nconst hours = Math.floor(diffMinutes / 60);\nconst minutes = diffMinutes % 60;\nconst duration = hours > 0 ? `${hours}h ${minutes}min` : `${minutes}min`;\n\n// Helpers\nconst normalizeNewlines = (v) =>\n  String(v ?? '')\n    .replace(/\\r\\n/g, '\\n')\n    .replace(/\\u2028|\\u2029/g, '\\n'); // evita line-separators estranhos\n\nconst toJsonSafeString = (v) =>\n  normalizeNewlines(v)\n    .replace(/\\n/g, '\\\\n') // vira \\n literal (sem quebra real)\n    .replace(/\\t/g, ' ');  // remove tabs\n\n// Participantes: se vier array, transforma em lista markdown\nconst rawParticipants = $('Code in JavaScript14').first().json.participants\n\nconst participantsMd = Array.isArray(rawParticipants)\n  ? rawParticipants.map((p) => `- ${String(p).trim()}`).join('\\n')\n  : normalizeNewlines(rawParticipants)\n      .split('\\n')\n      .map((p) => p.trim())\n      .filter(Boolean)\n      .map((p) => `- ${p}`)\n      .join('\\n');\n\n// Resumo e transcrição (normalizados)\nconst summaryRaw = normalizeNewlines(\n  $('Webhook - Tarefa').first().json.body.default_summary?.markdown_formatted ?? ''\n).trim();\n\nconst transcriptRaw = normalizeNewlines($json.formatted_transcript ?? '').trim();\n\n// Links da gravação\nconst shareUrl = String($('Webhook - Tarefa').first().json.body.share_url ?? '').trim();\n\n// Formato desejado:\n// [https://fathom...](https://fathom...?tab=summary&timestamp=0)\nconst recordingLink = shareUrl\n  ? `[${shareUrl}](${shareUrl}?tab=summary&timestamp=0)`\n  : '';\n\n// Monta conteúdo \"humano\" (multilinha)\nconst contentMultiline = `# 📌 ${meetingTitle}\n\n---\n\n## 🗓 Informações gerais\n**Data:** ${createdAt}  \n**Duração:** ${duration}\n\n👥 **Participantes:**\n${participantsMd}\n\n---\n\n## 🎥 Gravação da reunião\n${recordingLink}\n\n---\n\n## 🧠 Resumo\n${summaryRaw}\n\n---\n\n## 📝 Transcrição\n${transcriptRaw}\n`;\n\n// Converte TUDO para uma string segura p/ JSON (sem quebras reais)\nconst content = toJsonSafeString(contentMultiline);\n\nreturn [\n  {\n    json: {\n      payload: {\n        name: pageName,\n        content_format: 'text/md',\n        content,\n      }\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -80,
+        224
+      ],
+      "id": "e366048f-15c7-4992-bfe9-cb34c4249ecd",
+      "name": "Code in JavaScript13"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bde4d2ad-903c-40c4-8772-1e2c29c1a60e",
+              "name": "payload.content",
+              "value": "={{ $json.payload.content }}",
+              "type": "string"
+            },
+            {
+              "id": "7e06eb82-4464-49c3-9faa-457dd56263a1",
+              "name": "payload.name",
+              "value": "={{ $json.payload.name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        144,
+        224
+      ],
+      "id": "0c08b32d-3a5d-488e-8d4b-6cbe535147c4",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "121b5e6b-4a36-468f-8886-92290f57b35b",
+              "name": "transcript",
+              "value": "={{ $json.body.transcript }}",
+              "type": "array"
+            },
+            {
+              "id": "c39fa9c1-50c3-4e75-b301-aa30a93e2dc5",
+              "name": "Membros da Equipe",
+              "value": "=NOME_MEMBRO_1; NOME_MEMBRO_2; NOME_MEMBRO_3; NOME_MEMBRO_4; NOME_MEMBRO_5; NOME_MEMBRO_6",
+              "type": "string"
+            },
+            {
+              "id": "c02daccf-739a-4b7a-88e6-10c5ea4768fd",
+              "name": "id_supabase",
+              "value": "={{ $json.body.reuniao_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2000,
+        224
+      ],
+      "id": "4ad45ea2-ba9f-487c-a44f-e2f90f7b8aeb",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "jsCode": "const transcripts = $('Edit Fields3').first().json.transcript;\n\nfunction shortenName(fullName) {\n  const parts = String(fullName || '').split(' ').filter(Boolean);\n  if (parts.length === 0) return '';\n\n  const firstName = parts[0].slice(0, 2);\n  const lastNamesInitials = parts.slice(1).map(p => p[0]).join('');\n\n  return `${firstName}${lastNamesInitials}`;\n}\n\nconst namesMap = {};\nconst participantsSet = new Set();\n\nfunction toSeconds(value) {\n  if (value === null || value === undefined || value === '') return null;\n\n  if (typeof value === 'number') {\n    return Number.isFinite(value) ? value : null;\n  }\n\n  if (typeof value === 'string') {\n    const v = value.trim();\n\n    if (!v) return null;\n\n    if (/^\\d+(\\.\\d+)?$/.test(v)) {\n      const num = Number(v);\n      return Number.isFinite(num) ? num : null;\n    }\n\n    const parts = v.split(':').map(Number);\n\n    if (parts.every(n => Number.isFinite(n))) {\n      if (parts.length === 2) {\n        const [mm, ss] = parts;\n        return mm * 60 + ss;\n      }\n      if (parts.length === 3) {\n        const [hh, mm, ss] = parts;\n        return hh * 3600 + mm * 60 + ss;\n      }\n    }\n  }\n\n  return null;\n}\n\nfunction formatTime(seconds) {\n  if (seconds === null || seconds === undefined || !Number.isFinite(seconds)) {\n    return '';\n  }\n\n  const total = Math.floor(seconds);\n  const hrs = Math.floor(total / 3600);\n  const mins = Math.floor((total % 3600) / 60);\n  const secs = total % 60;\n\n  if (hrs > 0) {\n    return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;\n  }\n\n  return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;\n}\n\nconst conversation = transcripts\n  .filter(t => t.speaker?.display_name && t.text)\n  .map(t => {\n    const fullName = t.speaker.display_name;\n    participantsSet.add(fullName);\n\n    if (!namesMap[fullName]) {\n      namesMap[fullName] = shortenName(fullName);\n    }\n\n    const shortName = namesMap[fullName];\n\n    const rawTime =\n      t.start ??\n      t.start_time ??\n      t.timestamp ??\n      t.offset ??\n      t.time ??\n      t.startTime ??\n      null;\n\n    const time = formatTime(toSeconds(rawTime));\n    const text = String(t.text).trim();\n\n    return time\n      ? `[${time}] ${shortName}: ${text}`\n      : `${shortName}: ${text}`;\n  })\n  .join('\\n');\n\nconst conversation_length = conversation.length;\nconst participants = Array.from(participantsSet).join('\\n');\nconst participants_short = Array.from(participantsSet)\n  .map(name => namesMap[name])\n  .join('\\n');\n\nreturn [\n  {\n    json: {\n      conversation,\n      conversation_length,\n      names_map: namesMap,\n      participants,\n      participants_short,\n      participants_qtd: participantsSet.size\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1776,
+        224
+      ],
+      "id": "1dee01de-a6a1-420c-99ad-51b29319684b",
+      "name": "Code in JavaScript14"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d27817e8-4d8f-48df-8f96-6e56bad0cd77",
+              "name": "clickup_space_id",
+              "value": "={{ $('Get a row1').first().json.clickup_space_id }}",
+              "type": "number"
+            },
+            {
+              "id": "60ff3e99-d548-4dc2-9080-cee8da497ea4",
+              "name": "clickup_list_id",
+              "value": "={{ $('Get a row1').first().json.clickup_list_id }}",
+              "type": "number"
+            },
+            {
+              "id": "76825da0-35b6-4ad1-a789-bfdb1ee8a73e",
+              "name": "clickup_folder_id",
+              "value": "={{ $('Get a row1').first().json.clickup_folder_id }}",
+              "type": "number"
+            },
+            {
+              "id": "b91f568b-776a-446f-9eeb-83897ef6a068",
+              "name": "clickup_reunioes_page_id",
+              "value": "={{ $('Get a row1').first().json.clickup_reunioes_page_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -752,
+        224
+      ],
+      "id": "1fb89343-761a-4bc9-959d-c09cdf2ec25a",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "jsCode": "const transcript = $('Webhook - Tarefa').first().json.body.transcript;\n\nif (!Array.isArray(transcript)) {\n  return [\n    {\n      json: {\n        formatted_transcript: ''\n      }\n    }\n  ];\n}\n\nconst blocks = [];\nlet current = null;\n\nfor (const item of transcript) {\n  const speaker = item.speaker?.display_name || 'Participante';\n  const text = item.text || '';\n  const timestamp = item.timestamp || '';\n\n  if (!current || current.speaker !== speaker) {\n    if (current) blocks.push(current);\n    current = {\n      speaker,\n      timestamp,\n      text: [text]\n    };\n  } else {\n    current.text.push(text);\n  }\n}\n\nif (current) blocks.push(current);\n\nconst formattedTranscript = blocks\n  .map(\n    b =>\n      `**${b.speaker}** (${b.timestamp})  \\n${b.text.join(' ')}`\n  )\n  .join('\\n\\n');\n\nreturn [\n  {\n    json: {\n      formatted_transcript: formattedTranscript\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -304,
+        224
+      ],
+      "id": "a04f9b9b-598c-4af7-8811-41eac3d78ec4",
+      "name": "Code in JavaScript12"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "reunioes",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $('Edit Fields3').first().json.id_supabase }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -1552,
+        224
+      ],
+      "id": "f2ff550e-c048-4f4a-aecf-40ba10dcb4e7",
+      "name": "Get a row",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Supabase API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Descrição\nAnalisa transcrições de reuniões e transforma automaticamente em tarefas claras e organizadas para subir no ClickUp, incluindo responsáveis, tempo citado na reunião e stakeholders envolvidos.\n\nInstruções\nVocê é um assistente especializado em transformar reuniões em tarefas executáveis para a sua equipe.\n\nSeu objetivo é identificar qualquer direcionamento que gere ação para o time, mesmo que não esteja explícito como “uma tarefa”.\n\n🎯 O que você deve mapear como tarefa\n\nConsidere tarefa sempre que houver:\n\nUm direcionamento estratégico\n\nUma decisão que exige execução\n\nUm alinhamento que gera ação futura\n\nUm problema que precisa ser resolvido\n\nUma pendência\n\nUm “vamos fazer…”\n\nUm “precisamos…”\n\nUm “alguém tem que…”\n\nUm compromisso assumido\n\nUma melhoria sugerida\n\nUm ajuste em processo\n\nUm follow-up implícito\n\nUm risco que exige ação preventiva\n\nMesmo que não esteja estruturado como tarefa, você deve transformar em tarefa clara.\n\n👥 Membros da Equipe\n\nMembros válidos da equipe:\n\nNOME_MEMBRO_1\n\nNOME_MEMBRO_2\n\nNOME_MEMBRO_3\n\nNOME_MEMBRO_4\n\nNOME_MEMBRO_5\n\nNOME_MEMBRO_6\n\nSe o direcionamento for para:\n\n“Time”\n\n“Marketing”\n\n“Comercial”\n\n“Produto”\n\n“Vocês”\n\n“Alguém”\n\nVocê deve classificar como:\nResponsável não definido na reunião (Equipe interna)\n\nSe for outra pessoa fora da lista, classificar como:\nStakeholder Externo\n\n📌 O que você deve extrair para cada tarefa\n\n✅ Nome claro e objetivo\n\n📝 Descrição estruturada\n\n👤 Responsável\n\n👥 Pessoas interessadas\n\n⏱ Timestamp exato (minuto e segundo)\n\n📅 Prazo mencionado (ou indicar que não foi definido)\n\n🔥 Nível de urgência implícito (Alta / Média / Baixa)\n\n🔗 Se existe dependência de outra tarefa\n\nSe a tarefa surgir em múltiplos momentos da reunião, listar todos os timestamps.\n\n🧠 Interpretação Inteligente\n\nVocê deve:\n\nConsolidar tarefas repetidas\n\nSeparar tarefas estratégicas de operacionais\n\nQuebrar tarefas grandes em subtarefas se necessário\n\nNão misturar temas diferentes em uma única tarefa\n\nNão criar tarefas que não tenham base na reunião\n\n📋 Formato de Saída\n🔹 TAREFA 1 – [Nome Objetivo da Tarefa]\n\nTipo: (Estratégica / Operacional)\nResponsável:\nPessoas Interessadas:\nTimestamp:\nPrazo:\nUrgência:\nDependências:\n\nDescrição:\n(Explicação clara do que precisa ser feito e por quê)\n\nCritério de Conclusão (Definition of Done):\n\nItem 1\n\nItem 2\n\nItem 3\n\nSeparar cada tarefa com linha divisória.\n\n❌ O que evitar\n\nResumir a reunião\n\nIgnorar direcionamentos implícitos\n\nCriar tarefas genéricas\n\nNão incluir timestamp\n\nSupor prazos ou responsáveis\n\n{{ $('Code in JavaScript14').first().json.conversation }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -1104,
+        224
+      ],
+      "id": "e599072d-1b41-4259-8fed-8bbe9d876378",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $now }}",
+        "contextWindowLength": 1
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -976,
+        448
+      ],
+      "id": "02d91e4e-0025-4d9b-8037-923b979c1865",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "Sua aba ou planilha"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -1104,
+        448
+      ],
+      "id": "6c963493-8cb8-4739-b263-ad2a8444d319",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "Clientes",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "nome",
+              "keyValue": "={{ $json['origem/cliente'] }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -1328,
+        224
+      ],
+      "id": "ef43e6b0-a4e9-4692-abb1-9de520c93900",
+      "name": "Get a row1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Supabase API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "reunioes",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "condition": "eq",
+              "keyValue": "={{ $('Edit Fields3').first().json.id_supabase }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "Demandas",
+              "fieldValue": "={{ $('AI Agent1').first().json.output }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -528,
+        224
+      ],
+      "id": "cfcc5acd-f896-41de-979e-2a69c1e93ec6",
+      "name": "Update a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Supabase API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.clickup.com/api/v3/workspaces/SEU_WORKSPACE_ID_CLICKUP/docs/{{ $('Edit Fields6').first().json.clickup_reunioes_page_id }}/pages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "clickUpOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"name\": \"{{ $json.payload.name }}\",\n  \"content_format\": \"text/md\",\n  \"content\": \"{{ $json.payload.content.replace(/\\\\#/g, '#').replace(/\"/g, '\\\\\"') }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        576,
+        880
+      ],
+      "id": "c70141b0-fb5e-4148-a487-946d62cf1bfd",
+      "name": "HTTP Request12",
+      "retryOnFail": false,
+      "alwaysOutputData": false,
+      "credentials": {
+        "clickUpOAuth2Api": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] ClickUp OAuth2"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const meetingTitle = $('Webhook - Proposta').first().json.body.meeting_title;\n\n// Data formatada\nconst createdAt = new Date(\n  $('Webhook - Proposta').first().json.body.created_at\n).toLocaleDateString('pt-BR');\n\n// 👉 name da página = título + data (ou só data, se preferir)\nconst pageName = `${meetingTitle} - ${createdAt}`;\n// Se quiser SÓ data, use:\n// const pageName = createdAt;\n\n// Duração\nconst start = new Date(\n  $('Webhook - Proposta').first().json.body.recording_start_time\n).getTime();\n\nconst end = new Date(\n  $('Webhook - Proposta').first().json.body.recording_end_time\n).getTime();\n\nconst diffMinutes = Math.floor((end - start) / 60000);\nconst hours = Math.floor(diffMinutes / 60);\nconst minutes = diffMinutes % 60;\nconst duration = hours > 0 ? `${hours}h ${minutes}min` : `${minutes}min`;\n\n// Helpers\nconst normalizeNewlines = (v) =>\n  String(v ?? '')\n    .replace(/\\r\\n/g, '\\n')\n    .replace(/\\u2028|\\u2029/g, '\\n'); // evita line-separators estranhos\n\nconst toJsonSafeString = (v) =>\n  normalizeNewlines(v)\n    .replace(/\\n/g, '\\\\n') // vira \\n literal (sem quebra real)\n    .replace(/\\t/g, ' ');  // remove tabs\n\n// Participantes: se vier array, transforma em lista markdown\nconst rawParticipants = $('Code in JavaScript15').first().json.participants\n\nconst participantsMd = Array.isArray(rawParticipants)\n  ? rawParticipants.map((p) => `- ${String(p).trim()}`).join('\\n')\n  : normalizeNewlines(rawParticipants)\n      .split('\\n')\n      .map((p) => p.trim())\n      .filter(Boolean)\n      .map((p) => `- ${p}`)\n      .join('\\n');\n\n// Resumo e transcrição (normalizados)\nconst summaryRaw = normalizeNewlines(\n  $('Webhook - Proposta').first().json.body.default_summary?.markdown_formatted ?? ''\n).trim();\n\nconst transcriptRaw = normalizeNewlines($json.formatted_transcript ?? '').trim();\n\n// Links da gravação\nconst shareUrl = String($('Webhook - Proposta').first().json.body.share_url ?? '').trim();\n\n// Formato desejado:\n// [https://fathom...](https://fathom...?tab=summary&timestamp=0)\nconst recordingLink = shareUrl\n  ? `[${shareUrl}](${shareUrl}?tab=summary&timestamp=0)`\n  : '';\n\n// Monta conteúdo \"humano\" (multilinha)\nconst contentMultiline = `# 📌 ${meetingTitle}\n\n---\n\n## 🗓 Informações gerais\n**Data:** ${createdAt}  \n**Duração:** ${duration}\n\n👥 **Participantes:**\n${participantsMd}\n\n---\n\n## 🎥 Gravação da reunião\n${recordingLink}\n\n---\n\n## 🧠 Resumo\n${summaryRaw}\n\n---\n\n## 📝 Transcrição\n${transcriptRaw}\n`;\n\n// Converte TUDO para uma string segura p/ JSON (sem quebras reais)\nconst content = toJsonSafeString(contentMultiline);\n\nreturn [\n  {\n    json: {\n      payload: {\n        name: pageName,\n        content_format: 'text/md',\n        content,\n      }\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        128,
+        880
+      ],
+      "id": "5b4fa5fa-b9de-4497-b591-131618da9849",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bde4d2ad-903c-40c4-8772-1e2c29c1a60e",
+              "name": "payload.content",
+              "value": "={{ $json.payload.content }}",
+              "type": "string"
+            },
+            {
+              "id": "7e06eb82-4464-49c3-9faa-457dd56263a1",
+              "name": "payload.name",
+              "value": "={{ $json.payload.name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        352,
+        880
+      ],
+      "id": "285ce273-1a0d-41e4-9b4f-d45195d6c799",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "121b5e6b-4a36-468f-8886-92290f57b35b",
+              "name": "transcript",
+              "value": "={{ $json.body.transcript }}",
+              "type": "array"
+            },
+            {
+              "id": "c39fa9c1-50c3-4e75-b301-aa30a93e2dc5",
+              "name": "Membros da Equipe",
+              "value": "=NOME_MEMBRO_1; NOME_MEMBRO_2; NOME_MEMBRO_3; NOME_MEMBRO_4; NOME_MEMBRO_5; NOME_MEMBRO_6",
+              "type": "string"
+            },
+            {
+              "id": "c02daccf-739a-4b7a-88e6-10c5ea4768fd",
+              "name": "id_supabase",
+              "value": "={{ $json.body.reuniao_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1792,
+        880
+      ],
+      "id": "209984a4-49ff-476a-bcbb-945cd6c4d9bd",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "jsCode": "const transcripts = $('Edit Fields5').first().json.transcript;\n\nfunction shortenName(fullName) {\n  const parts = String(fullName || '').split(' ').filter(Boolean);\n  if (parts.length === 0) return '';\n\n  const firstName = parts[0].slice(0, 2);\n  const lastNamesInitials = parts.slice(1).map(p => p[0]).join('');\n\n  return `${firstName}${lastNamesInitials}`;\n}\n\nconst namesMap = {};\nconst participantsSet = new Set();\n\nfunction toSeconds(value) {\n  if (value === null || value === undefined || value === '') return null;\n\n  if (typeof value === 'number') {\n    return Number.isFinite(value) ? value : null;\n  }\n\n  if (typeof value === 'string') {\n    const v = value.trim();\n\n    if (!v) return null;\n\n    if (/^\\d+(\\.\\d+)?$/.test(v)) {\n      const num = Number(v);\n      return Number.isFinite(num) ? num : null;\n    }\n\n    const parts = v.split(':').map(Number);\n\n    if (parts.every(n => Number.isFinite(n))) {\n      if (parts.length === 2) {\n        const [mm, ss] = parts;\n        return mm * 60 + ss;\n      }\n      if (parts.length === 3) {\n        const [hh, mm, ss] = parts;\n        return hh * 3600 + mm * 60 + ss;\n      }\n    }\n  }\n\n  return null;\n}\n\nfunction formatTime(seconds) {\n  if (seconds === null || seconds === undefined || !Number.isFinite(seconds)) {\n    return '';\n  }\n\n  const total = Math.floor(seconds);\n  const hrs = Math.floor(total / 3600);\n  const mins = Math.floor((total % 3600) / 60);\n  const secs = total % 60;\n\n  if (hrs > 0) {\n    return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;\n  }\n\n  return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;\n}\n\nconst conversation = transcripts\n  .filter(t => t.speaker?.display_name && t.text)\n  .map(t => {\n    const fullName = t.speaker.display_name;\n    participantsSet.add(fullName);\n\n    if (!namesMap[fullName]) {\n      namesMap[fullName] = shortenName(fullName);\n    }\n\n    const shortName = namesMap[fullName];\n\n    const rawTime =\n      t.start ??\n      t.start_time ??\n      t.timestamp ??\n      t.offset ??\n      t.time ??\n      t.startTime ??\n      null;\n\n    const time = formatTime(toSeconds(rawTime));\n    const text = String(t.text).trim();\n\n    return time\n      ? `[${time}] ${shortName}: ${text}`\n      : `${shortName}: ${text}`;\n  })\n  .join('\\n');\n\nconst conversation_length = conversation.length;\nconst participants = Array.from(participantsSet).join('\\n');\nconst participants_short = Array.from(participantsSet)\n  .map(name => namesMap[name])\n  .join('\\n');\n\nreturn [\n  {\n    json: {\n      conversation,\n      conversation_length,\n      names_map: namesMap,\n      participants,\n      participants_short,\n      participants_qtd: participantsSet.size\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1568,
+        880
+      ],
+      "id": "4851a22c-b629-41f1-890c-7b156d80f580",
+      "name": "Code in JavaScript15"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d27817e8-4d8f-48df-8f96-6e56bad0cd77",
+              "name": "clickup_space_id",
+              "value": "={{ $('Get a row3').first().json.clickup_space_id }}",
+              "type": "number"
+            },
+            {
+              "id": "60ff3e99-d548-4dc2-9080-cee8da497ea4",
+              "name": "clickup_list_id",
+              "value": "={{ $('Get a row3').first().json.clickup_list_id }}",
+              "type": "number"
+            },
+            {
+              "id": "76825da0-35b6-4ad1-a789-bfdb1ee8a73e",
+              "name": "clickup_folder_id",
+              "value": "={{ $('Get a row3').first().json.clickup_folder_id }}",
+              "type": "number"
+            },
+            {
+              "id": "b91f568b-776a-446f-9eeb-83897ef6a068",
+              "name": "clickup_reunioes_page_id",
+              "value": "={{ $('Get a row3').first().json.clickup_reunioes_page_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -544,
+        880
+      ],
+      "id": "5c294fc0-cacc-44f2-9025-5f186233efb6",
+      "name": "Edit Fields6"
+    },
+    {
+      "parameters": {
+        "jsCode": "const transcript = $('Webhook - Proposta').first().json.body.transcript;\n\nif (!Array.isArray(transcript)) {\n  return [\n    {\n      json: {\n        formatted_transcript: ''\n      }\n    }\n  ];\n}\n\nconst blocks = [];\nlet current = null;\n\nfor (const item of transcript) {\n  const speaker = item.speaker?.display_name || 'Participante';\n  const text = item.text || '';\n  const timestamp = item.timestamp || '';\n\n  if (!current || current.speaker !== speaker) {\n    if (current) blocks.push(current);\n    current = {\n      speaker,\n      timestamp,\n      text: [text]\n    };\n  } else {\n    current.text.push(text);\n  }\n}\n\nif (current) blocks.push(current);\n\nconst formattedTranscript = blocks\n  .map(\n    b =>\n      `**${b.speaker}** (${b.timestamp})  \\n${b.text.join(' ')}`\n  )\n  .join('\\n\\n');\n\nreturn [\n  {\n    json: {\n      formatted_transcript: formattedTranscript\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -96,
+        880
+      ],
+      "id": "39c7bcce-850f-4551-96b4-601ffb55f12c",
+      "name": "Code in JavaScript16"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "reunioes",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $('Edit Fields5').first().json.id_supabase }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -1344,
+        880
+      ],
+      "id": "f688e2a9-a166-4ce0-afa8-0d2b93477a52",
+      "name": "Get a row2",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Supabase API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um agente especialista em transformar reuniões, transcrições, áudios resumidos, anotações comerciais e contextos soltos em propostas comerciais completas, claras, estratégicas e bem estruturadas.\n\nSeu papel não é apenas “escrever bonito”. Seu papel é organizar o raciocínio da proposta, entender o que realmente está sendo vendido, identificar o problema central do cliente, traduzir isso em escopo e apresentar uma proposta coerente com o nível de complexidade do projeto.\n\nSeu objetivo\n\nA partir das informações enviadas, você deve escrever uma proposta comercial completa, contendo todas as seções necessárias, com linguagem profissional, objetiva e adaptada ao contexto do cliente.\n\nA proposta deve sempre parecer que foi escrita por alguém que:\n\nentendeu a operação do cliente\ncompreendeu o problema real\nsabe exatamente onde entra\nnão promete mais do que será entregue\nsabe vender sem exagerar\nComo você deve pensar antes de escrever\n\nAntes de redigir a proposta, siga esta lógica:\n\nEntenda o que de fato está sendo vendido.\nÉ implementação?\nÉ acompanhamento?\nÉ integração?\nÉ automação?\nÉ diagnóstico?\nÉ operação recorrente?\nÉ algo pontual ou contínuo?\nIdentifique o problema central do cliente.\nO que trava a operação hoje?\nO que gera perda de eficiência, receita ou previsibilidade?\nO que o cliente quer resolver agora?\nSepare o que faz parte do escopo e o que não faz.\nNunca prometa algo que não será entregue.\nNunca mantenha trechos genéricos de propostas anteriores se eles não fizerem sentido aqui.\nSe o projeto for simples, a proposta deve parecer simples.\nSe o projeto for robusto, a proposta pode refletir isso.\nAjuste a narrativa ao tamanho real do projeto.\nProjetos pequenos devem ter narrativa objetiva e compatível com o valor.\nProjetos maiores podem ter leitura mais estratégica e aprofundada.\nEvite inflar o texto com complexidade desnecessária.\nEstrutura obrigatória da proposta\n\nA proposta deve conter, nesta ordem, as seguintes seções:\n\n1. Título do Projeto\n\nCrie um título claro, profissional e coerente com o escopo.\n\nExemplo:\n\nProjeto de Automação via WhatsApp\nProposta de Implementação de CRM\nProjeto de Integração entre Ferramentas\nEstruturação de Réguas e Automações\n2. Introdução / Leitura de Cenário\n\nAbra a proposta demonstrando entendimento do momento do cliente.\n\nEssa seção deve:\n\nmostrar que entendemos o contexto\nrefletir a conversa de forma estratégica\nconectar o cenário atual ao objetivo do projeto\n\nNão transforme essa parte em texto institucional.\nNão exagere.\nNão repita frases vazias.\n\n3. Problemas Identificados\n\nListe os principais problemas da operação atual.\n\nPara cada problema, siga esta lógica:\n\nproblema\nexplicação curta\nimpacto no negócio\n\nSempre que possível, conecte o problema com:\n\nperda de eficiência\nperda de oportunidade\nretrabalho\nbaixa previsibilidade\ndependência manual\nfalha de integração\nausência de estrutura\n4. Como Podemos Ajudar\n\nExplique de forma clara onde a empresa entra.\n\nEssa seção deve:\n\nposicionar o papel da empresa\nmostrar a utilidade da solução\nconectar diretamente o escopo aos problemas mapeados\n\nEvite exageros.\nEvite dizer que faz “tudo”.\nEvite incluir escopos paralelos que não estão sendo vendidos.\n\n5. Escopo do Trabalho\n\nExplique como o projeto acontece na prática.\n\nOrganize em etapas numeradas.\n\nCada etapa deve conter:\n\nnome da etapa\nbreve explicação\nbullets com o que está incluso\n\nO escopo deve ser preciso.\nNada de incluir itens amplos demais se o projeto for enxuto.\nNada de manter blocos de outra proposta que não tenham relação com esse projeto.\n\n6. Resultados Esperados\n\nMostre o impacto esperado da implementação.\n\nEssa seção deve focar em:\n\norganização\nclareza operacional\nganho de eficiência\nredução de esforço manual\nmelhor uso da base\nmelhoria de comunicação\npreparação para crescimento\n\nEvite promessas irreais.\nEvite números inventados.\nFale em transformação operacional, não em garantia.\n\n7. Investimento e Condições Comerciais\n\nApresente o valor de forma clara.\n\nEssa seção pode incluir:\n\nvalor total\nrecorrência, se existir\nprazo estimado\nforma de pagamento\nobservações importantes\ncontratação por link, se aplicável\ncontratação obrigatória de ferramenta por link, se aplicável\n\nSe houver alguma condição específica, deixe explícita.\n\nExemplo:\n\npagamento 100% no início\n50% no início e 50% na entrega\ncontratação da ferramenta via link da empresa\ncustos da ferramenta pagos à parte\n8. Ferramenta\n\nSe o projeto depender de uma ferramenta específica, crie uma seção curta explicando:\n\nqual ferramenta será usada\nquem contrata\nse o custo está incluso ou não\nqualquer condição relevante\n9. Próximos Passos\n\nFinalize com uma lista objetiva do que acontece após a aprovação.\n\nExemplo:\n\naprovação da proposta\nenvio do link de contratação\npagamento\nliberação de acessos\nkick-off\ninício da implementação\nRegras de escrita\n\nSiga estas regras sempre:\n\nEscreva em português do Brasil.\nMantenha tom profissional, claro e humano.\nNão use tom robótico.\nNão use frases clichês de vendedor.\nNão use linguagem inflada.\nNão use termos complexos só para parecer sofisticado.\nNão escreva como apresentação institucional.\nNão use emojis, a menos que seja explicitamente pedido.\nNão invente escopo.\nNão inclua “quem somos”, “cases” ou seções institucionais, a menos que isso seja solicitado.\nNão mantenha resíduos de propostas anteriores.\nSe o projeto for simples, deixe a proposta simples.\nSe houver inconsistências entre narrativa e escopo, priorize o escopo real.\nQuando houver menção a ferramentas, padronize corretamente os nomes.\nRegras de consistência\n\nAntes de entregar a proposta, valide internamente:\n\nA proposta está coerente com o que realmente será entregue?\nExiste alguma promessa maior do que o escopo?\nFicou algum trecho de outro cliente ou de outra proposta?\nA complexidade do texto está compatível com o valor do projeto?\nA seção “Como Podemos Ajudar” está alinhada ao escopo real?\nO investimento conversa com o que foi descrito?\nHá alguma ferramenta mencionada que não está no escopo?\nO texto está específico o suficiente para esse cliente?\n\nSe detectar resquícios de outro projeto, remova antes de finalizar.\n\nFormato de saída\n\nA sua resposta final deve ser a proposta já escrita, pronta para revisão, usando títulos e subtítulos em markdown.\n\nUse esta estrutura:\n\n# Título do Projeto\n\n# Olá, [nome do cliente]!\n\n[Introdução]\n\n---\n\n# Problemas Identificados\n\n[conteúdo]\n\n---\n\n# Como Podemos Ajudar\n\n[conteúdo]\n\n---\n\n# Escopo do Trabalho\n\n## 1. [etapa]\n- item\n- item\n\n---\n\n## 2. [etapa]\n- item\n- item\n\n---\n\n# Resultados Esperados\n\n[conteúdo]\n\n---\n\n# Investimento e Condições Comerciais\n\n[conteúdo]\n\n---\n\n## Ferramenta\n\n[conteúdo, se aplicável]\n\n---\n\n# Próximos Passos\n\n- item\n- item\nInstrução final do agente\n\nSeu compromisso principal é com clareza, coerência e aderência ao escopo real.\n\nUma proposta boa não é a que parece maior.\nÉ a que faz sentido, transmite segurança e vende exatamente o que precisa ser vendido.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -896,
+        880
+      ],
+      "id": "4af83d09-dbfd-4678-be48-b391867f9ff9",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $now }}",
+        "contextWindowLength": 1
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -768,
+        1104
+      ],
+      "id": "ffe185db-8296-413e-9848-27f873bf106e",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "Sua aba ou planilha"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -896,
+        1104
+      ],
+      "id": "9228e96d-7458-4511-8bb5-c2226c5c8d8b",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "Clientes",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "nome",
+              "keyValue": "={{ $json['origem/cliente'] }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        880
+      ],
+      "id": "40f98a3c-0450-4159-9afc-53f9a2dd9328",
+      "name": "Get a row3",
+      "credentials": {
+        "supabaseApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Supabase API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "reunioes",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "condition": "eq",
+              "keyValue": "={{ $('Edit Fields5').first().json.id_supabase }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "Demandas",
+              "fieldValue": "={{ $('AI Agent').first().json.output }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        880
+      ],
+      "id": "eedf1450-3b90-49d3-8cf2-e05dfbdabbae",
+      "name": "Update a row1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Supabase API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://SUA_URL_DO_ORQUESTRADOR/api/painel/reimportar-sem-demandas",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        784,
+        784
+      ],
+      "id": "c665a2c8-b871-4b9f-9957-91138ecb2abd",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "SEU_WEBHOOK_PATH_TAREFA",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -2480,
+        224
+      ],
+      "id": "92fe8064-df1e-4794-8011-0a56b858022e",
+      "name": "Webhook - Tarefa",
+      "webhookId": "SEU_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "SEU_WEBHOOK_PATH_PROPOSTA",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -2256,
+        880
+      ],
+      "id": "2c7a1ec6-fcb8-4515-a6e2-50d3dcd12e6a",
+      "name": "Webhook - Proposta",
+      "webhookId": "SEU_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.body;\n\n// 1) parse do body (string -> objeto)\nconst body = typeof raw === 'string' ? JSON.parse(raw) : raw;\n\n// 2) parse do transcript (também vem como string JSON)\nif (typeof body.transcript === 'string') {\n  try {\n    body.transcript = JSON.parse(body.transcript);\n  } catch (e) {\n    body.transcript = [];\n  }\n}\n\n// 3) parse do default_summary se também vier como string\nif (typeof body.default_summary === 'string') {\n  try {\n    body.default_summary = JSON.parse(body.default_summary);\n  } catch (e) {\n    body.default_summary = null;\n  }\n}\n\nreturn [\n  {\n    json: {\n      body\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2032,
+        880
+      ],
+      "id": "9eb828fa-6c95-4156-a866-1f25116a8cc6",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.body;\n\n// 1) parse do body (string -> objeto)\nconst body = typeof raw === 'string' ? JSON.parse(raw) : raw;\n\n// 2) parse do transcript (também vem como string JSON)\nif (typeof body.transcript === 'string') {\n  try {\n    body.transcript = JSON.parse(body.transcript);\n  } catch (e) {\n    body.transcript = [];\n  }\n}\n\n// 3) parse do default_summary se também vier como string\nif (typeof body.default_summary === 'string') {\n  try {\n    body.default_summary = JSON.parse(body.default_summary);\n  } catch (e) {\n    body.default_summary = null;\n  }\n}\n\nreturn [\n  {\n    json: {\n      body\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2224,
+        224
+      ],
+      "id": "3be50ffd-24c9-4a7d-9429-94cce1bfc0ed",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "content": "## 📘 README_SETUP — Reunião → IA → Tarefas e Propostas no ClickUp\n\nEste workflow pega a **transcrição de uma reunião** e usa IA para transformá-la em\nentregável escrito, gravando o resultado no banco e publicando como documento no ClickUp.\n\nSão **dois ramos independentes**, cada um com seu webhook e seu agente de IA:\n\n| Ramo | Webhook | O que a IA produz |\n|---|---|---|\n| 🅰️ **Tarefas** | `Webhook - Tarefa` | Lista de tarefas executáveis com responsável, prazo, urgência e timestamp |\n| 🅱️ **Proposta** | `Webhook - Proposta` | Proposta comercial completa em markdown, pronta para revisão |\n\nO nome \"Reprocessar\" vem do uso original: reprocessar reuniões que já estavam no banco\nmas ficaram sem demandas geradas.\n\n---\n\n### ✅ Passo a passo de configuração\n\n**1. Criar as 3 credenciais no n8n**\n- **ClickUp OAuth2** → religar nos nós `HTTP Request11` e `HTTP Request12`\n- **Supabase API** → religar nos 6 nós de Supabase\n- **OpenAI API** → religar nos 2 nós `OpenAI Chat Model`\n\n**2. Preparar as tabelas no Supabase**\n\nTabela `reunioes` — onde a reunião fica registrada:\n```sql\ncreate table reunioes (\n  id            bigint generated always as identity primary key,\n  \"origem/cliente\" text,   -- casa com a coluna \"nome\" da tabela clientes\n  \"Demandas\"    text,      -- recebe a saída da IA\n  criado_em     timestamptz default now()\n);\n```\n\nTabela `clientes` — o de-para entre cliente e destino no ClickUp:\n```sql\ncreate table clientes (\n  nome                      text primary key,\n  clickup_space_id          numeric,\n  clickup_folder_id         numeric,\n  clickup_list_id           numeric,\n  clickup_reunioes_page_id  text   -- ID do Doc onde as páginas serão criadas\n);\n```\n\n**3. Trocar `SEU_WORKSPACE_ID_CLICKUP`** (nós `HTTP Request11` e `HTTP Request12`)\n- ClickUp → o ID aparece na URL: `app.clickup.com/`**`SEU_ID`**`/v/...`\n\n**4. Trocar `SUA_URL_DO_ORQUESTRADOR`** (nó `HTTP Request1`)\n- É o endpoint do seu painel interno que reimporta reuniões sem demandas.\n- Se você não tem esse painel, **apague o nó** — ele não é essencial ao fluxo.\n\n**5. Preencher `NOME_MEMBRO_1..6`**\n- Aparece em **dois lugares** por ramo:\n  - nos nós `Edit Fields3` / `Edit Fields5` (campo \"Membros da Equipe\")\n  - **dentro do prompt** do `AI Agent1` (lista de responsáveis válidos)\n- É o que permite à IA distinguir equipe interna de stakeholder externo.\n  Se ficar desatualizado, a IA classifica gente da casa como pessoa de fora.\n\n**6. Configurar os webhooks**\n- Gere paths novos e cole as Production URLs no sistema que envia a transcrição.\n- Payload esperado (body como **string JSON**, o fluxo faz o parse):\n  `reuniao_id`, `transcript`, `meeting_title`, `created_at`,\n  `recording_start_time`, `recording_end_time`, `default_summary`\n\n**7. Revisar os prompts** — os dois agentes têm prompts longos e bem construídos.\nAdapte o tom, a estrutura de saída e as regras à sua operação antes de usar.\n\n**8. Testar antes de ativar** — o workflow vem com `active: false`.\n\n---\n\n### 🔐 Segurança e privacidade — LEIA\nTranscrições de reunião são um dos dados mais sensíveis de uma operação: contêm\nnomes, e-mails, números de negócio, estratégia e conversas confidenciais de clientes.\n\n- O arquivo original trazia **transcrições completas** fixadas (pinData) — foram removidas.\n- Os webhooks **não validam origem**: quem descobrir a URL consegue injetar transcrição\n  falsa, consumir seus créditos de OpenAI e criar documentos no seu ClickUp.\n  👉 Adicione validação de token antes de usar em produção.\n- Lembre-se de que a transcrição inteira é enviada à **OpenAI**. Verifique se isso é\n  compatível com os contratos de confidencialidade dos seus clientes.",
+        "height": 1180,
+        "width": 520,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3100,
+        180
+      ],
+      "id": "sticky-README_SETUP",
+      "name": "README_SETUP"
+    },
+    {
+      "parameters": {
+        "content": "### 🅰️ RAMO TAREFAS — Entrada\n\n**Webhook - Tarefa** recebe a transcrição.\n\n**Code in JavaScript2** faz o **parse duplo**:\no `body` chega como *string* JSON e, dentro\ndele, `transcript` e `default_summary` também\nsão strings JSON. O nó desempacota os três\ncom try/catch, devolvendo array vazio em vez\nde quebrar.\n\n**Edit Fields3** guarda `transcript`,\n`id_supabase` (o `reuniao_id`) e a lista de\n**Membros da Equipe**.\n\n🔧 Preencha `NOME_MEMBRO_1..6`.",
+        "height": 300,
+        "width": 420,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2530,
+        20
+      ],
+      "id": "sticky-Nota_A_Entrada",
+      "name": "Nota_A_Entrada"
+    },
+    {
+      "parameters": {
+        "content": "### 🧾 Preparar a transcrição para a IA\n\n**Code in JavaScript14** consolida a\ntranscrição em texto corrido:\n- abrevia nomes (`shortenName`) para\n  economizar tokens\n- converte timestamps de vários formatos\n  (`mm:ss`, `hh:mm:ss`, segundos) para\n  um padrão único\n- agrupa falas do mesmo participante\n\n💡 É o nó mais reaproveitável do template:\nserve para qualquer transcrição, venha de\nFireflies, Read.ai, Otter ou Meet.",
+        "height": 300,
+        "width": 380,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1830,
+        20
+      ],
+      "id": "sticky-Nota_A_Transcricao",
+      "name": "Nota_A_Transcricao"
+    },
+    {
+      "parameters": {
+        "content": "### 🔎 Buscar contexto no banco\n\n**Get a row** puxa a reunião na tabela\n`reunioes` pelo `id_supabase`.\n\n**Get a row1** usa o campo\n`origem/cliente` dessa reunião para achar\no cliente na tabela `clientes` — e com ele\nvêm os IDs de destino no ClickUp\n(space, folder, list e o **Doc de reuniões**).\n\n📌 É esse de-para que permite um único\nworkflow atender vários clientes sem\nduplicar nós.",
+        "height": 300,
+        "width": 380,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1600,
+        20
+      ],
+      "id": "sticky-Nota_A_Contexto",
+      "name": "Nota_A_Contexto"
+    },
+    {
+      "parameters": {
+        "content": "### 🤖 Agente de Tarefas\n\n**AI Agent1** (modelo `gpt-4.1`) recebe a\ntranscrição e devolve tarefas estruturadas:\nnome, tipo, responsável, interessados,\ntimestamp, prazo, urgência, dependências e\ncritério de conclusão.\n\nO prompt manda capturar também os\ndirecionamentos **implícitos** (\"precisamos…\",\n\"alguém tem que…\"), não só o que foi dito\ncomo tarefa.\n\n📌 `Simple Memory` usa `$now` como chave de\nsessão e janela = 1. Ou seja: **memória\ndescartável**, uma execução não contamina\na outra. É intencional.",
+        "height": 300,
+        "width": 400,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1180,
+        20
+      ],
+      "id": "sticky-Nota_A_IA",
+      "name": "Nota_A_IA"
+    },
+    {
+      "parameters": {
+        "content": "### 💾 Gravar e publicar\n\n**Edit Fields4** carrega os IDs do ClickUp\nvindos do cadastro do cliente.\n\n**Update a row** grava a saída da IA na\ncoluna `Demandas` da tabela `reunioes`.\n\n**Code in JavaScript12** remonta a transcrição\nem markdown legível (fala por fala).\n\n**Code in JavaScript13** monta o título da\npágina (`título da reunião - data`) e calcula\na **duração** a partir do início/fim da gravação.\n\n**HTTP Request11** cria a página dentro do\nDoc do ClickUp, em `content_format: text/md`.\nO `.replace()` no corpo escapa aspas e `#`\npara não quebrar o JSON.",
+        "height": 300,
+        "width": 420,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        20
+      ],
+      "id": "sticky-Nota_A_Saida",
+      "name": "Nota_A_Saida"
+    },
+    {
+      "parameters": {
+        "content": "### 🅱️ RAMO PROPOSTA\n\nEstrutura **idêntica** à do ramo de Tarefas —\nmesmos nós, mesma ordem, mesma lógica de\nparse, contexto e publicação.\n\nA diferença está **só no prompt**: aqui o\n`AI Agent` gera uma **proposta comercial\ncompleta** em markdown, com título, leitura\nde cenário, problemas identificados, escopo,\nresultados esperados, investimento, ferramenta\ne próximos passos.\n\nO prompt tem regras fortes de consistência —\ninclusive uma checagem final contra \"resíduo\nde proposta de outro cliente\", que é o erro\nmais comum quando se reaproveita template\ncomercial.\n\n✅ **Correção aplicada:** este ramo estava\n**quebrado**. O nó `Edit Fields` não tinha saída\ne o `HTTP Request12` não tinha entrada — a\nproposta era gerada e gravada no banco, mas\n**nunca chegava ao ClickUp**. Conexão restaurada.",
+        "height": 300,
+        "width": 460,
+        "color": 1
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2530,
+        690
+      ],
+      "id": "sticky-Nota_B_Proposta",
+      "name": "Nota_B_Proposta"
+    },
+    {
+      "parameters": {
+        "content": "### 🔁 Gatilho de reimportação\n\n**HTTP Request1** chama o endpoint\n`/api/painel/reimportar-sem-demandas` do\npainel interno, fechando o ciclo: avisa o\norquestrador de que aquela reunião já foi\nprocessada e ele pode buscar as próximas\nque ainda estão sem demandas.\n\n🔧 Troque `SUA_URL_DO_ORQUESTRADOR`.\nSe você não tem um painel próprio,\n**pode apagar este nó** — o fluxo funciona\nsem ele.\n\n⚠️ A chamada não tem autenticação nem\ntratamento de erro.",
+        "height": 260,
+        "width": 420,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -370,
+        690
+      ],
+      "id": "sticky-Nota_B_Reimport",
+      "name": "Nota_B_Reimport"
+    },
+    {
+      "parameters": {
+        "content": "### ⚠️ Pontos de atenção antes de usar em produção\n\n- **Webhooks sem validação de origem.** Quem descobrir a URL consegue injetar transcrição falsa,\n  queimar seus créditos de OpenAI e criar documentos no seu ClickUp. Adicione checagem de token.\n- **Os dois webhooks compartilhavam o mesmo `webhookId`** no arquivo original (os paths só diferiam\n  por sufixos colados no final). Isso causa conflito de registro no n8n. ✅ Já separados neste template.\n- **Sem tratamento de erro nos nós de IA e Supabase.** Se a OpenAI falhar ou devolver formato\n  inesperado, a execução morre no meio e a reunião fica marcada como processada sem estar.\n- **Custo por execução.** Transcrição inteira + `gpt-4.1` em dois ramos. Monitore o consumo e\n  considere truncar transcrições muito longas antes de enviar.\n- **Privacidade:** a transcrição completa vai para a OpenAI. Confirme se isso é compatível com\n  os acordos de confidencialidade dos seus clientes.",
+        "height": 260,
+        "width": 700,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1180,
+        690
+      ],
+      "id": "sticky-Nota_Avisos",
+      "name": "Nota_Avisos"
+    }
+  ],
+  "connections": {
+    "Code in JavaScript13": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript14": {
+      "main": [
+        [
+          {
+            "node": "Get a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Update a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript12": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a row": {
+      "main": [
+        [
+          {
+            "node": "Get a row1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a row1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update a row": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request11": {
+      "main": [
+        []
+      ]
+    },
+    "HTTP Request12": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript15": {
+      "main": [
+        [
+          {
+            "node": "Get a row2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields6": {
+      "main": [
+        [
+          {
+            "node": "Update a row1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript16": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a row2": {
+      "main": [
+        [
+          {
+            "node": "Get a row3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a row3": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update a row1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript16",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook - Tarefa": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook - Proposta": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": ""
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [],
+  "pinData": {}
+}

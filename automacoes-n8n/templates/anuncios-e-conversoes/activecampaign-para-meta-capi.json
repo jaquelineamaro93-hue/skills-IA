@@ -1,0 +1,490 @@
+{
+  "name": "ActiveCampaign ---> Meta CAPI (Template)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "SEU_WEBHOOK_PATH",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -320,
+        -48
+      ],
+      "id": "87be2d69-006f-41cf-99b8-fa5184658c2d",
+      "name": "Webhook",
+      "webhookId": "SEU_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "77775875-fff9-4792-9778-a8f2d4deb7d4",
+              "name": "user_data.first_name",
+              "value": "={{ /* Get only the first name, make lowercase, remove spaces and special characters and convert to UTF-8 */\n\nencodeURIComponent(\n    $json.user_data.name.trim().split(\" \").first()\n        .toLowerCase()\n        .replace(/\\s+/g, '')\n        .replace(/[^\\p{L}\\p{N}]/gu, '')\n)\n\n}}",
+              "type": "string"
+            },
+            {
+              "id": "aca1383e-3d9f-4d1b-b4d5-f8754d409298",
+              "name": "user_data.last_name",
+              "value": "={{ /* Get only the last name, make lowercase, remove spaces and special characters and convert to UTF-8 */\n\nencodeURIComponent(\n    $json.user_data.name.split(\" \").last()\n        .toLowerCase()\n        .replace(/\\s+/g, '')\n        .replace(/[^\\p{L}\\p{N}]/gu, '')\n)\n\n}}",
+              "type": "string"
+            },
+            {
+              "id": "6a315617-d1c9-4320-b851-e3dcc5207b4b",
+              "name": "user_data.email",
+              "value": "={{ /* Remove spaces and make lowercase */\n\n$json.user_data.email.trim().toLowerCase()\n\n}}",
+              "type": "string"
+            },
+            {
+              "id": "65d1994d-f4b8-478a-8cf1-490990e6639d",
+              "name": "user_data.phone",
+              "value": "={{ \n  (\n    $json.user_data.phone \n      ? $json.user_data.phone.replace(/\\D/g, '').replace(/^0+/, '') \n      : ''\n  ) || '999999999' \n}}\n\n\n}}",
+              "type": "string"
+            },
+            {
+              "id": "5650546d-f0ad-4c69-829c-3e4283e16ac7",
+              "name": "event_time",
+              "value": "={{ /* Convert to Unix timestamp integer */\n\nMath.floor(new Date($json.event_time).getTime() / 1000)\n\n}}",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "include": "except",
+        "excludeFields": "user_data.name",
+        "options": {}
+      },
+      "id": "c93fd25c-25d1-4778-8076-7b512d559be3",
+      "name": "Normalize data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        800,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "097ed7ff-c076-454e-930c-1f4820ac6e2e",
+              "name": "user_data.first_name",
+              "value": "={{ $json.user_data.first_name.hash(\"sha256\") }}",
+              "type": "string"
+            },
+            {
+              "id": "e285fa12-d272-48a0-a583-5e90b394fd74",
+              "name": "user_data.last_name",
+              "value": "={{ $json.user_data.last_name.hash(\"sha256\") }}",
+              "type": "string"
+            },
+            {
+              "id": "e0e524cf-62cc-4ca3-a469-4caa2ffcab62",
+              "name": "user_data.email",
+              "value": "={{ $json.user_data.email.hash(\"sha256\") }}",
+              "type": "string"
+            },
+            {
+              "id": "1e87a997-5b78-48d8-9616-edfb1b910743",
+              "name": "user_data.phone",
+              "value": "={{ $json.user_data.phone.hash(\"sha256\") }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "3825f808-0a66-49ae-9048-07d9ee97c772",
+      "name": "Encrypt data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1024,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "=v20.0",
+        "node": "={{ $('Edit Fields').first().json.pixel }}",
+        "edge": "events",
+        "options": {
+          "queryParametersJson": "={\n  \"data\": [\n    {\n      \"event_name\": \"{{ $json.event_name }}\",\n      \"event_time\": {{ $json.event_time }},\n      \"action_source\": \"{{ $json.action_source }}\",\n      \"user_data\": {\n        \"em\": \"{{ $json.user_data.email }}\",\n        \"ph\": \"{{ $json.user_data.phone }}\",\n        \"fn\": \"{{ $json.user_data.first_name }}\",\n        \"ln\": \"{{ $json.user_data.last_name }}\",\n        \"fbc\": \"{{ $json.user_data.facebook_click_id }}\",\n        \"fbp\": \"{{ $json.user_data.facebook_browser_id }}\",\n        \"client_ip_address\": \"{{ $json.user_data.client_ip_address }}\",\n        \"client_user_agent\": \"{{ $json.user_data.client_user_agent }}\"\n      },\n      \"custom_data\": {\n        \"value\": {{ $json.custom_data.value }},\n        \"currency\": \"{{ $json.custom_data.currency }}\"\n  }\n    }\n  ]\n}"
+        }
+      },
+      "id": "6d414efb-e81f-404a-9687-20de5e732f6b",
+      "name": "Send event to Meta",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        1472,
+        -144
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Meta (Facebook Graph)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "=v20.0",
+        "node": "={{ $('Edit Fields').first().json.pixel }}",
+        "edge": "events",
+        "options": {
+          "queryParametersJson": "={\n  \"data\": [\n    {\n      \"event_name\": \"{{ $json.event_name }}\",\n      \"event_time\": {{ $json.event_time }},\n      \"action_source\": \"{{ $json.action_source }}\",\n      \"user_data\": {\n        \"em\": \"{{ $json.user_data.email }}\",\n        \"ph\": \"{{ $json.user_data.phone }}\",\n        \"fn\": \"{{ $json.user_data.first_name }}\",\n        \"ln\": \"{{ $json.user_data.last_name }}\",\n\n        \"fbc\": \"{{ $json.user_data.facebook_click_id }}\",\n        \"fbp\": \"fb.1.{{ $json.event_time }}.{{ Math.floor(Math.random() * 9000000000) + 1000000000 }}\",\n\n        \"client_ip_address\": \"{{ $json.user_data.client_ip_address }}\",\n        \"client_user_agent\": \"{{ $json.user_data.client_user_agent }}\"\n      },\n      \"custom_data\": {\n        \"value\": {{ $json.custom_data.value }},\n        \"currency\": \"{{ $json.custom_data.currency }}\"\n      }\n    }\n  ]\n}"
+        }
+      },
+      "id": "b2f26271-3926-49ed-adf1-19598bfeac3a",
+      "name": "Send event to Meta1",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        1472,
+        48
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Meta (Facebook Graph)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      user_data: {\n        name: $('Edit Fields').first().json.name,\n        email: $('Edit Fields').first().json.email,\n        phone: $('Edit Fields').first().json.phone,\n        client_ip_address: $('Edit Fields').first().json.client_ip_address,\n        client_user_agent: $('Edit Fields').first().json.client_user_agent,\n\n        facebook_click_id: `${$('Code').first().json.event_time}.${$('Edit Fields').first().json.fbclid}`,\n\n        facebook_browser_id: `${$('Code').first().json.event_time}.${$input.first().json.randomnumber}`\n      },\n\n      event_name: $('Edit Fields').first().json.event_name,\n\n      event_time: $('Code').first().json.event_time,\n\n      custom_data: {\n        value: 0,\n        currency: \"BRL\"\n      },\n\n      action_source: \"system_generated\"\n    }\n  }\n];"
+      },
+      "id": "14cdbc65-6f9d-4913-84b7-2e7d3f7f2621",
+      "name": "EXEMPLO",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        576,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const eventTime = Date.now(); // Obtém o timestamp atual em milissegundos\nreturn [{ json: { event_time: eventTime } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        128,
+        -48
+      ],
+      "id": "fddf04ee-9597-498c-9bce-7101876b5335",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Função para gerar o número aleatório\nfunction generateRandomNumber() {\n  return Math.floor(Math.random() * 1000000); // Gera um número aleatório entre 0 e 999999\n}\n\n// Gera o número aleatório\nconst randomnumber = generateRandomNumber();\n\n// Retorna o item no formato esperado pelo n8n\nreturn [{\n  json: {\n    randomnumber: randomnumber\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        352,
+        -48
+      ],
+      "id": "bd9c3586-d792-45c3-9984-46ec367b8c15",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2cbe6b37-f62c-491f-ba8a-7a8e3bac4b1c",
+              "leftValue": "={{ $('Edit Fields').first().json.fbclid }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1248,
+        -48
+      ],
+      "id": "e2c202ba-d3a4-4133-8315-97cc3ba3b668",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e95597ca-3f0f-431c-86c3-db73fb424275",
+              "name": "name",
+              "value": "={{ $json.body['contact[first_name]'] }}",
+              "type": "string"
+            },
+            {
+              "id": "1a2d2871-b53d-4eee-be77-21a56f6cd000",
+              "name": "email",
+              "value": "={{ $json.body['contact[email]'] }}",
+              "type": "string"
+            },
+            {
+              "id": "0453719a-d709-470b-bae9-f19cd9442f04",
+              "name": "phone",
+              "value": "={{ $json.body['contact[phone]'] }}",
+              "type": "string"
+            },
+            {
+              "id": "ceec879a-19e9-49ba-91d0-be219c5e137c",
+              "name": "client_ip_address",
+              "value": "={{ $json.body['contact[ip4]'] }}",
+              "type": "string"
+            },
+            {
+              "id": "3e62d825-f1d4-4e9c-92e2-5b134c165030",
+              "name": "client_user_agent",
+              "value": "={{ $json.headers['user-agent'] }}",
+              "type": "string"
+            },
+            {
+              "id": "ad7c31b9-7c18-4140-9fc1-6dabba6b4d3a",
+              "name": "fbclid",
+              "value": "={{ $json.body['contact[fields][fbclid]'] }}",
+              "type": "string"
+            },
+            {
+              "id": "1a027cd6-efd4-4d25-9cb2-4eb09c1f328e",
+              "name": "pixel",
+              "value": "SEU_PIXEL_ID_META",
+              "type": "string"
+            },
+            {
+              "id": "53d52fe0-058b-47ee-9220-be9588a907c8",
+              "name": "event_name",
+              "value": "Leads Evento",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -96,
+        -48
+      ],
+      "id": "2f61a7ef-fb6c-4262-b356-89598ea4d788",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "content": "# RECURSOS\nAqui você encontra todos os detalhes da Facebook Conversion API.\n\n### Como conseguir o Token \n### [🎥 Assista o Vídeo](https://www.youtube.com/watch?v=bMm58tWxZ-A)\n### [📰 Guia Oficial](https://developers.facebook.com/docs/graph-api/get-started)\n\n### Facebook API Explorer\n### [🔍 Open Explorer](https://developers.facebook.com/tools/explorer/?method=POST&path=%7BYOUR_PIXEL_ID_HERE%7D%2Fevents&version=v20.0&data=[%0A%20%20%7B%0A%20%20%20%20%22event_name%22%3A%20%22Purchase%22%2C%0A%20%20%20%20%22event_time%22%3A%SEU_ID_AQUI%2C%0A%20%20%20%20%22event_source_url%22%3A%20%22https%3A%2F%2Fwww.example.com%2Fthank_you%22%2C%0A%20%20%20%20%22action_source%22%3A%20%22website%22%2C%0A%20%20%20%20%22user_data%22%3A%20%7B%0A%20%20%20%20%20%20%22em%22%3A%20%SEU_TOKEN_AQUI%22%2C%0A%20%20%20%20%20%20%22ph%22%3A%20%SEU_TOKEN_AQUI%22%2C%0A%20%20%20%20%20%20%22fn%22%3A%20%SEU_TOKEN_AQUI%22%2C%0A%20%20%20%20%20%20%22ln%22%3A%20%SEU_TOKEN_AQUI%22%2C%0A%20%20%20%20%20%20%22fbc%22%3A%20%22fb.1.1554763741205.SEU_TOKEN_AQUI%22%2C%0A%20%20%20%20%20%20%22fbp%22%3A%20%22fb.1.1596403881668.1116446470%22%2C%0A%20%20%20%20%20%20%22client_ip_address%22%3A%20%220.0.0.0%22%2C%0A%20%20%20%20%20%20%22client_user_agent%22%3A%20%22Mozilla%2F5.0%20(Windows%20NT%2010.0%3B%20Win64%3B%20x64)%22%0A%20%20%20%20%7D%2C%0A%20%20%20%20%22custom_data%22%3A%20%7B%0A%20%20%20%20%20%20%22value%22%3A%SEU_ID_AQUI.9%2C%0A%20%20%20%20%20%20%22currency%22%3A%20%22USD%22%0A%20%20%20%20%7D%0A%20%20%7D%0A]&test_event_code=SEU_TEST_EVENT_CODE)\n\n### Referência de API\n### https://developers.facebook.com/docs/marketing-api/conversions-api/using-the-api\n\n### Olhe todos os detalhes aqui:\n### https://developers.facebook.com/docs/marketing-api/conversions-api/parameters",
+        "height": 541.795438981266,
+        "width": 610.900524812388,
+        "color": 7
+      },
+      "id": "03fccca9-17e7-4644-9cb0-0b8732f73de1",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -784,
+        -736
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## README_SETUP — ActiveCampaign -> Meta Conversions API (CAPI)\n\nRecebe por webhook um evento do ActiveCampaign (ex.: entrada em automacao/lista),\nnormaliza e faz HASH (SHA-256) dos dados pessoais e envia o evento server-side para\na Conversions API do Meta.\n\n**1. Credencial**\n- Meta (Facebook Graph): reconfigure `[Reconfigurar] Meta (Facebook Graph)` com o seu\n  Access Token de sistema (permissao de CAPI/eventos do dataset).\n\n**2. Trocar placeholders (no 'Edit Fields')**\n- `SEU_PIXEL_ID_META` -> id do seu Pixel/Dataset.\n- `SEU_TEST_EVENT_CODE` -> code de teste do Gerenciador de Eventos (remova em producao).\n- `event_name` -> ajuste conforme seu evento (ex.: Leads Evento X).\n- `SEU_WEBHOOK_PATH` / `SEU_WEBHOOK_ID` -> regerados ao salvar; configure o webhook no\n  ActiveCampaign apontando para essa URL.\n\n**3. Boas praticas CAPI**\n- Dados pessoais vao com HASH SHA-256 — mantenha assim.\n- Confira a versao da Graph API e atualize se necessario.\n\n**4. Ativar**\n- Teste no Gerenciador de Eventos e so entao mude `active` para true e remova o code.\n\nIMPORTANTE: o Access Token do Meta que ja circulou deve ser REVOGADO/REGERADO.\nPlaceholder NAO invalida o token antigo.",
+        "height": 380,
+        "width": 560,
+        "color": 5
+      },
+      "name": "README_SETUP",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -824,
+        -1196
+      ],
+      "id": "readme_setup"
+    },
+    {
+      "parameters": {
+        "content": "### ENTRADA — Webhook (ActiveCampaign)\nRecebe o evento do ActiveCampaign (dados do contato). Ajuste `SEU_WEBHOOK_PATH`\ne configure o webhook/automacao no ActiveCampaign para enviar aqui.",
+        "height": 200,
+        "width": 440,
+        "color": 4
+      },
+      "name": "Nota - Entrada",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -824,
+        -496
+      ],
+      "id": "nota_-_entrada"
+    },
+    {
+      "parameters": {
+        "content": "### PRIVACIDADE — Normalize + Encrypt (SHA-256)\nNos Set/Code padronizam e aplicam HASH SHA-256 em email/telefone/nome antes do envio.\nNao remova o hashing (exigencia da CAPI).",
+        "height": 200,
+        "width": 440,
+        "color": 6
+      },
+      "name": "Nota - Privacidade Hash",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -364,
+        -496
+      ],
+      "id": "nota_-_privacidade_hash"
+    },
+    {
+      "parameters": {
+        "content": "### SAIDA — Send event to Meta (CAPI)\nNos Facebook Graph API fazem POST em /{pixel}/events com os dados hasheados.\nTroque `SEU_PIXEL_ID_META` e reconfigure a credencial Meta.",
+        "height": 200,
+        "width": 440,
+        "color": 7
+      },
+      "name": "Nota - Saida Meta CAPI",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        96,
+        -496
+      ],
+      "id": "nota_-_saida_meta_capi"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize data": {
+      "main": [
+        [
+          {
+            "node": "Encrypt data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Encrypt data": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EXEMPLO": {
+      "main": [
+        [
+          {
+            "node": "Normalize data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "EXEMPLO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send event to Meta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send event to Meta1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "SEU_ERROR_WORKFLOW_ID"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [],
+  "pinData": {}
+}

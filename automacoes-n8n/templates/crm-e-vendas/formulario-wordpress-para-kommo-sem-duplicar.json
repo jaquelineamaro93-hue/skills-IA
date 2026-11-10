@@ -1,0 +1,1302 @@
+{
+  "name": "[TEMPLATE] Formulário WordPress ---> Kommo CRM (deduplicação por telefone)",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1606022-b2fb-4c48-9bbe-0ae164c769ef",
+              "name": "URL",
+              "value": "https://SEU_SUBDOMINIO.kommo.com/api/v4",
+              "type": "string"
+            },
+            {
+              "id": "17b30a88-4979-4676-ae67-1542df20df54",
+              "name": "Token",
+              "value": "SEU_TOKEN_KOMMO_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "f88a7851-c1a0-461a-ab20-ac4b80b96f2e",
+              "name": "pipeline_vendas",
+              "value": "SEU_PIPELINE_ID_VENDAS",
+              "type": "string"
+            },
+            {
+              "id": "cd0bfe58-d404-4afd-82e8-fd0ad96f330a",
+              "name": "etapa_disparador_pipeline_vendas",
+              "value": "SUA_ETAPA_ID_ENTRADA_VENDAS",
+              "type": "string"
+            },
+            {
+              "id": "5ee9d6ce-9802-4443-b51c-5a138faafdf4",
+              "name": "etapa_ganho_pipeline_vendas_etapa_pipe",
+              "value": "SUA_ETAPA_ID_GANHO",
+              "type": "string"
+            },
+            {
+              "id": "8946cc91-e0f1-4956-a236-2b22c04efaf5",
+              "name": "pipeline_cs",
+              "value": "SEU_PIPELINE_ID_CS",
+              "type": "string"
+            },
+            {
+              "id": "b0f69c3a-c602-4c9f-9a26-b9beef9307e3",
+              "name": "etapa_inicial_cs",
+              "value": "SUA_ETAPA_ID_INICIAL_CS",
+              "type": "string"
+            },
+            {
+              "id": "31bfa939-0267-4591-a46e-1578a881e98e",
+              "name": "field_evento",
+              "value": "SEU_FIELD_ID_EVENTO",
+              "type": "string"
+            },
+            {
+              "id": "3f9b9dbd-ec68-4f87-a03d-ed218c40b05e",
+              "name": "field_produto",
+              "value": "SEU_FIELD_ID_PRODUTO",
+              "type": "string"
+            },
+            {
+              "id": "a56e3621-4cc1-4718-b3bb-0e9ff06979c9",
+              "name": "field_valor_produto",
+              "value": "=SEU_FIELD_ID_VALOR_PRODUTO",
+              "type": "string"
+            },
+            {
+              "id": "77cb79e7-107b-42dc-aa34-2b68984a00fa",
+              "name": "field_boleto",
+              "value": "=SEU_FIELD_ID_BOLETO",
+              "type": "string"
+            },
+            {
+              "id": "1e6248f2-6bde-4bc7-9fe1-80a9715f71aa",
+              "name": "field_pix",
+              "value": "=SEU_FIELD_ID_PIX",
+              "type": "string"
+            },
+            {
+              "id": "361864b3-54be-4188-9ebc-392cba25ace5",
+              "name": "field_ip",
+              "value": "=SEU_FIELD_ID_IP",
+              "type": "string"
+            },
+            {
+              "id": "3f14302f-e6b0-4026-8a01-c08641afce7c",
+              "name": "field_utm_source",
+              "value": "=SEU_FIELD_ID_UTM_SOURCE",
+              "type": "string"
+            },
+            {
+              "id": "8aa70f9b-115a-4ab4-9342-81eae4fd2173",
+              "name": "field_utm_medium",
+              "value": "=SEU_FIELD_ID_UTM_MEDIUM",
+              "type": "string"
+            },
+            {
+              "id": "28d6c224-77ba-42c6-b4b8-ff768cf7f425",
+              "name": "field_utm_campaign",
+              "value": "=SEU_FIELD_ID_UTM_CAMPAIGN",
+              "type": "string"
+            },
+            {
+              "id": "199020dd-2dde-4403-9ad1-bb5576201a13",
+              "name": "field_utm_content",
+              "value": "=SEU_FIELD_ID_UTM_CONTENT",
+              "type": "string"
+            },
+            {
+              "id": "c4e80c2f-d6f0-4391-81c1-01e2d5ba2891",
+              "name": "field_utm_term",
+              "value": "=SEU_FIELD_ID_UTM_TERM",
+              "type": "string"
+            },
+            {
+              "id": "87957264-dc5c-4605-8b1e-0f4426435f9c",
+              "name": "field_src",
+              "value": "=SEU_FIELD_ID_SRC",
+              "type": "string"
+            },
+            {
+              "id": "8b36f5f0-98f5-4084-a379-ea57cc303bd9",
+              "name": "field_sck",
+              "value": "=SEU_FIELD_ID_SCK",
+              "type": "string"
+            },
+            {
+              "id": "a00c175d-9f0c-45e4-bce0-3caa417cba45",
+              "name": "field_payment_method",
+              "value": "=SEU_FIELD_ID_PAYMENT_METHOD",
+              "type": "string"
+            },
+            {
+              "id": "fbf0d42d-614d-482d-a4a9-75ad60d22409",
+              "name": "field_link_checkout",
+              "value": "=SEU_FIELD_ID_LINK_CHECKOUT",
+              "type": "string"
+            },
+            {
+              "id": "886cb371-1a6a-484e-87b7-029e9da4081c",
+              "name": "field_oferta",
+              "value": "=SEU_FIELD_ID_OFERTA",
+              "type": "string"
+            },
+            {
+              "id": "347e6262-1655-45e2-a789-b01e5f30cff1",
+              "name": "Profissão",
+              "value": "SEU_FIELD_ID_PROFISSAO",
+              "type": "string"
+            },
+            {
+              "id": "8aded278-ea44-4e33-aee4-00cb64b4e2fd",
+              "name": "Conheceu",
+              "value": "SEU_FIELD_ID_CONHECEU",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3520,
+        -1040
+      ],
+      "id": "3b0e9da6-3e95-4b57-83c0-429c4e25520c",
+      "name": "Edit Fields12"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Edit Fields12').item.json.URL }}/contacts?query={{ $('Code24').item.json.TelefoneUltimos8 }}&with=leads",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields12').item.json.Token }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3072,
+        -1040
+      ],
+      "id": "fccb05bb-2821-410e-86b0-1135c5adad99",
+      "name": "HTTP Request27"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript)\n\n// Número original vindo do Edit Fields\nlet numeroOriginal =  $('Edit Fields1').first().json.telefone || \"999999\";\n\n// Limpa tudo que não for dígito\nlet numeroLimpo = numeroOriginal.replace(/\\D/g, \"\");\n\n// Se tiver 10 ou 11 dígitos, adiciona 55 na frente\nif (numeroLimpo.length === 10 || numeroLimpo.length === 11) {\n  numeroLimpo = \"55\" + numeroLimpo;\n}\n\n// Monta o número corrigido\nconst telefoneCorrigido = numeroLimpo;\n\n// Pega os últimos 8 dígitos\nconst telefoneUltimos8 = telefoneCorrigido.slice(-8);\n\nreturn [\n  {\n    json: {\n      TelefoneCorrigido: telefoneCorrigido,\n      TelefoneUltimos8: telefoneUltimos8\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3296,
+        -1040
+      ],
+      "id": "fb8a037e-2596-4aa1-9856-63b6d923a632",
+      "name": "Code24"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript)\n\n// ---- helpers ----\nfunction safeParse(v) {\n  if (v == null) return null;\n  if (typeof v === 'object') return v;\n  try { return JSON.parse(String(v)); } catch { return null; }\n}\n\nfunction getFirstByField(cf = [], wanted = []) {\n  if (!Array.isArray(cf)) return null;\n  const f = cf.find(x =>\n    wanted.includes(x.field_code) ||\n    wanted.includes(x.field_name)\n  );\n  return f?.values?.[0]?.value ?? null;\n}\n\nfunction getFirstPhone(cf = []) {\n  return getFirstByField(cf, ['PHONE', 'Phone']);\n}\n\nfunction getFirstEmail(cf = []) {\n  return getFirstByField(cf, ['EMAIL', 'Email', 'E-mail']);\n}\n\nfunction scoreContact(c) {\n  if (!c || typeof c !== 'object') return -1;\n  let s = 0;\n  if (c.name) s += 2;\n  if (getFirstPhone(c.custom_fields_values)) s += 2;\n  s += Array.isArray(c.custom_fields_values) ? c.custom_fields_values.length : 0;\n  s += Array.isArray(c._embedded?.tags) ? c._embedded.tags.length : 0;\n  s += Array.isArray(c._embedded?.companies) ? c._embedded.companies.length : 0;\n  if (c.first_name) s += 1;\n  if (c.last_name) s += 1;\n  if (c.responsible_user_id) s += 1;\n  return s;\n}\n\n// ---- main ----\nconst out = [];\n\nfor (const item of $input.all()) {\n  const data = safeParse(item.json?.data) || safeParse(item.json) || item.json;\n  if (!data || typeof data !== 'object') continue;\n\n  const contacts = data._embedded?.contacts ?? [];\n  const leadRows = [];\n\n  for (const contact of contacts) {\n    const leads = contact._embedded?.leads ?? [];\n    for (const ld of leads) {\n      leadRows.push({\n        json: {\n          contact_id: contact.id ?? null,\n          contact_name: contact.name ?? null,\n          phone: getFirstPhone(contact.custom_fields_values) ?? null,\n          email: getFirstEmail(contact.custom_fields_values) ?? null, // sempre presente\n          contact_link: contact._links?.self?.href ?? null,\n          lead_id: ld?.id ?? null,\n          lead_link: ld?._links?.self?.href ?? null,\n        }\n      });\n    }\n  }\n\n  if (leadRows.length > 0) {\n    out.push(...leadRows);\n  } else {\n    if (contacts.length > 0) {\n      let best = contacts[0];\n      let bestScore = scoreContact(best);\n      for (let i = 1; i < contacts.length; i++) {\n        const sc = scoreContact(contacts[i]);\n        if (sc > bestScore) {\n          best = contacts[i];\n          bestScore = sc;\n        }\n      }\n      out.push({\n        json: {\n          contact_id: best.id ?? null,\n          contact_name: best.name ?? null,\n          phone: getFirstPhone(best.custom_fields_values) ?? null,\n          email: getFirstEmail(best.custom_fields_values) ?? null, // sempre presente\n          contact_link: best._links?.self?.href ?? null,\n          lead_id: null,\n          lead_link: null,\n          _note: \"Sem leads; retornado contato mais completo\"\n        }\n      });\n    }\n  }\n}\n\nreturn out;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2384,
+        -1232
+      ],
+      "id": "fecd8f87-0360-4f8a-967e-f0c6fe72783a",
+      "name": "Code25"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e0c834e3-6193-4aeb-9c11-046de160e6d9",
+              "leftValue": "={{ $json.lead_id.toString() }}",
+              "rightValue": "={{ $('Edit Fields12').item.json.Pipeline }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2160,
+        -1232
+      ],
+      "id": "e1831499-b233-401d-9d7b-49b671932ddc",
+      "name": "If9"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript)\n\n// =========================\n// CAMPOS DO NODE NO TOPO\n// =========================\nconst PIPELINE_VENDAS = String($(\"Edit Fields12\").first().json.pipeline_vendas ?? \"\");\nconst ETAPA_GANHO_PIPELINE_VENDAS = String($(\"Edit Fields12\").first().json.etapa_ganho_pipeline_vendas_etapa_pipe ?? \"\");\n\n// =========================\n// FUNCOES AUXILIARES\n// =========================\nfunction parseMaybeJson(v) {\n  if (v == null) return null;\n  if (typeof v === \"object\") return v;\n  try {\n    return JSON.parse(String(v));\n  } catch {\n    return null;\n  }\n}\n\nfunction escapeJsonString(s) {\n  return String(s)\n    .replace(/\\\\/g, \"\\\\\\\\\")\n    .replace(/\"/g, '\\\\\"');\n}\n\nfunction extractTags(lead) {\n  const arr = lead?._embedded?.tags;\n\n  if (!Array.isArray(arr)) {\n    return {\n      tags_raw: [],\n      tag_ids: [],\n      tag_names: [],\n      tag_names_csv: \"\",\n      tags_string: \"\",\n    };\n  }\n\n  const names = arr\n    .filter(t => t && (t.name != null || t.id != null))\n    .map(t => String(t.name ?? \"\").trim())\n    .filter(name => name.length > 0);\n\n  const seen = new Set();\n  const tag_names = names.filter(name => {\n    const key = name.toLowerCase();\n    if (seen.has(key)) return false;\n    seen.add(key);\n    return true;\n  });\n\n  const tags_raw = tag_names.map(name => ({ name }));\n  const tag_ids = arr.map(t => t?.id).filter(v => v != null);\n\n  let tags_string = \"\";\n  if (tag_names.length) {\n    const parts = tag_names.map(n => `{ \"name\": \"${escapeJsonString(n)}\" }`);\n    tags_string = parts.join(\",\") + \",\";\n  }\n\n  return {\n    tags_raw,\n    tag_ids,\n    tag_names,\n    tag_names_csv: tag_names.join(\", \"),\n    tags_string,\n  };\n}\n\nfunction buildCreateDealResponse(reason) {\n  return [{\n    json: {\n      found: false,\n      should_create_deal: true,\n      create_deal_reason: reason,\n      id: null,\n      name: null,\n      pipeline_id: null,\n      status_id: null,\n      updated_at_unix: null,\n      link_self: null,\n      tags_raw: [],\n      tag_ids: [],\n      tag_names: [],\n      tag_names_csv: \"\",\n      tags_string: \"\",\n      pipeline_vendas: PIPELINE_VENDAS,\n      etapa_ganho_pipeline_vendas_etapa_pipe: ETAPA_GANHO_PIPELINE_VENDAS,\n    }\n  }];\n}\n\n// =========================\n// ENTRADA\n// =========================\nconst all = $input.all()\n  .map(it => parseMaybeJson(it.json?.data) || it.json)\n  .filter(o => o && typeof o === \"object\");\n\n// =========================\n// FILTRO BASE\n// =========================\n// Mantive:\n// - id válido\n// - não deletado\n// - não perdido\nconst eligible = all.filter(l =>\n  l &&\n  l.id != null &&\n  !l.is_deleted &&\n  l.loss_reason_id == null\n);\n\n// =========================\n// FILTRA SOMENTE O PIPELINE DE VENDAS\n// =========================\nconst dealsNoPipeline = eligible.filter(l =>\n  String(l.pipeline_id ?? \"\") === PIPELINE_VENDAS\n);\n\n// Se não existe nenhum deal no pipeline, criar deal\nif (!dealsNoPipeline.length) {\n  return buildCreateDealResponse(\"nenhum_deal_no_pipeline\");\n}\n\n// Ordena por updated_at desc para escolher o mais recente\ndealsNoPipeline.sort((a, b) => (Number(b.updated_at) || 0) - (Number(a.updated_at) || 0));\n\n// Procura algum deal no pipeline que NAO esteja na etapa de ganho\nconst dealForaDaEtapaGanho = dealsNoPipeline.find(l =>\n  String(l.status_id ?? \"\") !== ETAPA_GANHO_PIPELINE_VENDAS\n);\n\n// Se encontrou deal no pipeline e ele NÃO está na etapa de ganho, retorna ele\nif (dealForaDaEtapaGanho) {\n  const tagsInfo = extractTags(dealForaDaEtapaGanho);\n\n  return [{\n    json: {\n      found: true,\n      should_create_deal: false,\n      create_deal_reason: null,\n      id: dealForaDaEtapaGanho.id,\n      name: dealForaDaEtapaGanho.name ?? null,\n      pipeline_id: dealForaDaEtapaGanho.pipeline_id ?? null,\n      status_id: dealForaDaEtapaGanho.status_id ?? null,\n      updated_at_unix: Number(dealForaDaEtapaGanho.updated_at) || null,\n      link_self: dealForaDaEtapaGanho._links?.self?.href ?? null,\n      ...tagsInfo,\n      pipeline_vendas: PIPELINE_VENDAS,\n      etapa_ganho_pipeline_vendas_etapa_pipe: ETAPA_GANHO_PIPELINE_VENDAS,\n    }\n  }];\n}\n\n// Se todos os deals encontrados no pipeline estiverem na etapa de ganho, criar deal\nreturn buildCreateDealResponse(\"deal_existente_apenas_em_etapa_ganho\");"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1712,
+        -1424
+      ],
+      "id": "e835daa7-2a77-4ffe-aca5-2e500bcae960",
+      "name": "Code26"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Edit Fields12').first().json['URL'] }}/contacts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields12').first().json['Token'] }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"name\": \"{{ $('Edit Fields1').first().json.nome }}\",\n    \"custom_fields_values\": [\n      {\n        \"field_code\": \"PHONE\",\n        \"values\": [\n          {\n            \"value\": \"{{ $('Code24').first().json.TelefoneCorrigido }}\"\n          }\n        ]\n      },\n      {\n        \"field_code\": \"EMAIL\",\n        \"values\": [\n          {\n            \"value\": \"{{ $('Edit Fields1').first().json.email }}\"\n          }\n        ]\n      }\n    ]\n  }\n]\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2384,
+        -752
+      ],
+      "id": "167339bb-1ac6-4ae1-9700-a1f64e9070b5",
+      "name": "HTTP Request28"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().flatMap(item => {\n  let data;\n  try {\n    data = JSON.parse(item.json.data);\n  } catch (err) {\n    return [];\n  }\n\n  const contacts = data._embedded?.contacts || [];\n\n  return contacts.map(contact => {\n    const result = { ...contact };\n\n    // Adiciona lead_id (do primeiro lead)\n    result.lead_id = contact._embedded?.leads?.[0]?.id || null;\n\n    // Adiciona link direto para o contato\n    result.contact_link = contact._links?.self?.href || null;\n\n    return result;\n  });\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2160,
+        -752
+      ],
+      "id": "b7c5ed31-293f-4014-9c8c-2638f906dbfb",
+      "name": "Code27"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Edit Fields12').item.json.URL }}/leads",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields12').item.json.Token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"name\": \"{{ $('Edit Fields1').first().json.nome }}\",\n    \"pipeline_id\": {{ $('Edit Fields12').first().json.pipeline_vendas }},\n    \"status_id\": {{ $('Edit Fields12').first().json.etapa_disparador_pipeline_vendas }},\n    \"price\": {{ $('Edit Fields1').first().json.valor_produto || 0 }},\n    \"custom_fields_values\": [\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Profissão'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Profissão'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_produto }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.produto }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.Conheceu }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.Conheceu }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_ip }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.ip }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_utm_source }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_source }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_utm_medium }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_medium }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_utm_campaign }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_campaign }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_utm_content }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_content }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_utm_term }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_term }}\" }\n        ]\n      }\n    ],\n    \"_embedded\": {\n      \"contacts\": [\n        { \"id\": {{ $json.id }} }\n      ]\n    },\n    \"tags\": [\n      { \"name\": \"{{ $('Edit Fields1').first().json.produto }}\" }\n    ]\n  }\n]",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1808,
+        -752
+      ],
+      "id": "1e02618b-bc43-4634-96d0-1b55c12ad95c",
+      "name": "HTTP Request29"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Edit Fields12').item.json.URL }}/leads/{{ $json.lead_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields12').item.json.Token }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1936,
+        -1424
+      ],
+      "id": "dee4b7b0-edcc-4e51-9b41-1e0c7d0d38ec",
+      "name": "HTTP Request33"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ebfdc0e7-0b15-45db-b0d8-d890e76d1d14",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "=",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2608,
+        -1040
+      ],
+      "id": "15389d9e-0ecb-4f0b-b66d-acf2d47df40e",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Edit Fields12').first().json.URL }}/leads",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields12').first().json.Token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"name\": \"{{ $('Edit Fields1').first().json.nome }}\",\n    \"pipeline_id\": {{ $('Edit Fields12').first().json.pipeline_vendas }},\n    \"status_id\": {{ $('Edit Fields12').first().json.etapa_disparador_pipeline_vendas }},\n    \"price\": {{ $('Edit Fields1').first().json.valor_produto || 0 }},\n    \"custom_fields_values\": [\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Profissão'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Profissão'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_produto }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.produto }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.Conheceu }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.Conheceu }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_ip }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.ip }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_utm_source }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_source }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_utm_medium }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_medium }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_utm_campaign }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_campaign }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_utm_content }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_content }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_utm_term }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_term }}\" }\n        ]\n      }\n    ],\n    \"_embedded\": {\n      \"contacts\": [\n        { \"id\": {{ $('Code25').first().json.contact_id }} }\n      ],\n    \"tags\": [\n      {{ $('Code26').first().json.tags_string }}\n      { \"name\": \"{{ $('Edit Fields1').first().json.produto }}\" }\n    ]\n  }\n}\n]\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1040,
+        -1136
+      ],
+      "id": "6d831f21-35dd-4d86-abe2-6a639a18a9f8",
+      "name": "HTTP Request9"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "83693f6b-3437-45a5-987d-e4482825c0fa",
+              "leftValue": "={{ $json.should_create_deal.toString() }}",
+              "rightValue": "=false",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1488,
+        -1424
+      ],
+      "id": "8965ad3e-becc-4771-9814-2fdaed7d2109",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript)\n// Entrada esperada (exemplo):\n// [\n//   { json: { data: \"<string JSON do /api/v4/leads/custom_fields>\" } }\n// ]\n// Saída: um item por custom field com informações úteis.\n\nfunction parseMaybeJson(v) {\n  if (v == null) return null;\n  if (typeof v === 'object') return v;\n  try { return JSON.parse(String(v)); } catch { return null; }\n}\n\nconst inputItems = $input.all();\nconst out = [];\n\nfor (const it of inputItems) {\n  const root = parseMaybeJson(it.json?.data);\n  if (!root) {\n    out.push({ json: { error: 'Não foi possível parsear json.data' } });\n    continue;\n  }\n\n  const fields = root?._embedded?.custom_fields || [];\n  if (!Array.isArray(fields) || fields.length === 0) {\n    out.push({ json: { warning: 'Nenhum custom field encontrado em _embedded.custom_fields' } });\n    continue;\n  }\n\n  for (const f of fields) {\n    const enumsArr = Array.isArray(f.enums)\n      ? f.enums.map(e => ({\n          id: e.id ?? null,\n          value: e.value ?? null,\n          sort: e.sort ?? null,\n        }))\n      : null;\n\n    const enum_values = enumsArr ? enumsArr.map(e => e.value).join(', ') : null;\n\n    out.push({\n      json: {\n        id: f.id ?? null,\n        name: f.name ?? null,\n        type: f.type ?? null,\n        code: f.code ?? null,\n        entity_type: f.entity_type ?? null,\n        group_id: f.group_id ?? null,\n        sort: f.sort ?? null,\n\n        is_api_only: !!f.is_api_only,\n        is_predefined: !!f.is_predefined,\n        is_deletable: !!f.is_deletable,\n\n        required_statuses: Array.isArray(f.required_statuses) ? f.required_statuses : [],\n        hidden_statuses: Array.isArray(f.hidden_statuses) ? f.hidden_statuses : [],\n        chained_lists: f.chained_lists ?? null,\n\n        link: f._links?.self?.href ?? null,\n\n        // enums já prontos para planilha\n        enums: enumsArr,\n        enum_values, // \"valor1, valor2, ...\"\n      }\n    });\n  }\n}\n\nreturn out;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3472,
+        -1936
+      ],
+      "id": "44113fff-b58e-4111-b161-fff994026fdf",
+      "name": "Code5"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Obtém os dados do primeiro item da entrada\nlet inputData = $input.first().json;\n\n// Verifica se os dados estão em formato de string JSON e converte para objeto\nif (typeof inputData.data === \"string\") {\n    inputData = JSON.parse(inputData.data);\n}\n\n// Verifica a estrutura do JSON\nif (!inputData || !inputData._embedded || !inputData._embedded.statuses) {\n    throw new Error(\"Estrutura do JSON inválida ou sem statuses.\");\n}\n\n// Criar um objeto para armazenar os statuses\nlet statusMap = {};\n\n// Percorre os statuses e armazena no objeto\ninputData._embedded.statuses.forEach(status => {\n    statusMap[status.name] = status.id;\n});\n\n// Retorna o objeto contendo os nomes como chaves e os IDs como valores\nreturn [{ statuses: statusMap }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2352,
+        -1936
+      ],
+      "id": "f31a7f35-2f7e-4b41-b460-165c303aaead",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -3248,
+        -1936
+      ],
+      "id": "e16b74ab-cc3c-46fd-b8e6-ee00a6ba2c99",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Obtém os dados do primeiro item da entrada\nlet inputData = $input.first().json;\n\n// Verifica se os dados estão em formato de string JSON e converte para objeto\nif (typeof inputData.data === \"string\") {\n    inputData = JSON.parse(inputData.data);\n}\n\n// Verifica a estrutura do JSON\nif (!inputData || !inputData._embedded || !inputData._embedded.pipelines) {\n    throw new Error(\"Estrutura do JSON inválida ou sem pipelines.\");\n}\n\n// Criar um objeto para armazenar os pipelines\nlet pipelineMap = {};\n\n// Percorre os pipelines e armazena no objeto\ninputData._embedded.pipelines.forEach(pipeline => {\n    pipelineMap[pipeline.name] = pipeline.id;\n});\n\n// Retorna o objeto contendo os nomes como chaves e os IDs como valores\nreturn [{ pipelines: pipelineMap }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2800,
+        -1936
+      ],
+      "id": "5d3cafa3-138d-4845-a506-ffcafd7311b7",
+      "name": "Code6"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Edit Fields').item.json.URL }}/leads/pipelines",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n  \"Content-Type\": \"application/json\",\n  \"Authorization\": \"Bearer {{ $('Edit Fields').item.json.Token }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3024,
+        -1936
+      ],
+      "id": "b486bb2b-3d3d-472e-a395-d9f91ef9269d",
+      "name": "HTTP Request6"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.URL }}/leads/custom_fields",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n  \"Content-Type\": \"application/json\",\n  \"Authorization\": \"Bearer {{ $json.Token }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3696,
+        -1936
+      ],
+      "id": "4afc36c8-da6c-41bd-920d-1777bc34f3db",
+      "name": "HTTP Request7"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Edit Fields').item.json.URL }}/leads/pipelines/{{ $json.pipelines['NOME_DO_SEU_PIPELINE'] }}/statuses",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n  \"Content-Type\": \"application/json\",\n  \"Authorization\": \"Bearer {{ $('Edit Fields').item.json.Token }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2576,
+        -1936
+      ],
+      "id": "d13d7669-b0e6-4107-ba0f-2b32040d3f2c",
+      "name": "HTTP Request8"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1606022-b2fb-4c48-9bbe-0ae164c769ef",
+              "name": "URL",
+              "value": "https://SEU_SUBDOMINIO.kommo.com/api/v4",
+              "type": "string"
+            },
+            {
+              "id": "17b30a88-4979-4676-ae67-1542df20df54",
+              "name": "Token",
+              "value": "SEU_TOKEN_KOMMO_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "cd0bfe58-d404-4afd-82e8-fd0ad96f330a",
+              "name": "pipeline - vendas",
+              "value": "SEU_PIPELINE_ID_LEGADO",
+              "type": "string"
+            },
+            {
+              "id": "f88a7851-c1a0-461a-ab20-ac4b80b96f2e",
+              "name": "stage - Hotmart",
+              "value": "SUA_ETAPA_ID_LEGADA",
+              "type": "string"
+            },
+            {
+              "id": "f3d79721-9f99-4396-ab59-89ef505ea257",
+              "name": "agendamento1",
+              "value": "SEU_FIELD_ID_AGENDAMENTO",
+              "type": "string"
+            },
+            {
+              "id": "bb047d04-5a53-491f-bfe8-9281b0dc425f",
+              "name": "tipo consulta 1",
+              "value": "SEU_FIELD_ID_TIPO_CONSULTA",
+              "type": "string"
+            },
+            {
+              "id": "b01ee19e-7007-4873-91a9-20401337c879",
+              "name": "confirmado1",
+              "value": "SEU_FIELD_ID_CONFIRMADO",
+              "type": "string"
+            },
+            {
+              "id": "1359a2c0-e317-4033-a82b-45a463ac283b",
+              "name": "tipo agendamento 1",
+              "value": "SEU_FIELD_ID_TIPO_AGENDAMENTO",
+              "type": "string"
+            },
+            {
+              "id": "a7ac3856-1c4c-4479-a223-44731fcf64e6",
+              "name": "obs 1",
+              "value": "SEU_FIELD_ID_OBS",
+              "type": "string"
+            },
+            {
+              "id": "7ccb8a20-3ff4-4c73-bc60-75a410b06cc3",
+              "name": "tipos 1",
+              "value": "SEU_FIELD_ID_TIPOS",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3920,
+        -1936
+      ],
+      "id": "a2e4609a-9126-4230-89d3-9bdb96145184",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "SEU_WEBHOOK_PATH_AQUI",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -3968,
+        -944
+      ],
+      "id": "97a86c77-6118-45bf-abde-c5f7f2c4e498",
+      "name": "Webhook",
+      "webhookId": "SEU_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ $('Edit Fields12').first().json.URL }}/leads/{{ $json.id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields12').first().json.Token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=  {\n    \"name\": \"{{ $('Edit Fields1').first().json.nome }}\",\n    \"pipeline_id\": {{ $('Edit Fields12').first().json.pipeline_vendas }},\n    \"status_id\": {{ $('Edit Fields12').first().json.etapa_disparador_pipeline_vendas }},\n    \"price\": {{ $('Edit Fields1').first().json.valor_produto || 0 }},\n    \"custom_fields_values\": [\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Profissão'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Profissão'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_produto }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.produto }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.Conheceu }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.Conheceu }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_ip }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.ip }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_utm_source }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_source }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_utm_medium }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_medium }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_utm_campaign }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_campaign }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_utm_content }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_content }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_utm_term }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_term }}\" }\n        ]\n      }\n    ],\n    \"_embedded\": {\n      \"contacts\": [\n        { \"id\": {{ $('Code25').first().json.contact_id }} }\n      ],\n    \"tags\": [\n      {{ $('Code26').first().json.tags_string }}\n      { \"name\": \"{{ $('Edit Fields1').item.json.produto }}\" }\n    ]\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1040,
+        -1520
+      ],
+      "id": "ec4f349a-4118-47c6-a8af-b7efa4c115e3",
+      "name": "HTTP Request10"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Edit Fields12').first().json.URL }}/leads",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields12').first().json.Token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"name\": \"{{ $('Edit Fields1').first().json.nome }}\",\n    \"pipeline_id\": {{ $('Edit Fields12').first().json.pipeline_vendas }},\n    \"status_id\": {{ $('Edit Fields12').first().json.etapa_disparador_pipeline_vendas }},\n    \"price\": {{ $('Edit Fields1').first().json.valor_produto || 0 }},\n    \"custom_fields_values\": [\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Profissão'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Profissão'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_produto }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.produto }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.Conheceu }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.Conheceu }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_ip }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.ip }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_utm_source }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_source }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_utm_medium }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_medium }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_utm_campaign }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_campaign }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_utm_content }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_content }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.field_utm_term }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_term }}\" }\n        ]\n      }\n    ],\n    \"_embedded\": {\n      \"contacts\": [\n        { \"id\": {{ $('Code25').first().json.contact_id }} }\n      ],\n    \"tags\": [\n      { \"name\": \"{{ $('Edit Fields1').first().json.produto }}\" }\n    ]\n  }\n}\n]\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1712,
+        -1120
+      ],
+      "id": "a9b5ec6a-ed8b-4e5e-8ddb-274684eb607a",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "SEU_ID_DA_PLANILHA_GOOGLE",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 804454546,
+          "mode": "list",
+          "cachedResultName": "Sua aba ou planilha"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -3520,
+        -848
+      ],
+      "id": "3716baf0-99bf-487b-8862-2e218c264dfd",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Google Sheets OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -4144,
+        -1936
+      ],
+      "id": "b3e3c756-8bd6-472e-afd9-151a8d227070",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "121bce7a-66e1-4d4c-86e6-bbd9e9be9a27",
+              "name": "nome",
+              "value": "={{ $json.body.Nome }}",
+              "type": "string"
+            },
+            {
+              "id": "fa53d6b5-86bb-462d-8ec3-b9f9056b0b01",
+              "name": "email",
+              "value": "={{ $json.body.Email }}",
+              "type": "string"
+            },
+            {
+              "id": "520dbc4f-6295-41f7-a86f-03a2dfa879f2",
+              "name": "telefone",
+              "value": "={{ $json.body.Telefone }}",
+              "type": "string"
+            },
+            {
+              "id": "81f41e29-20d7-44f1-b3ce-5dd4764f4464",
+              "name": "produto",
+              "value": "={{ $json.body.form_name }}",
+              "type": "string"
+            },
+            {
+              "id": "a5e896e3-c76b-4b1d-9640-26a9339603ea",
+              "name": "data",
+              "value": "={{ $now.format('dd/MM/yyyy') }}",
+              "type": "string"
+            },
+            {
+              "id": "cf016dae-eab1-49f1-a3c0-54f8f1a04971",
+              "name": "ip",
+              "value": "={{ $json.body['Remote IP'] }}",
+              "type": "string"
+            },
+            {
+              "id": "c294863a-bea5-4ac8-97d5-c86d1efc0654",
+              "name": "utm_source",
+              "value": "={{ $json.body.utm_source }}",
+              "type": "string"
+            },
+            {
+              "id": "b278674f-4e80-4492-9514-0a317763eb53",
+              "name": "utm_medium",
+              "value": "={{ $json.body.utm_medium }}",
+              "type": "string"
+            },
+            {
+              "id": "4165c090-ea56-4cb3-8a44-0b2d91a297a0",
+              "name": "utm_campaign",
+              "value": "={{ $json.body.utm_campaign }}",
+              "type": "string"
+            },
+            {
+              "id": "02a66f9f-3447-4d87-a386-d7af278d5f3e",
+              "name": "utm_content",
+              "value": "={{ $json.body.utm_content }}",
+              "type": "string"
+            },
+            {
+              "id": "cd1419c0-a0a8-4931-9724-26b159473f36",
+              "name": "utm_term",
+              "value": "={{ $json.body.utm_term }}",
+              "type": "string"
+            },
+            {
+              "id": "c35e9b9b-c878-4366-972e-9aeceb7f322f",
+              "name": "Profissão",
+              "value": "={{ $json.body['Profissão'] }}",
+              "type": "string"
+            },
+            {
+              "id": "0d349636-f7fc-405f-84de-9a195362703b",
+              "name": "Conheceu",
+              "value": "={{ $json.body.Conheceu }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3744,
+        -944
+      ],
+      "id": "46c6c5f3-c56e-4288-aaa9-365d512aceb6",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        -2832,
+        -1040
+      ],
+      "id": "0d2e5fd2-0b5d-4d88-9ee0-486b84851e30",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "content": "## 📘 README_SETUP — Formulário WordPress → Kommo CRM\n\nCada envio de formulário do site (Elementor/WordPress) vira **lead no Kommo**, sem\nduplicar contato. O fluxo procura a pessoa pelos **últimos 8 dígitos do telefone** e\ndecide sozinho entre criar contato, criar negócio ou atualizar o negócio existente.\n\nEm paralelo, tudo é registrado numa planilha do Google como backup.\n\n---\n\n### 🧠 A lógica que faz esse template valer a pena\n\nA busca não é pelo telefone inteiro — é pelos **últimos 8 dígitos**. Isso resolve o\nproblema clássico de base brasileira: o mesmo contato cadastrado ora com DDI, ora sem,\nora com o nono dígito, ora sem. Comparando só o final do número, todos batem.\n\nDepois disso o fluxo faz três perguntas em sequência:\n1. **Achou algum contato?** Não → cria contato + negócio.\n2. **Esse contato tem negócio?** Não → cria só o negócio.\n3. **O negócio já foi ganho?** Sim → cria um novo. Não → atualiza o que existe.\n\nÉ isso que evita dois problemas opostos: duplicar cliente antigo e sobrescrever\numa venda já fechada.\n\n---\n\n### ✅ Passo a passo de configuração\n\n**1. Trocar o token e a URL** (nos nós `Edit Fields12` **e** `Edit Fields`)\n- `SEU_SUBDOMINIO.kommo.com` → o subdomínio da sua conta\n- `SEU_TOKEN_KOMMO_AQUI` → token de longa duração\n  (Kommo → Configurações → Integrações → crie uma integração privada)\n- ⚠️ **O token aparece nos DOIS nós Set.** Troque nos dois.\n  💡 Melhor ainda: crie uma credencial **Header Auth** no n8n e use nos 9 nós HTTP.\n\n**2. Descobrir os IDs do seu Kommo** — use o ramo utilitário (canto superior)\n- Ele tem um **gatilho manual**: rode uma vez e ele lista pipelines,\n  etapas e custom fields da sua conta, com nome e ID.\n- Preencha `NOME_DO_SEU_PIPELINE` no nó `HTTP Request8` antes de rodar.\n\n**3. Preencher os IDs no nó `Edit Fields12`**\n- `SEU_PIPELINE_ID_VENDAS` / `SEU_PIPELINE_ID_CS`\n- `SUA_ETAPA_ID_ENTRADA_VENDAS` — onde o lead novo cai\n- `SUA_ETAPA_ID_GANHO` — usada para saber se a venda já foi fechada\n- `SEU_FIELD_ID_*` — um por campo personalizado (UTMs, produto, IP, profissão…)\n\n**4. Configurar a planilha** (`Append row in sheet`)\n- Troque `SEU_ID_DA_PLANILHA_GOOGLE` e religue a credencial **Google Sheets OAuth2**.\n- Colunas esperadas: data · nome · email · telefone · produto · ip · utm_*\n\n**5. Configurar o Webhook no WordPress**\n- Gere um path novo e copie a **Production URL**.\n- Elementor → seu formulário → Ações após envio → **Webhook** → cole a URL.\n- Campos esperados no payload: `Nome`, `Email`, `Telefone`, `Profissão`,\n  `Conheceu`, `form_name`, `Remote IP` e as `utm_*`.\n- 🔧 Se os seus campos tiverem outros nomes, ajuste o nó `Edit Fields1`.\n\n**6. Testar antes de ativar** — o workflow vem com `active: false`.\n⚠️ Cada teste cria contato e negócio **de verdade** no Kommo.\n\n---\n\n### 🔐 Segurança — LEIA\nO token do Kommo estava em **texto puro em dois nós Set**, fora do cofre de credenciais\ndo n8n, e é um token de **longa duração** com escopo de CRM completo (ler, criar e\neditar contatos e negócios de toda a conta).\n\n👉 **Revogue a integração no Kommo e gere um token novo.** Substituir o valor no JSON\nnão invalida o antigo.\n\nO webhook também **não valida origem**: quem tiver a URL consegue injetar leads falsos\nno CRM do cliente.",
+        "height": 1120,
+        "width": 500,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -4600,
+        -1500
+      ],
+      "id": "sticky-README_SETUP",
+      "name": "README_SETUP"
+    },
+    {
+      "parameters": {
+        "content": "### 🛠️ RAMO UTILITÁRIO — descubra os IDs da sua conta (rode à mão)\n\nEste ramo **não faz parte da automação**. Ele começa num gatilho manual\n(*Execute workflow*) e serve para você **descobrir os IDs** que precisa preencher.\n\n`Edit Fields` (URL + Token) → **HTTP Request7** lista os *custom fields* →\n**Code5 + Aggregate** organizam nome/ID/tipo de cada campo →\n**HTTP Request6 + Code6** listam os *pipelines* →\n**HTTP Request8 + Code2** listam as *etapas* daquele pipeline.\n\n▶️ Rode uma vez, anote os IDs e preencha o nó `Edit Fields12`.\n\n⚠️ Este nó `Edit Fields` guarda uma **segunda cópia do token**. Troque nos dois lugares.",
+        "height": 280,
+        "width": 620,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -4060,
+        -2260
+      ],
+      "id": "sticky-Nota_0_Descoberta",
+      "name": "Nota_0_Descoberta"
+    },
+    {
+      "parameters": {
+        "content": "### 1️⃣ Entrada — formulário do site\n\n**Webhook** recebe o POST do Elementor\n(WordPress) em `x-www-form-urlencoded`.\n\n**Edit Fields1** normaliza tudo o que o\nformulário mandou: nome, e-mail, telefone,\nproduto (`form_name`), data, IP, as 5 UTMs,\nprofissão e \"como conheceu\".\n\n🔧 Se os campos do seu formulário tiverem\noutros nomes, é **aqui** que você ajusta.\n\n📌 A saída se divide em dois caminhos\nparalelos: a planilha (backup) e o Kommo.",
+        "height": 300,
+        "width": 400,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -4030,
+        -1120
+      ],
+      "id": "sticky-Nota_1_Entrada",
+      "name": "Nota_1_Entrada"
+    },
+    {
+      "parameters": {
+        "content": "### 📋 Backup na planilha\n\n**Append row in sheet** grava cada lead\nnuma aba do Google Sheets.\n\nServe como rede de segurança: se o Kommo\nestiver fora do ar ou o token expirar,\no lead não se perde — fica registrado aqui.\n\n🔧 Troque `SEU_ID_DA_PLANILHA_GOOGLE`\ne religue a credencial.",
+        "height": 220,
+        "width": 340,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3620,
+        -790
+      ],
+      "id": "sticky-Nota_2_Planilha",
+      "name": "Nota_2_Planilha"
+    },
+    {
+      "parameters": {
+        "content": "### 2️⃣ Credenciais + chave de busca 🔑\n\n**Edit Fields12** guarda a URL da conta, o\n**token** e todos os IDs de pipeline, etapa\ne custom field do Kommo.\n\n⚠️ Token em texto puro. Migre para uma\ncredencial **Header Auth** do n8n.\n\n**Code24** normaliza o telefone:\n- limpa tudo que não é dígito\n- prefixa `55` se tiver 10 ou 11 dígitos\n- extrai os **últimos 8 dígitos**\n\n💡 Buscar pelos 8 finais é o truque que faz\no contato bater mesmo se estiver salvo com\nou sem DDI e com ou sem o nono dígito.",
+        "height": 300,
+        "width": 400,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3620,
+        -1180
+      ],
+      "id": "sticky-Nota_3_Telefone",
+      "name": "Nota_3_Telefone"
+    },
+    {
+      "parameters": {
+        "content": "### 3️⃣ Procurar o contato no Kommo\n\n**HTTP Request27** consulta\n`/contacts?query={8 dígitos}&with=leads`\n— já traz os negócios vinculados.\n\n**Limit** mantém apenas o primeiro resultado.\n\n**If1** — veio alguma coisa?\n- **Sim** → segue para o desempate (`Code25`)\n- **Não** → **HTTP Request28** cria o contato\n  do zero e **Code27** extrai o `lead_id`\n\n💡 O `with=leads` economiza uma chamada:\ncontato e negócio vêm na mesma resposta.",
+        "height": 300,
+        "width": 420,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3160,
+        -1180
+      ],
+      "id": "sticky-Nota_4_Busca",
+      "name": "Nota_4_Busca"
+    },
+    {
+      "parameters": {
+        "content": "### 4️⃣ Qual contato usar? (desempate)\n\n**Code25** é o nó mais inteligente do fluxo.\nQuando a busca devolve **vários** contatos\nparecidos, ele pontua cada um:\n\n+2 se tem nome · +2 se tem telefone ·\n+1 por campo preenchido · +1 por tag ·\n+1 por empresa · +1 por responsável\n\nVence o **contato mais completo** — não o\nprimeiro que apareceu. Isso evita colar o\nlead novo num registro vazio ou duplicado.\n\n**If9** — esse contato tem negócio?\n- **Sim** → busca o negócio (`HTTP Request33`)\n- **Não** → cria negócio novo (`HTTP Request2`)",
+        "height": 300,
+        "width": 460,
+        "color": 1
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2700,
+        -1180
+      ],
+      "id": "sticky-Nota_5_Desempate",
+      "name": "Nota_5_Desempate"
+    },
+    {
+      "parameters": {
+        "content": "### 5️⃣ Criar novo ou atualizar? 🔀\n\n**Code26** analisa o negócio encontrado:\nlê tags, etapa atual e compara com a\n**etapa de Ganho** configurada.\n\nEle devolve `should_create_deal`:\n- **true** → a venda anterior já foi ganha,\n  então esta é uma **nova oportunidade**\n- **false** → o negócio ainda está aberto,\n  então é só **atualizar**\n\n**If2** roteia:\n- `false` → **HTTP Request10** (PATCH: atualiza)\n- `true`  → **HTTP Request9** (POST: cria novo)\n\n💡 É essa regra que impede o fluxo de\nsobrescrever uma venda já fechada.",
+        "height": 300,
+        "width": 460,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2200,
+        -1180
+      ],
+      "id": "sticky-Nota_6_Decisao",
+      "name": "Nota_6_Decisao"
+    },
+    {
+      "parameters": {
+        "content": "### 6️⃣ O que é gravado no negócio\n\nOs três nós de escrita (`HTTP Request2`, `9` e `10`) enviam o mesmo pacote:\n\n**nome** · **pipeline** · **etapa de entrada** · **valor do produto**\n\nE os custom fields: profissão · produto · como conheceu · **IP** ·\nutm_source · utm_medium · utm_campaign · utm_content · utm_term\n\n📌 Levar as UTMs para dentro do CRM é o que permite responder\n\"qual campanha trouxe esse cliente?\" lá na hora de fechar a venda —\ne não só no Google Analytics.",
+        "height": 260,
+        "width": 480,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1700,
+        -1780
+      ],
+      "id": "sticky-Nota_7_Gravacao",
+      "name": "Nota_7_Gravacao"
+    },
+    {
+      "parameters": {
+        "content": "### ⚠️ Antes de ativar em produção\n\n- **Token em texto puro, duplicado em dois nós.** É um token de longa duração com acesso\n  total ao CRM. Migre para credencial **Header Auth** e revogue o antigo no Kommo.\n\n- **Nenhum tratamento de erro em 9 chamadas HTTP.** Se o Kommo devolver 401 (token expirado)\n  ou 429 (limite de requisições), a execução morre no meio — pode ter criado o contato e\n  não o negócio. Considere `retryOnFail` nos nós de leitura e alerta nos de escrita.\n\n- **Webhook sem validação de origem.** Qualquer um com a URL injeta lead falso no CRM.\n\n- **Referência morta no `If9`:** ele compara com `Edit Fields12.Pipeline`, campo que não\n  existe (os campos são `pipeline_vendas` e `pipeline_cs`). Não quebra hoje porque o\n  operador é *notEmpty* e ignora o lado direito — mas é resíduo, vale limpar.\n\n- **Cada teste cria contato e negócio de verdade.** Use uma conta ou pipeline de teste.",
+        "height": 300,
+        "width": 640,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3160,
+        -700
+      ],
+      "id": "sticky-Nota_8_Avisos",
+      "name": "Nota_8_Avisos"
+    }
+  ],
+  "connections": {
+    "Edit Fields12": {
+      "main": [
+        [
+          {
+            "node": "Code24",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request27": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code24": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request27",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code25": {
+      "main": [
+        [
+          {
+            "node": "If9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If9": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request33",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code26": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request28": {
+      "main": [
+        [
+          {
+            "node": "Code27",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request33": {
+      "main": [
+        [
+          {
+            "node": "Code26",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Code25",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request28",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code5": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code6": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request6": {
+      "main": [
+        [
+          {
+            "node": "Code6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request7": {
+      "main": [
+        [
+          {
+            "node": "Code5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request8": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code27": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request29",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request10",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": ""
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [],
+  "pinData": {}
+}

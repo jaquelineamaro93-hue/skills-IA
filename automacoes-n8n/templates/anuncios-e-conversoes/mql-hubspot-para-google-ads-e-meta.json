@@ -1,0 +1,932 @@
+{
+  "name": "MQL -> Google Ads + Meta CAPI (via HubSpot) (Template)",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9fcc7cdc-f41b-4605-bf2f-6f1104353d61",
+              "name": "gclid",
+              "value": "={{ $json.body.properties.gclid.value }}",
+              "type": "string"
+            },
+            {
+              "id": "076113d4-9974-4747-8181-ead9f06ce9c4",
+              "name": "conversion_time",
+              "value": "={{ $json.body.properties.hs_lastmodifieddate.value }}",
+              "type": "string"
+            },
+            {
+              "id": "b711e889-99f4-4a98-bd68-69e85cbee8d9",
+              "name": "conversion_value",
+              "value": "={{ $json.body.properties.amount.value }}",
+              "type": "string"
+            },
+            {
+              "id": "ef999a0e-6853-4b56-a30f-09df61a9851a",
+              "name": "currency_code",
+              "value": "={{ $json.body.properties.deal_currency_code.value }}",
+              "type": "string"
+            },
+            {
+              "id": "e45d4315-a47e-4be3-9017-a6284e9b343c",
+              "name": "Evento de conversão",
+              "value": "SEU_CONVERSION_ACTION_ID_GOOGLE_ADS",
+              "type": "string"
+            },
+            {
+              "id": "f0550820-b51c-44fe-a30a-e07078522e02",
+              "name": "ID_GAD",
+              "value": "SEU_ID_GAD_GOOGLE_ADS",
+              "type": "string"
+            },
+            {
+              "id": "4873a69c-5557-4b31-be10-b8fe88b0bede",
+              "name": "id_contato",
+              "value": "={{ $json.body.objectId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        0
+      ],
+      "id": "aa54d1e8-8e76-4de0-acf9-d9ced03cfe43",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://googleads.googleapis.com/v23/customers/{{ $json.ID_GAD }}:uploadClickConversions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleAdsOAuth2Api",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"developer-token\": \"0G8cml38t4bNTN_890L_xQ\",\n  \"login-customer-id\": \"SEU_ID_AQUI\",\n  \"Content-Type\": \"application/json\"\n}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"partialFailure\": true,\n  \"conversions\": [\n    {\n      \"conversionAction\": \"customers/SEU_CUSTOMER_ID_GOOGLE_ADS/conversionActions/{{ $json['Evento de conversão'] }}\",\n      \"gclid\": \"\",\n      \"conversionDateTime\": \"{{ $json.conversion_time }}\",\n      \"conversionValue\": 1,\n      \"currencyCode\": \"{{ $json.currency_code }}\",\n      \"userIdentifiers\": [\n        {\n          \"hashedEmail\": \"{{ $json.email }}\",\n          \"userIdentifierSource\": \"FIRST_PARTY\"\n  },\n        {\n          \"hashedPhoneNumber\": \"{{ $json.telefone }}\",\n          \"userIdentifierSource\": \"FIRST_PARTY\"\n  }\n      ]\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        896,
+        0
+      ],
+      "id": "09eea5d3-ae4b-40fa-9b65-8fe87af65ccb",
+      "name": "HTTP Request4"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "mql-google",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "52716380-de3c-4a88-a58c-cb92b2fe9be1",
+      "name": "Webhook3",
+      "webhookId": "SEU_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9fcc7cdc-f41b-4605-bf2f-6f1104353d61",
+              "name": "gclid",
+              "value": "={{ $('Webhook3').first().json.body.properties.gclid.value }}",
+              "type": "string"
+            },
+            {
+              "id": "076113d4-9974-4747-8181-ead9f06ce9c4",
+              "name": "conversion_time",
+              "value": "={{\nDateTime\n  .fromMillis(Number($('Webhook3').first().json.body.properties.createdate.value))\n  .setZone('Europe/Berlin')\n  .toFormat('yyyy-MM-dd HH:mm:ssZZ')\n  .replace(/(\\d{2})(\\d{2})$/, '$1:$2')\n}}",
+              "type": "string"
+            },
+            {
+              "id": "b711e889-99f4-4a98-bd68-69e85cbee8d9",
+              "name": "conversion_value",
+              "value": "={{ $('Webhook3').first().json.body.properties.amount.value }}",
+              "type": "string"
+            },
+            {
+              "id": "ef999a0e-6853-4b56-a30f-09df61a9851a",
+              "name": "currency_code",
+              "value": "={{ $('Webhook3').first().json.body.properties.deal_currency_code.value }}",
+              "type": "string"
+            },
+            {
+              "id": "e9d7b53e-ad88-43ad-9366-bf7a1def65cb",
+              "name": "email",
+              "value": "={{ $json['identity-profiles'][0].identities[0].value.hash(\"sha256\") }}",
+              "type": "string"
+            },
+            {
+              "id": "4fefff1a-a259-48c5-8f4a-7413dfaf7ac9",
+              "name": "telefone",
+              "value": "={{ $json.properties.phone.value.hash(\"sha256\") }}",
+              "type": "string"
+            },
+            {
+              "id": "e45d4315-a47e-4be3-9017-a6284e9b343c",
+              "name": "Evento de conversão",
+              "value": "SEU_CONVERSION_ACTION_ID_GOOGLE_ADS",
+              "type": "string"
+            },
+            {
+              "id": "f0550820-b51c-44fe-a30a-e07078522e02",
+              "name": "ID_GAD",
+              "value": "SEU_ID_GAD_GOOGLE_ADS",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        672,
+        0
+      ],
+      "id": "19a713df-4bb6-4e52-b2fe-302699089836",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "contactId": {
+          "__rl": true,
+          "value": "={{ $('Webhook3').first().json.body.properties.last_name.sourceId.match(/sourceObjectId=(\\d+)/)?.[1] }}",
+          "mode": "id"
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2.2,
+      "position": [
+        448,
+        0
+      ],
+      "id": "b3aca076-0938-4aa7-957e-716d3f5295b7",
+      "name": "Get a contact",
+      "credentials": {
+        "hubspotApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] HubSpot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://googleads.googleapis.com/v23/customers/{{ $json.ID_GAD }}:uploadClickConversions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleAdsOAuth2Api",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"developer-token\": \"0G8cml38t4bNTN_890L_xQ\",\n  \"login-customer-id\": \"SEU_ID_AQUI\",\n  \"Content-Type\": \"application/json\"\n}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"partialFailure\": true,\n  \"conversions\": [\n    {\n      \"conversionAction\": \"customers/SEU_CUSTOMER_ID_GOOGLE_ADS/conversionActions/{{ $json['Evento de conversão'] }}\",\n      \"gclid\": \"{{ $json.gclid }}\",\n      \"conversionDateTime\": \"{{ $json.conversion_time }}\",\n      \"conversionValue\": 1,\n      \"currencyCode\": \"{{ $json.currency_code }}\",\n      \"userIdentifiers\": [\n        {\n          \"hashedEmail\": \"{{ $json.email }}\",\n          \"userIdentifierSource\": \"FIRST_PARTY\"\n  },\n        {\n          \"hashedPhoneNumber\": \"{{ $json.telefone }}\",\n          \"userIdentifierSource\": \"FIRST_PARTY\"\n  }\n      ]\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1072,
+        256
+      ],
+      "id": "80b2f2f9-03d7-42f6-b3ee-ccf72b072710",
+      "name": "HTTP Request",
+      "credentials": {
+        "googleAdsOAuth2Api": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Google Ads"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9fcc7cdc-f41b-4605-bf2f-6f1104353d61",
+              "name": "gclid",
+              "value": "={{ $('Webhook3').first().json.body.properties.gclid.value }}",
+              "type": "string"
+            },
+            {
+              "id": "076113d4-9974-4747-8181-ead9f06ce9c4",
+              "name": "conversion_time",
+              "value": "={{\nDateTime\n  .fromMillis(Number($('Webhook3').first().json.body.properties.createdate.value))\n  .setZone('Europe/Berlin')\n  .toFormat('yyyy-MM-dd HH:mm:ssZZ')\n  .replace(/(\\d{2})(\\d{2})$/, '$1:$2')\n}}",
+              "type": "string"
+            },
+            {
+              "id": "b711e889-99f4-4a98-bd68-69e85cbee8d9",
+              "name": "conversion_value",
+              "value": "={{ $('Webhook3').first().json.body.properties.amount.value }}",
+              "type": "string"
+            },
+            {
+              "id": "ef999a0e-6853-4b56-a30f-09df61a9851a",
+              "name": "currency_code",
+              "value": "={{ $('Webhook3').first().json.body.properties.deal_currency_code.value }}",
+              "type": "string"
+            },
+            {
+              "id": "e9d7b53e-ad88-43ad-9366-bf7a1def65cb",
+              "name": "email",
+              "value": "={{ $json['identity-profiles'][0].identities[0].value.hash(\"sha256\") }}",
+              "type": "string"
+            },
+            {
+              "id": "4fefff1a-a259-48c5-8f4a-7413dfaf7ac9",
+              "name": "telefone",
+              "value": "={{ $json.properties.phone.value.hash(\"sha256\") }}",
+              "type": "string"
+            },
+            {
+              "id": "e45d4315-a47e-4be3-9017-a6284e9b343c",
+              "name": "Evento de conversão",
+              "value": "SEU_CONVERSION_ACTION_ID_GOOGLE_ADS",
+              "type": "string"
+            },
+            {
+              "id": "f0550820-b51c-44fe-a30a-e07078522e02",
+              "name": "ID_GAD",
+              "value": "SEU_ID_GAD_GOOGLE_ADS",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        848,
+        256
+      ],
+      "id": "07783233-24ef-444e-8bbf-b31b4efc42f5",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "77775875-fff9-4792-9778-a8f2d4deb7d4",
+              "name": "user_data.first_name",
+              "value": "={{ /* Get only the first name, make lowercase, remove spaces and special characters and convert to UTF-8 */\n\nencodeURIComponent(\n    $json.user_data.name.trim().split(\" \").first()\n        .toLowerCase()\n        .replace(/\\s+/g, '')\n        .replace(/[^\\p{L}\\p{N}]/gu, '')\n)\n\n}}",
+              "type": "string"
+            },
+            {
+              "id": "aca1383e-3d9f-4d1b-b4d5-f8754d409298",
+              "name": "user_data.last_name",
+              "value": "={{ /* Get only the last name, make lowercase, remove spaces and special characters and convert to UTF-8 */\n\nencodeURIComponent(\n    $json.user_data.name.split(\" \").last()\n        .toLowerCase()\n        .replace(/\\s+/g, '')\n        .replace(/[^\\p{L}\\p{N}]/gu, '')\n)\n\n}}",
+              "type": "string"
+            },
+            {
+              "id": "6a315617-d1c9-4320-b851-e3dcc5207b4b",
+              "name": "user_data.email",
+              "value": "={{ /* Remove spaces and make lowercase */\n\n$json.user_data.email.trim().toLowerCase()\n\n}}",
+              "type": "string"
+            },
+            {
+              "id": "65d1994d-f4b8-478a-8cf1-490990e6639d",
+              "name": "user_data.phone",
+              "value": "={{ \n  (\n    $json.user_data.phone \n      ? $json.user_data.phone.replace(/\\D/g, '').replace(/^0+/, '') \n      : ''\n  ) || '999999999' \n}}\n\n\n}}",
+              "type": "string"
+            },
+            {
+              "id": "5650546d-f0ad-4c69-829c-3e4283e16ac7",
+              "name": "event_time",
+              "value": "={{ /* Convert to Unix timestamp integer */\n\nMath.floor(new Date($json.event_time).getTime() / 1000)\n\n}}",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "include": "except",
+        "excludeFields": "user_data.name",
+        "options": {}
+      },
+      "id": "4c608df0-0d6f-413f-99d2-2bc762104422",
+      "name": "Normalize data3",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        992,
+        672
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "097ed7ff-c076-454e-930c-1f4820ac6e2e",
+              "name": "user_data.first_name",
+              "value": "={{ $json.user_data.first_name.hash(\"sha256\") }}",
+              "type": "string"
+            },
+            {
+              "id": "e285fa12-d272-48a0-a583-5e90b394fd74",
+              "name": "user_data.last_name",
+              "value": "={{ $json.user_data.last_name.hash(\"sha256\") }}",
+              "type": "string"
+            },
+            {
+              "id": "e0e524cf-62cc-4ca3-a469-4caa2ffcab62",
+              "name": "user_data.email",
+              "value": "={{ $json.user_data.email.hash(\"sha256\") }}",
+              "type": "string"
+            },
+            {
+              "id": "1e87a997-5b78-48d8-9616-edfb1b910743",
+              "name": "user_data.phone",
+              "value": "={{ $json.user_data.phone.hash(\"sha256\") }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "74d895c9-bd35-4b65-bdf7-f952d8ef797a",
+      "name": "Encrypt data3",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1216,
+        672
+      ]
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "=v20.0",
+        "node": "={{ $('Edit Fields5').first().json.pixel }}",
+        "edge": "events",
+        "options": {
+          "queryParametersJson": "={\n  \"data\": [\n    {\n      \"action_source\": \"{{ $('Edit Fields5').first().json.action_source }}\",\n      \"custom_data\": {\n        \"event_source\": \"{{ $('Edit Fields5').first().json.event_source }}\",\n        \"lead_event_source\": \"{{ $('Edit Fields5').first().json.lead_event_source }}\",\n        \"value\": {{ $('Edit Fields5').first().json.value }},\n        \"currency\": \"{{ $('Edit Fields5').first().json.currency }}\"\n      },\n      \"event_name\": \"{{ $json.event_name }}\",\n      \"event_time\": {{ $json.event_time }},\n      \"user_data\": {\n        \"em\": [\n          \"{{ $json.user_data.email }}\"\n        ],\n        \"ph\": [\n          \"{{ $json.user_data.phone }}\"\n        ],\n        \"fn\": [\n          \"{{ $json.user_data.first_name }}\"\n        ],\n        \"ln\": [\n          \"{{ $json.user_data.last_name }}\"\n        ],\n        \"fbc\": \"{{ $json.user_data.facebook_click_id }}\",\n        \"fbp\": \"{{ $json.user_data.facebook_browser_id }}\",\n        \"client_ip_address\": \"{{ $json.user_data.client_ip_address }}\",\n        \"client_user_agent\": \"{{ $json.user_data.client_user_agent }}\"\n      }\n    }\n  ],\n  \"test_event_code\": \"TEST52868\"\n}"
+        }
+      },
+      "id": "f6744c1c-02e4-45b4-886a-9d54c0981b26",
+      "name": "Send event to Meta6",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        1664,
+        560
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Meta (Facebook Graph)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "=v20.0",
+        "node": "={{ $('Edit Fields5').first().json.pixel }}",
+        "edge": "events",
+        "options": {
+          "queryParametersJson": "={\n  \"data\": [\n    {\n      \"event_name\": \"{{ $json.event_name }}\",\n      \"event_time\": {{ $json.event_time }},\n      \"action_source\": \"website\",\n      \"user_data\": {\n        \"em\": \"{{ $json.user_data.email }}\",\n        \"ph\": \"{{ $json.user_data.phone }}\",\n        \"fn\": \"{{ $json.user_data.first_name }}\",\n        \"ln\": \"{{ $json.user_data.last_name }}\",\n        \"fbp\": \"fb.1.{{ $json.event_time }}.{{ Math.floor(Math.random() * 9000000000) + 1000000000 }}\",\n        \"client_ip_address\": \"{{ $json.user_data.client_ip_address }}\",\n        \"client_user_agent\": \"{{ $json.user_data.client_user_agent }}\"\n      },\n      \"custom_data\": {\n        \"value\": {{ $json.custom_data.value }},\n        \"currency\": \"{{ $json.custom_data.currency }}\"\n      }\n    }\n  ],\n\"test_event_code\": \"TEST2007\"\n}"
+        }
+      },
+      "id": "92e85a5a-de41-45d5-a750-8c9da7cfaf2d",
+      "name": "Send event to Meta7",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        1664,
+        768
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Meta (Facebook Graph)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      user_data: {\n        name: $('Edit Fields5').first().json.name,\n        email: $('Edit Fields5').first().json.email,\n        phone: $('Edit Fields5').first().json.phone,\n        client_ip_address: $('Edit Fields5').first().json.client_ip_address,\n        client_user_agent: $('Edit Fields5').first().json.client_user_agent,\n\n        facebook_click_id: `${$('Code6').first().json.event_time}.${$('Edit Fields5').first().json.fbclid}`,\n\n        facebook_browser_id: `${$('Code6').first().json.event_time}.${$input.first().json.randomnumber}`\n      },\n\n      event_name: $('Edit Fields5').first().json.event_name,\n\n      event_time: $('Code6').first().json.event_time,\n\n      custom_data: {\n        value: $('Edit Fields5').first().json.value,\n        currency: \"$('Edit Fields5').first().json.currency\"\n      },\n\n      action_source: \"website\"\n    }\n  }\n];"
+      },
+      "id": "ed22ab84-59ae-478d-a12f-af5bc644bf0c",
+      "name": "EXEMPLO3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        768,
+        672
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const eventTime = Date.now(); // Obtém o timestamp atual em milissegundos\nreturn [{ json: { event_time: eventTime } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        672
+      ],
+      "id": "30e08cd3-2f26-4e0f-a965-e53cea1dcca1",
+      "name": "Code6"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Função para gerar o número aleatório\nfunction generateRandomNumber() {\n  return Math.floor(Math.random() * 1000000); // Gera um número aleatório entre 0 e 999999\n}\n\n// Gera o número aleatório\nconst randomnumber = generateRandomNumber();\n\n// Retorna o item no formato esperado pelo n8n\nreturn [{\n  json: {\n    randomnumber: randomnumber\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        544,
+        672
+      ],
+      "id": "b689fc17-53a0-468f-abcc-9b5ab62a7323",
+      "name": "Code7"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2cbe6b37-f62c-491f-ba8a-7a8e3bac4b1c",
+              "leftValue": "={{ $('Edit Fields5').first().json.fbclid }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1440,
+        672
+      ],
+      "id": "16647c63-c404-4f05-a850-193bd2fa203d",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "content": "## MQL - Offline -> Lead Qualificado",
+        "height": 384,
+        "width": 2592,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -544,
+        544
+      ],
+      "typeVersion": 1,
+      "id": "3e1f6943-1537-407b-a875-2c8fa0e82d00",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "authentication": "appToken",
+        "operation": "get",
+        "contactId": {
+          "__rl": true,
+          "value": "={{ $json.body.properties.last_name.sourceId.match(/sourceObjectId=(\\d+)/)?.[1] }}",
+          "mode": "id"
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2.2,
+      "position": [
+        -208,
+        672
+      ],
+      "id": "4b3db295-0952-4e6d-80ba-53fed6f03bcd",
+      "name": "Get a contact1",
+      "credentials": {
+        "hubspotAppToken": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] HubSpot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "mql-meta",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -416,
+        672
+      ],
+      "id": "b2a61255-4d68-409d-b6d2-986982b3a609",
+      "name": "Webhook",
+      "webhookId": "SEU_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e95597ca-3f0f-431c-86c3-db73fb424275",
+              "name": "name",
+              "value": "={{ $json.properties.firstname.value }} {{ $json.properties.lastname.value }}",
+              "type": "string"
+            },
+            {
+              "id": "1a2d2871-b53d-4eee-be77-21a56f6cd000",
+              "name": "email",
+              "value": "={{ $json.properties.email.value }}",
+              "type": "string"
+            },
+            {
+              "id": "0453719a-d709-470b-bae9-f19cd9442f04",
+              "name": "phone",
+              "value": "={{ $json.properties.phone.value }}",
+              "type": "string"
+            },
+            {
+              "id": "ceec879a-19e9-49ba-91d0-be219c5e137c",
+              "name": "client_ip_address",
+              "value": "={{ $('Webhook').first().json.headers['x-real-ip'] }}",
+              "type": "string"
+            },
+            {
+              "id": "3e62d825-f1d4-4e9c-92e2-5b134c165030",
+              "name": "client_user_agent",
+              "value": "={{ $('Webhook').first().json.headers['user-agent'] }}",
+              "type": "string"
+            },
+            {
+              "id": "ad7c31b9-7c18-4140-9fc1-6dabba6b4d3a",
+              "name": "fbclid",
+              "value": "=",
+              "type": "string"
+            },
+            {
+              "id": "1a027cd6-efd4-4d25-9cb2-4eb09c1f328e",
+              "name": "pixel",
+              "value": "SEU_PIXEL_ID_META",
+              "type": "string"
+            },
+            {
+              "id": "53d52fe0-058b-47ee-9220-be9588a907c8",
+              "name": "event_name",
+              "value": "mql",
+              "type": "string"
+            },
+            {
+              "id": "3561e111-2172-410a-8e62-d2f464a9f545",
+              "name": "value",
+              "value": "={{ $('Webhook').first().json.body.properties.amount.versions[0].value }}",
+              "type": "string"
+            },
+            {
+              "id": "ef972285-9661-4aa8-8d16-ec810221c03d",
+              "name": "currency",
+              "value": "={{ $('Webhook').first().json.body.properties.deal_currency_code.value }}",
+              "type": "string"
+            },
+            {
+              "id": "1d544576-1907-4bf9-a9bb-fb11ce6b72a3",
+              "name": "action_source",
+              "value": "system_generated",
+              "type": "string"
+            },
+            {
+              "id": "45d42c3e-18d1-4b99-a02f-baf917c93f89",
+              "name": "event_source",
+              "value": "crm",
+              "type": "string"
+            },
+            {
+              "id": "04c24d18-6574-43d5-bd22-f35bf92f60d0",
+              "name": "lead_event_source",
+              "value": "hubspot",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        32,
+        672
+      ],
+      "id": "c920fb99-1a9f-45d9-aae7-eba3da14448c",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "=v20.0",
+        "node": "=SEU_ID_AQUI",
+        "edge": "events",
+        "options": {
+          "queryParametersJson": "={\n  \"data\": [\n    {\n      \"action_source\": \"system_generated\",\n      \"event_name\": \"Lead\",\n      \"event_time\":SEU_ID_AQUI,\n      \"user_data\": {\n        \"em\": [\"SEU_TOKEN_AQUI\"],\n        \"ph\": [\"SEU_TOKEN_AQUI\"],\n        \"fn\": [\"SEU_TOKEN_AQUI\"],\n        \"ln\": [\"SEU_TOKEN_AQUI\"],\n        \"client_ip_address\": \"0.0.0.0\",\n        \"client_user_agent\": \"HubSpot Connect 2.0 (http://dev.hubspot.com/) (namespace: WebhooksPlatformExecution) - AutomationActionsExecutionService-web\",\n        \"lead_id\": SEU_ID_AQUI\n      },\n      \"custom_data\": {\n        \"event_source\": \"crm\",\n        \"lead_event_source\": \"hubspot\",\n        \"value\": 4000,\n        \"currency\": \"EUR\"\n      }\n    }\n  ],\n  \"test_event_code\": \"TEST52868\"\n}"
+        }
+      },
+      "id": "5fbed2e6-6e91-4f9f-b7c8-89aa97d98f64",
+      "name": "Send event to Meta",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        1152,
+        1248
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Meta (Facebook Graph)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## README_SETUP — MQL -> Google Ads + Meta CAPI (enriquecido via HubSpot)\n\nQuando um lead vira MQL, este fluxo busca os dados no HubSpot, faz HASH dos dados\npessoais e envia a conversao tanto para o Google Ads (Offline Conversion Import)\nquanto para a Meta Conversions API. Dois webhooks separam as rotas: mql-google e mql-meta.\n\n**1. Credenciais (reconfigurar TODAS com as SUAS contas)**\n- HubSpot: `[Reconfigurar] HubSpot` (havia 2 credenciais no original, uma de outro cliente).\n- Google Ads: `[Reconfigurar] Google Ads` (OAuth2 + developer token).\n- Meta (Facebook Graph): `[Reconfigurar] Meta (Facebook Graph)` (havia 2: Conta B e Conta A).\n\n**2. Trocar placeholders**\n- `SEU_CUSTOMER_ID_GOOGLE_ADS` -> customer id da conta (no corpo: customers/{id}/conversionActions).\n- `SEU_ID_GAD_GOOGLE_ADS` -> customer id de destino (campo ID_GAD nos Edit Fields).\n- `SEU_CONVERSION_ACTION_ID_GOOGLE_ADS` -> id da acao de conversao.\n- `SEU_PIXEL_ID_META` -> id do Pixel/Dataset do Meta.\n- webhookIds serao regerados; os paths 'mql-google' e 'mql-meta' podem ser mantidos.\n\n**3. Boas praticas**\n- Dados pessoais (email) vao com HASH SHA-256 tanto para Google Ads quanto Meta. Mantenha.\n- Confira as versoes das APIs (Google Ads v23, Graph API) e atualize se necessario.\n\n**4. Ativar**\n- Teste cada rota e so entao mude `active` para true.\n\nIMPORTANTE: os tokens de HubSpot, Google Ads (developer token/OAuth) e Meta que ja\ncircularam devem ser REVOGADOS/REGERADOS. Placeholder NAO invalida o segredo antigo.",
+        "height": 470,
+        "width": 640,
+        "color": 5
+      },
+      "name": "README_SETUP",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -584,
+        -560
+      ],
+      "id": "readme_setup"
+    },
+    {
+      "parameters": {
+        "content": "### ATENCAO — Credenciais de outros clientes/contas\nO export continha credenciais que NAO deveriam estar aqui:\n- HubSpot App Token \"[Outro Cliente]\" (no no 'Get a contact1') — outro cliente.\n- Google Ads \"PNP SOLUCOES EM BIOENGENHARIA\" (no no HTTP Request) — outra conta.\nForam renomeadas para [Reconfigurar]. Confira no n8n se nao houve exposicao cruzada\nentre projetos e revogue esses tokens por seguranca.",
+        "height": 220,
+        "width": 470,
+        "color": 1
+      },
+      "name": "Nota - ATENCAO Credenciais",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -584,
+        -70
+      ],
+      "id": "nota_-_atencao_credenciais"
+    },
+    {
+      "parameters": {
+        "content": "### ENTRADA — 2 Webhooks (mql-google / mql-meta)\nRecebem o gatilho de MQL. Cada rota alimenta um destino (Google Ads ou Meta).\nAponte o HubSpot/automacao para as URLs correspondentes.",
+        "height": 200,
+        "width": 420,
+        "color": 4
+      },
+      "name": "Nota - Entrada",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        76,
+        -70
+      ],
+      "id": "nota_-_entrada"
+    },
+    {
+      "parameters": {
+        "content": "### ENRIQUECIMENTO — HubSpot (Get a contact)\nBusca os dados do contato no HubSpot a partir do lead recebido.\nReconfigure a credencial HubSpot com a sua conta.",
+        "height": 200,
+        "width": 420,
+        "color": 6
+      },
+      "name": "Nota - HubSpot",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        536,
+        -70
+      ],
+      "id": "nota_-_hubspot"
+    },
+    {
+      "parameters": {
+        "content": "### SAIDAS — Google Ads + Meta\n- Google Ads: HTTP em /v23/customers/{ID_GAD}:uploadClickConversions (Offline Conversion),\n  com email hasheado e a conversionAction configurada.\n- Meta CAPI: nos Facebook Graph enviam o evento (event_name = mql) com dados hasheados.",
+        "height": 240,
+        "width": 460,
+        "color": 7
+      },
+      "name": "Nota - Saidas",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        996,
+        -70
+      ],
+      "id": "nota_-_saidas"
+    }
+  ],
+  "connections": {
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Get a contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a contact": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize data3": {
+      "main": [
+        [
+          {
+            "node": "Encrypt data3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Encrypt data3": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EXEMPLO3": {
+      "main": [
+        [
+          {
+            "node": "Normalize data3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code6": {
+      "main": [
+        [
+          {
+            "node": "Code7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code7": {
+      "main": [
+        [
+          {
+            "node": "EXEMPLO3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Send event to Meta6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send event to Meta7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a contact1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get a contact1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Code6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [],
+  "pinData": {}
+}

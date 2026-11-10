@@ -1,0 +1,314 @@
+{
+  "name": "Dashboard de Eventos (Assistente Chat API -> Supabase) (Template)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "6d9a11a0-1911-47ef-98c2-cbb0fb3aba60",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://chat.assistenteapp.com/api/flow/custom-events",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "options": {
+          "pagination": {
+            "pagination": {
+              "paginationMode": "responseContainsNextURL",
+              "nextURL": "={{ $response.body.links.next }}",
+              "paginationCompleteWhen": "other",
+              "completeExpression": "={{ $response.body.links.next === null }}",
+              "limitPagesFetched": true,
+              "requestInterval": null
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "c67f41be-4b97-4f29-ada7-8a20a826aa8a",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Assistente Chat (Bearer)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "2e3c8646-942f-4b11-b1cb-b11b61068cc9",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "url": "=https://chat.assistenteapp.com/api/flow/custom-events/summary?event_ns={{ $json.event_ns }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpBearerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        624,
+        0
+      ],
+      "id": "752664f0-360a-41cb-b2a6-7f6843a082c1",
+      "name": "HTTP Request1",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Assistente Chat (Bearer)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "39086d41-ad78-4f8a-b9ae-6a05a1df7ab5",
+              "leftValue": "={{ $json.total.num }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        832,
+        0
+      ],
+      "id": "a5b00571-ca2a-4495-8ebb-47f10fc60aaa",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "tableId": "SUA_TABELA_SUPABASE",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "name",
+              "fieldValue": "={{ $json.data.name }}"
+            },
+            {
+              "fieldId": "event_ns",
+              "fieldValue": "={{ $json.data.event_ns }}"
+            },
+            {
+              "fieldId": "num",
+              "fieldValue": "={{ $json.stats[0].num }}"
+            },
+            {
+              "fieldId": "unique_user_num",
+              "fieldValue": "={{ $json.stats[0].unique_user_num }}"
+            },
+            {
+              "fieldId": "Date",
+              "fieldValue": "={{ $now.minus({ days: 1 }).toFormat('yyyy-MM-dd') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        0
+      ],
+      "id": "cb8cfeb5-6eb7-4d5a-ab0c-d46c3fc9df05",
+      "name": "Create a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "SEU_WEBHOOK_PATH",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -16,
+        208
+      ],
+      "id": "3263ab79-e08e-4ddc-a020-da3a2850aafd",
+      "name": "Webhook",
+      "webhookId": "SEU_WEBHOOK_ID",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "## README_SETUP — Dashboard de Eventos (Assistente Chat API -> Supabase)\n\nRoda em agenda (Schedule) e coleta metricas de eventos customizados de uma API de\nchat/assistente (chat.assistenteapp.com), resume por evento e grava o snapshot diario\nnuma tabela do Supabase para alimentar um dashboard.\n\n**1. Credenciais**\n- Assistente Chat (Bearer): reconfigure `[Reconfigurar] Assistente Chat (Bearer)` com o\n  seu Bearer token da conta.\n- Supabase: reconfigure `[Reconfigurar] Supabase` (API key com escrita na tabela).\n\n**2. Trocar placeholders**\n- `SUA_TABELA_SUPABASE` -> nome da sua tabela de eventos (no no 'Create a row').\n- `SEU_WEBHOOK_PATH` / `SEU_WEBHOOK_ID` -> so se for reativar o Webhook (esta desabilitado).\n\n**3. Agenda**\n- Configure o intervalo do Schedule Trigger (o original estava sem intervalo definido).\n  A data gravada usa 'ontem' (D-1), coerente com um snapshot diario.\n\n**4. Ativar**\n- Teste manualmente e so entao mude `active` para true.\n\nIMPORTANTE: os tokens da API de chat e do Supabase que ja circularam devem ser\nREVOGADOS/REGERADOS. Placeholder NAO invalida o segredo antigo.",
+        "height": 360,
+        "width": 560,
+        "color": 5
+      },
+      "name": "README_SETUP",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        -420
+      ],
+      "id": "readme_setup"
+    },
+    {
+      "parameters": {
+        "content": "### ATENCAO — Credencial de terceiro removida\nO no 'HTTP Request' vinha com uma credencial extra `httpHeaderAuth` chamada\n\"Asaas - Conta B\" (Asaas), que NAO e usada por este no (ele autentica via Bearer).\nFoi REMOVIDA. Confira no n8n se esse token da Asaas nao ficou exposto entre projetos\ne revogue-o por seguranca.",
+        "height": 220,
+        "width": 440,
+        "color": 1
+      },
+      "name": "Nota - ATENCAO Credencial",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        420
+      ],
+      "id": "nota_-_atencao_credencial"
+    },
+    {
+      "parameters": {
+        "content": "### COLETA — Schedule + HTTP (paginado)\nSchedule dispara -> HTTP Request lista os custom-events da API (com paginacao por\nnext URL) -> Split Out separa cada evento -> HTTP Request1 busca o summary de cada um.\nReconfigure o Bearer da API.",
+        "height": 220,
+        "width": 440,
+        "color": 4
+      },
+      "name": "Nota - Coleta",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        540,
+        -420
+      ],
+      "id": "nota_-_coleta"
+    },
+    {
+      "parameters": {
+        "content": "### FILTRO + GRAVACAO — Supabase\nFilter mantem so eventos com total.num > 0 -> 'Create a row' grava no Supabase\n(name, event_ns, num, unique_user_num, Date=D-1). Troque SUA_TABELA_SUPABASE.",
+        "height": 220,
+        "width": 440,
+        "color": 6
+      },
+      "name": "Nota - Gravacao",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        -420
+      ],
+      "id": "nota_-_gravacao"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Create a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [],
+  "pinData": {}
+}

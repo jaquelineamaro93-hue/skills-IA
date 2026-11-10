@@ -1,0 +1,204 @@
+{
+  "name": "[Avisos Ferramentas]",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "SEU_WEBHOOK_PATH",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "2f3727cd-3913-4c23-af49-4bf9118fb7d6",
+      "name": "Webhook",
+      "webhookId": "SEU_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a6681407-36e4-4ddc-9581-3569afd0b53f",
+              "name": "Webhook",
+              "value": "SUA_URL_ORQUESTRADOR/webhooks/alertas",
+              "type": "string"
+            },
+            {
+              "id": "cdbbbd23-d9b1-460d-b764-fbda484ed471",
+              "name": "url",
+              "value": "={{ $json.body.page.url }}",
+              "type": "string"
+            },
+            {
+              "id": "ec6eb00a-2cb1-4d18-bc69-30970bddc4fd",
+              "name": "status_indicator",
+              "value": "={{ $json.body.page.status_indicator }}",
+              "type": "string"
+            },
+            {
+              "id": "6e30b34f-9aaf-4bd6-b7fb-9c1511b06f3c",
+              "name": "id",
+              "value": "={{ $json.body.component.id }}",
+              "type": "string"
+            },
+            {
+              "id": "395afd8a-af09-484a-9b70-6e5cdf9dc58f",
+              "name": "name",
+              "value": "={{ $json.body.component.name }}",
+              "type": "string"
+            },
+            {
+              "id": "49e87084-d4cf-4f88-a2e4-dc61870a4c93",
+              "name": "status",
+              "value": "={{ $json.body.component.status }}",
+              "type": "string"
+            },
+            {
+              "id": "4752add9-416d-49cd-a1ed-2d9c3bfd4fb3",
+              "name": "new_status",
+              "value": "={{ $json.body.component_update.new_status }}",
+              "type": "string"
+            },
+            {
+              "id": "c27bc138-2650-4501-9f3e-cf1bdd1e946e",
+              "name": "component_id",
+              "value": "={{ $json.body.component_update.component_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "3ad98e97-66a9-405d-bc9f-775ee6e5acb7",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.Webhook }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"page\": {\n    \"url\": \"{{ $json.url }}\",\n    \"status_indicator\": \"{{ $json.status_indicator }}\"\n  },\n  \"component\": {\n    \"id\": \"{{ $json.id }}\",\n    \"name\": \"{{ $json.name }}\",\n    \"status\": \"{{ $json.status }}\"\n  },\n  \"component_update\": {\n    \"new_status\": \"{{ $json.new_status }}\",\n    \"component_id\": \"{{ $json.component_id }}\"\n  }\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "38e2bd39-c3bf-4b47-9011-127684bd9029",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "content": "## README_SETUP — Avisos de Ferramentas (repasse de status)\n\nFluxo simples que recebe um webhook de status de servico (padrao Instatus / status page)\ne repassa o payload, ja normalizado, para um orquestrador interno.\n\n**1. Trocar placeholders**\n- `SEU_WEBHOOK_PATH` / `SEU_WEBHOOK_ID` -> regerados ao salvar; cadastre a URL gerada\n  como destino do webhook no seu provedor de status page (ex.: Instatus).\n- `SUA_URL_ORQUESTRADOR` (no no 'Edit Fields', campo Webhook) -> URL do seu servico\n  que recebe os alertas.\n- `SEU_ERROR_WORKFLOW_ID` (settings) -> id do seu workflow de tratamento de erros, ou remova.\n\n**2. Ativar**\n- Teste com um evento real e so entao mude `active` para true.\n\nObservacao: este template nao usa credenciais/tokens de API. A autenticacao do webhook\nde entrada (assinatura) e do provedor de status; valide-a se necessario.",
+        "height": 320,
+        "width": 560,
+        "color": 5
+      },
+      "name": "README_SETUP",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        -360
+      ],
+      "id": "readme_setup"
+    },
+    {
+      "parameters": {
+        "content": "### ENTRADA — Webhook de status\nRecebe o POST do provedor de status page (ex.: Instatus) com dados de pagina,\ncomponente e atualizacao de status. Ajuste `SEU_WEBHOOK_PATH`.",
+        "height": 200,
+        "width": 380,
+        "color": 4
+      },
+      "name": "Nota - Entrada",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        180
+      ],
+      "id": "nota_-_entrada"
+    },
+    {
+      "parameters": {
+        "content": "### NORMALIZA — Edit Fields\nExtrai url, status_indicator, id/nome/status do componente e new_status.\nO campo `Webhook` define o destino: troque por `SUA_URL_ORQUESTRADOR`.",
+        "height": 200,
+        "width": 380,
+        "color": 3
+      },
+      "name": "Nota - Normaliza",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        180,
+        180
+      ],
+      "id": "nota_-_normaliza"
+    },
+    {
+      "parameters": {
+        "content": "### SAIDA — HTTP Request\nFaz POST do payload remontado para a URL definida em `Webhook` (orquestrador interno).\nNenhum token e enviado aqui por padrao.",
+        "height": 200,
+        "width": 380,
+        "color": 6
+      },
+      "name": "Nota - Saida",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        400,
+        180
+      ],
+      "id": "nota_-_saida"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "SEU_ERROR_WORKFLOW_ID"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [],
+  "pinData": {}
+}

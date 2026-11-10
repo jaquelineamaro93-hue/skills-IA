@@ -1,0 +1,203 @@
+{
+  "name": "[Template] ManyChat → Inngage — Cadastro de Assinante para Push/Notificações",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "SEU_WEBHOOK_MANYCHAT_AQUI",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "25c7f08d-0c15-48e7-b526-c252a78695da",
+      "name": "Webhook",
+      "webhookId": "SEU_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "28447419-0ee3-4571-aa3d-167f57f6358e",
+              "name": "body.first_name",
+              "value": "={{ $json.body.first_name }}",
+              "type": "string"
+            },
+            {
+              "id": "465e4746-7522-4279-ba84-f1e39b2817bd",
+              "name": "body.last_name",
+              "value": "={{ $json.body.last_name }}",
+              "type": "string"
+            },
+            {
+              "id": "73617ae2-93be-4645-add1-4d04c889d180",
+              "name": "body.phone",
+              "value": "={{ $json.body.phone }}",
+              "type": "string"
+            },
+            {
+              "id": "d3187d97-308c-4642-ba1e-c5edd0b2ef3c",
+              "name": "body.ig_username",
+              "value": "={{ $json.body.ig_username }}",
+              "type": "string"
+            },
+            {
+              "id": "11e58b25-8dc5-42d8-9884-4afb32c9e25b",
+              "name": "body.email",
+              "value": "={{ $json.body.email }}",
+              "type": "string"
+            },
+            {
+              "id": "4ad16bbf-45b7-4ea0-8ae9-cb5ab1d16bdf",
+              "name": "source",
+              "value": "manychat-isca",
+              "type": "string"
+            },
+            {
+              "id": "3b976d7c-4a46-4a1e-949f-2f4306eb27cf",
+              "name": "token",
+              "value": "SEU_APP_TOKEN_INNGAGE_AQUI",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "bef68e70-e64c-433d-bb16-8dda1e5c4408",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.inngage.com.br/v1/subscription/",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"registerSubscriberRequest\": {\n    \"app_token\": \"{{ $json.token }}\",\n    \"identifier\": \"{{ $json.body.email }}\",\n    \"registration\": \"{{ $json.body.email }}\",\n    \"platform\": \"web\",\n    \"device_model\": \"Web\",\n    \"os_version\": \"1\",\n    \"app_version\": \"1.0.0\",\n    \"opt_in\": \"1\",\n    \"email\": \"{{ $json.body.email }}\",\n    \"phone_number\": \"{{ $json.body.phone }}\",\n    \"custom_field\": {\n      \"nome\": \"{{ $json.body.first_name }}\",\n\"ig_user\": \"{{ $json.body.ig_username }}\",\n      \"origem\": \"{{ $json.source }}\"\n    }\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "1748d8ab-06e9-43bb-b36c-80d85aa85024",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Inngage (Bearer)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## 📘 README_SETUP — ManyChat → Inngage\n\n**O que este template faz:** recebe os dados de um lead capturado no ManyChat\n(via External Request) e cadastra essa pessoa como **assinante na Inngage**,\nplataforma de push/notificações — já com e-mail, telefone, nome, @ do Instagram\ne a origem da captação.\n\n---\n### ✅ Passo a passo\n\n**1. Credencial da Inngage**\nInngage → Configurações → API → copie o token de autenticação.\nn8n → Credenciais → New → **Bearer Auth** → cole o token.\nAbra o nó `HTTP Request` e selecione essa credencial\n(a atual está marcada como `[Reconfigurar]`).\n\n**2. App Token da Inngage**\nÉ diferente do token de autenticação: identifica **qual app** recebe o assinante.\nInngage → seu aplicativo → copie o `app_token`.\n⚠️ **Não escreva ele no nó Set** (veja a nota vermelha). Crie um campo\nseguro ou use uma variável de ambiente do n8n.\n\n**3. Webhook do ManyChat**\nCopie a URL de produção do nó `Webhook`.\nNo ManyChat: no Flow desejado → ação **External Request** →\nmétodo POST → cole a URL → envie os campos\n`first_name`, `last_name`, `phone`, `ig_username`, `email`.\n\n**4. Ajuste a origem**\nNo nó `Edit Fields`, o campo `source` está como `manychat-isca`.\nTroque pelo nome da sua campanha/isca — é ele que vira `origem` na Inngage.\n\n**5. Teste e só então ative** (o workflow vem com `active: false`).\n\n---\n### ⚠️ AVISO DE SEGURANÇA\nTemplate sanitizado: app_token, path do webhook, IDs de credenciais, nomes de\ncliente e todo o `pinData` (que continha dados pessoais reais) foram removidos.\n**Se você é o dono do arquivo original: revogue e gere novamente o app_token e o\ntoken de API da Inngage** — trocar por placeholder aqui NÃO invalida a chave\nque já circulou.",
+        "height": 900,
+        "width": 640,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -760,
+        -620
+      ],
+      "id": "4aa6ab16-91b2-4ad3-b2d6-dd2d9cf01781",
+      "name": "README_SETUP"
+    },
+    {
+      "parameters": {
+        "content": "### 1️⃣ Gatilho — External Request do ManyChat\n\nO ManyChat faz um POST aqui quando o lead completa a isca\n(preenche o formulário, responde o quiz, clica no botão...).\n\n**Ajuste:** copie a URL de produção deste nó e cole no bloco\n**External Request** do seu Flow no ManyChat.\n\n💡 O ManyChat envia o objeto completo do contato. Dispare um teste\nreal e use *Listen for test event* para ver os nomes exatos dos campos\nantes de mexer no próximo nó.",
+        "height": 300,
+        "width": 400,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -70,
+        220
+      ],
+      "id": "cae8286d-fea2-4bca-bc95-a9fa0dc789eb",
+      "name": "Nota - Gatilho"
+    },
+    {
+      "parameters": {
+        "content": "### 2️⃣ 🔴 ATENÇÃO — token em texto puro aqui\n\n`Edit Fields` seleciona os campos que vão para a Inngage\n(nome, sobrenome, telefone, @ do Instagram, e-mail) e define\na `source` da captação.\n\n## ⚠️ O problema\nNo arquivo original, o **app_token da Inngage estava escrito\ncomo texto puro** neste nó. Isso significa que qualquer pessoa\ncom acesso ao workflow — ou ao JSON exportado — enxerga a chave.\nFoi assim que ela vazou neste arquivo.\n\n## ✅ O jeito certo\nUse uma **variável de ambiente** do n8n:\n`{{ $env.INNGAGE_APP_TOKEN }}`\nou guarde em uma credencial e referencie a partir dela.\n\n**Nunca** exporte um workflow com segredo escrito dentro de um nó Set.\n\n**Ajuste também:** o campo `source` (`manychat-isca`) deve refletir\no nome da sua campanha.",
+        "height": 460,
+        "width": 460,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        140,
+        220
+      ],
+      "id": "88dbdb17-6100-4392-9a7d-dfd69d549dc7",
+      "name": "Nota - Edit Fields"
+    },
+    {
+      "parameters": {
+        "content": "### 3️⃣ Cadastro do assinante na Inngage\n\n`POST https://api.inngage.com.br/v1/subscription/`\nMonta o objeto `registerSubscriberRequest` com:\n• `app_token` — qual app recebe o assinante\n• `identifier` / `registration` — o e-mail como chave única\n• `platform: web`, `opt_in: 1`\n• `custom_field` — nome, ig_user e origem\n\n**Ajuste:** selecione a credencial Bearer da Inngage\n(a atual está como `[Reconfigurar]`).\n\n🧹 **Limpeza aplicada:** o nó original tinha uma segunda credencial\nanexada (Header Auth, de outro cliente) que **não era usada** —\no nó autentica por Bearer. Ela foi removida.\nFica a lição: credencial sobrando em nó é vazamento esperando acontecer.\n\n💡 Sem tratamento de erro hoje. Se a Inngage recusar (e-mail vazio,\ntoken inválido), a execução falha em silêncio. Vale adicionar um\n`onError` ou um nó de notificação.",
+        "height": 480,
+        "width": 480,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        220
+      ],
+      "id": "780a3256-2789-4ab4-9b77-cce10510408a",
+      "name": "Nota - Inngage"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [],
+  "pinData": {}
+}

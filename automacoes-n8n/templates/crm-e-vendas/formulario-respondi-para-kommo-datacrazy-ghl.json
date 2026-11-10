@@ -1,0 +1,2969 @@
+{
+  "name": "Formulario Respondi -> Vendas (Kommo + Datacrazy + GHL) (Template)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "SEU_WEBHOOK_PATH",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -3904,
+        832
+      ],
+      "id": "50f495ea-dc7b-4063-9df0-bfb1039c8176",
+      "name": "Webhook",
+      "webhookId": "SEU_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "55bb007a-4f05-49e4-9974-9a84b24a82a5",
+              "name": "form_name",
+              "value": "={{ $json.body.form.form_name }}",
+              "type": "string"
+            },
+            {
+              "id": "52aa75b6-9d53-4325-8fde-1b4783c09860",
+              "name": "Nome Completo",
+              "value": "={{ $json.body.respondent.answers['Nome completo'] }}",
+              "type": "string"
+            },
+            {
+              "id": "e1885d4d-4a8f-430c-b8c8-10aaef287047",
+              "name": "Telefone",
+              "value": "={{ $json.body.respondent.answers['WhatsApp (com DDD)'] }}",
+              "type": "string"
+            },
+            {
+              "id": "b62858ee-24ad-41fc-bc36-f426a714184d",
+              "name": "Email",
+              "value": "={{ $json.body.respondent.answers['E-mail'] }}",
+              "type": "string"
+            },
+            {
+              "id": "ed15cebf-adfe-44a9-89b2-850eab9d58fc",
+              "name": "Qual região do corpo você deseja tatuar?",
+              "value": "={{ $json.body.respondent.answers['Qual região do corpo você deseja tatuar?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "a4812977-a547-47e7-9eb1-542139d50dd3",
+              "name": "Você já tem tatuagens?",
+              "value": "={{ $json.body.respondent.answers['Você já tem tatuagens?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "d8079867-2a32-47a8-b426-251111f8a51a",
+              "name": "Qual sua motivação para fazer essa tatuagem agora?",
+              "value": "={{ $json.body.respondent.answers['Qual sua motivação para fazer essa tatuagem agora?']\n  .replace(/(\\r\\n|\\n|\\r)/g, ' ')\n  .replace(/[\"']/g, '')\n  .replace(/\\s+/g, ' ')\n  .trim()\n}}",
+              "type": "string"
+            },
+            {
+              "id": "4f7407b9-9d04-4c9e-9270-4ea71c5766f5",
+              "name": "Qual dessas opções melhor descreve seu momento atual?",
+              "value": "={{ $json.body.respondent.answers['Qual dessas opções melhor descreve seu momento atual?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f1382038-411e-4610-9817-9e86ad6be7df",
+              "name": "Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?",
+              "value": "={{ $json.body.respondent.answers['Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "1d2920ea-83bb-40b1-8f34-2c5d9a5b8dac",
+              "name": "Você tem disponibilidade para vir até o atelier no Rio de Janeiro?",
+              "value": "={{ $json.body.respondent.answers['Você tem disponibilidade para vir até o atelier no Rio de Janeiro?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "20fef6f9-2e96-4375-b3d2-6eebe1027126",
+              "name": "Como você conheceu o trabalho do especialista?",
+              "value": "={{ $json.body.respondent.answers['Como você conheceu o trabalho do especialista?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "dba95d43-a88e-4618-82d9-b6eb65404e83",
+              "name": "Quanto tempo você já conhece o especialista?",
+              "value": "={{ $json.body.respondent.answers['Quanto tempo você já conhece o especialista?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "26397042-b6b4-4885-ba11-37ef476cf23b",
+              "name": "utm_source",
+              "value": "={{ $json.body.respondent.respondent_utms.utm_source }}",
+              "type": "string"
+            },
+            {
+              "id": "5b6eeafd-d8aa-4acf-baab-7657435c2d17",
+              "name": "utm_medium",
+              "value": "={{ $json.body.respondent.respondent_utms.utm_medium }}",
+              "type": "string"
+            },
+            {
+              "id": "2da19de0-8e8b-46b6-9eea-efeecf2489b2",
+              "name": "utm_campaign",
+              "value": "={{ $json.body.respondent.respondent_utms.utm_campaign }}",
+              "type": "string"
+            },
+            {
+              "id": "0ee042b3-fbcf-452c-9502-28d0f2b8cde2",
+              "name": "utm_term",
+              "value": "={{ $json.body.respondent.respondent_utms.utm_term }}",
+              "type": "string"
+            },
+            {
+              "id": "6007377d-dc75-4301-b7f6-25728a4e26ea",
+              "name": "utm_content",
+              "value": "={{ $json.body.respondent.respondent_utms.utm_content }}",
+              "type": "string"
+            },
+            {
+              "id": "d92a6390-8850-44ed-a6e0-c18e3bd02810",
+              "name": "fbclid",
+              "value": "={{ $json.body.respondent.respondent_utms.fbclid }}",
+              "type": "string"
+            },
+            {
+              "id": "ce1ab736-e647-4e26-9cfa-9da404f0c201",
+              "name": "gclid",
+              "value": "={{ $json.body.respondent.respondent_utms.gclid }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2752,
+        400
+      ],
+      "id": "8c5e2d30-be15-4f3b-8f53-4230b3389d7a",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1606022-b2fb-4c48-9bbe-0ae164c769ef",
+              "name": "URL",
+              "value": "https://SEU_SUBDOMINIO.kommo.com/api/v4",
+              "type": "string"
+            },
+            {
+              "id": "17b30a88-4979-4676-ae67-1542df20df54",
+              "name": "Token",
+              "value": "SEU_TOKEN_KOMMO_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "cd0bfe58-d404-4afd-82e8-fd0ad96f330a",
+              "name": "pipeline - funil de vendas",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "912aaaea-7b4e-42d1-8602-018bd291be45",
+              "name": "Stage - Respondi",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "dba626f5-edc4-4ec9-b65f-a7f8bdf1b648",
+              "name": "Qual região do corpo você deseja tatuar?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "150b9e84-1544-4d15-b05f-6db7e220752b",
+              "name": "Você já tem tatuagens?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "48d63f1f-074f-4919-a114-564bdb4e9892",
+              "name": "Qual sua motivação para fazer essa tatuagem agora?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "fb79bb0c-ef88-47fe-9763-98cafe6b397e",
+              "name": "Qual dessas opções melhor descreve seu momento atual?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "95a70ecb-81b0-41da-b9ee-8a74e51312f0",
+              "name": "Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "7b0470cb-4826-48b0-8146-0c8eb800df47",
+              "name": "Você tem disponibilidade para vir até o atelier no Rio de Janeiro?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "bd95a173-5366-407b-82f9-f2e2a0331b1e",
+              "name": "Como você conheceu o trabalho do especialista?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "f476ea21-5eb0-4229-b00d-c6d5665e407d",
+              "name": "Quanto tempo você já conhece o especialista?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "e25b63dc-9065-4656-876f-4a4b473348f5",
+              "name": "utm_content",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "42f86628-4de0-4dc3-8fb8-a70638b4a259",
+              "name": "utm_medium",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "6b0a3446-82aa-4214-aac4-b185d4c4e5fb",
+              "name": "utm_campaign",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "f39ae732-b09a-4e9e-8433-e559f76e99c0",
+              "name": "utm_source",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "e4642253-739c-4e56-97c0-f284b13fb2a6",
+              "name": "utm_term",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1568,
+        336
+      ],
+      "id": "b1db3ae3-f0d6-4456-8db5-ac0eb339cbd7",
+      "name": "Edit Fields12"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Edit Fields12').first().json.URL }}/contacts?query={{ $('Code24').first().json.TelefoneUltimos8 }}&with=leads",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields12').first().json.Token }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -896,
+        336
+      ],
+      "id": "a9976c1a-4353-4d4d-ac70-14d4f7720900",
+      "name": "HTTP Request27"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript)\n\n// Número original vindo do Edit Fields\nlet numeroOriginal = $('Edit Fields').first().json.Telefone || \"\";\n\n// Limpa tudo que não for dígito\nlet numeroLimpo = numeroOriginal.replace(/\\D/g, \"\");\n\n// Se tiver 10 ou 11 dígitos, adiciona 55 na frente\nif (numeroLimpo.length === 10 || numeroLimpo.length === 11) {\n  numeroLimpo = \"55\" + numeroLimpo;\n}\n\n// Monta o número corrigido\nconst telefoneCorrigido = numeroLimpo;\n\n// Pega os últimos 8 dígitos\nconst telefoneUltimos8 = telefoneCorrigido.slice(-8);\n\nreturn [\n  {\n    json: {\n      TelefoneCorrigido: telefoneCorrigido,\n      TelefoneUltimos8: telefoneUltimos8\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1120,
+        336
+      ],
+      "id": "5868f8be-3f7e-4b13-bda2-a5fc5a9e737f",
+      "name": "Code24"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.URL }}/leads/custom_fields",
+        "sendHeaders": true,
+        "specifyHeaders": "=json",
+        "headerParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "jsonHeaders": "={\n  \"Content-Type\": \"application/json\",\n  \"Authorization\": \"Bearer {{ $json.Token }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1296,
+        -256
+      ],
+      "id": "577339b9-6383-4f4d-9827-ed0001619cbc",
+      "name": "HTTP Request5"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript)\n// Entrada esperada (exemplo):\n// [\n//   { json: { data: \"<string JSON do /api/v4/leads/custom_fields>\" } }\n// ]\n// Saída: um item por custom field com informações úteis.\n\nfunction parseMaybeJson(v) {\n  if (v == null) return null;\n  if (typeof v === 'object') return v;\n  try { return JSON.parse(String(v)); } catch { return null; }\n}\n\nconst inputItems = $input.all();\nconst out = [];\n\nfor (const it of inputItems) {\n  const root = parseMaybeJson(it.json?.data);\n  if (!root) {\n    out.push({ json: { error: 'Não foi possível parsear json.data' } });\n    continue;\n  }\n\n  const fields = root?._embedded?.custom_fields || [];\n  if (!Array.isArray(fields) || fields.length === 0) {\n    out.push({ json: { warning: 'Nenhum custom field encontrado em _embedded.custom_fields' } });\n    continue;\n  }\n\n  for (const f of fields) {\n    const enumsArr = Array.isArray(f.enums)\n      ? f.enums.map(e => ({\n          id: e.id ?? null,\n          value: e.value ?? null,\n          sort: e.sort ?? null,\n        }))\n      : null;\n\n    const enum_values = enumsArr ? enumsArr.map(e => e.value).join(', ') : null;\n\n    out.push({\n      json: {\n        id: f.id ?? null,\n        name: f.name ?? null,\n        type: f.type ?? null,\n        code: f.code ?? null,\n        entity_type: f.entity_type ?? null,\n        group_id: f.group_id ?? null,\n        sort: f.sort ?? null,\n\n        is_api_only: !!f.is_api_only,\n        is_predefined: !!f.is_predefined,\n        is_deletable: !!f.is_deletable,\n\n        required_statuses: Array.isArray(f.required_statuses) ? f.required_statuses : [],\n        hidden_statuses: Array.isArray(f.hidden_statuses) ? f.hidden_statuses : [],\n        chained_lists: f.chained_lists ?? null,\n\n        link: f._links?.self?.href ?? null,\n\n        // enums já prontos para planilha\n        enums: enumsArr,\n        enum_values, // \"valor1, valor2, ...\"\n      }\n    });\n  }\n}\n\nreturn out;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1072,
+        -256
+      ],
+      "id": "59ea91b7-c40f-44ed-af4f-e865f8fa1c95",
+      "name": "Code5"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Edit Fields3').item.json.URL }}/leads/pipelines/{{ $json.pipelines['Funil de vendas'] }}/statuses",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n  \"Content-Type\": \"application/json\",\n  \"Authorization\": \"Bearer {{ $('Edit Fields3').item.json.Token }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -176,
+        -256
+      ],
+      "id": "7e126859-2cd4-4d12-9950-0817d5df7635",
+      "name": "HTTP Request3"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Obtém os dados do primeiro item da entrada\nlet inputData = $input.first().json;\n\n// Verifica se os dados estão em formato de string JSON e converte para objeto\nif (typeof inputData.data === \"string\") {\n    inputData = JSON.parse(inputData.data);\n}\n\n// Verifica a estrutura do JSON\nif (!inputData || !inputData._embedded || !inputData._embedded.statuses) {\n    throw new Error(\"Estrutura do JSON inválida ou sem statuses.\");\n}\n\n// Criar um objeto para armazenar os statuses\nlet statusMap = {};\n\n// Percorre os statuses e armazena no objeto\ninputData._embedded.statuses.forEach(status => {\n    statusMap[status.name] = status.id;\n});\n\n// Retorna o objeto contendo os nomes como chaves e os IDs como valores\nreturn [{ statuses: statusMap }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        48,
+        -256
+      ],
+      "id": "da0d96dd-5404-49e0-a709-1764ce94d61a",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -848,
+        -256
+      ],
+      "id": "7d5e1574-686a-4474-9095-37b03303dcce",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Obtém os dados do primeiro item da entrada\nlet inputData = $input.first().json;\n\n// Verifica se os dados estão em formato de string JSON e converte para objeto\nif (typeof inputData.data === \"string\") {\n    inputData = JSON.parse(inputData.data);\n}\n\n// Verifica a estrutura do JSON\nif (!inputData || !inputData._embedded || !inputData._embedded.pipelines) {\n    throw new Error(\"Estrutura do JSON inválida ou sem pipelines.\");\n}\n\n// Criar um objeto para armazenar os pipelines\nlet pipelineMap = {};\n\n// Percorre os pipelines e armazena no objeto\ninputData._embedded.pipelines.forEach(pipeline => {\n    pipelineMap[pipeline.name] = pipeline.id;\n});\n\n// Retorna o objeto contendo os nomes como chaves e os IDs como valores\nreturn [{ pipelines: pipelineMap }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        -256
+      ],
+      "id": "d2a0b8c9-f01e-4dec-84aa-e20259ab9a74",
+      "name": "Code6"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Edit Fields3').item.json.URL }}/leads/pipelines",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={\n  \"Content-Type\": \"application/json\",\n  \"Authorization\": \"Bearer {{ $('Edit Fields3').item.json.Token }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -624,
+        -256
+      ],
+      "id": "65ec7963-8c06-4367-83a7-4a455db788c3",
+      "name": "HTTP Request6"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1606022-b2fb-4c48-9bbe-0ae164c769ef",
+              "name": "URL",
+              "value": "https://SEU_SUBDOMINIO.kommo.com/api/v4",
+              "type": "string"
+            },
+            {
+              "id": "17b30a88-4979-4676-ae67-1542df20df54",
+              "name": "Token",
+              "value": "SEU_TOKEN_KOMMO_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "cd0bfe58-d404-4afd-82e8-fd0ad96f330a",
+              "name": "pipeline - vendas",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "f88a7851-c1a0-461a-ab20-ac4b80b96f2e",
+              "name": "stage - Hotmart",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "f3d79721-9f99-4396-ab59-89ef505ea257",
+              "name": "agendamento1",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "bb047d04-5a53-491f-bfe8-9281b0dc425f",
+              "name": "tipo consulta 1",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "b01ee19e-7007-4873-91a9-20401337c879",
+              "name": "confirmado1",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "1359a2c0-e317-4033-a82b-45a463ac283b",
+              "name": "tipo agendamento 1",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "a7ac3856-1c4c-4479-a223-44731fcf64e6",
+              "name": "obs 1",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "7ccb8a20-3ff4-4c73-bc60-75a410b06cc3",
+              "name": "tipos 1",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1520,
+        -256
+      ],
+      "id": "34703d1c-b62e-4615-88e1-085f8a8d8b5c",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1744,
+        -256
+      ],
+      "id": "eb8ff08b-136d-4000-8a47-79f74286143e",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ebfdc0e7-0b15-45db-b0d8-d890e76d1d14",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "=",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -672,
+        336
+      ],
+      "id": "041794f2-4c68-48fb-897c-11b81aff82c5",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript)\n\n// ---- helpers ----\nfunction safeParse(v) {\n  if (v == null) return null;\n  if (typeof v === 'object') return v;\n  try { return JSON.parse(String(v)); } catch { return null; }\n}\n\nfunction getFirstByField(cf = [], wanted = []) {\n  if (!Array.isArray(cf)) return null;\n  const f = cf.find(x =>\n    wanted.includes(x.field_code) ||\n    wanted.includes(x.field_name)\n  );\n  return f?.values?.[0]?.value ?? null;\n}\n\nfunction getFirstPhone(cf = []) {\n  return getFirstByField(cf, ['PHONE', 'Phone']);\n}\n\nfunction getFirstEmail(cf = []) {\n  return getFirstByField(cf, ['EMAIL', 'Email', 'E-mail']);\n}\n\nfunction scoreContact(c) {\n  if (!c || typeof c !== 'object') return -1;\n  let s = 0;\n  if (c.name) s += 2;\n  if (getFirstPhone(c.custom_fields_values)) s += 2;\n  s += Array.isArray(c.custom_fields_values) ? c.custom_fields_values.length : 0;\n  s += Array.isArray(c._embedded?.tags) ? c._embedded.tags.length : 0;\n  s += Array.isArray(c._embedded?.companies) ? c._embedded.companies.length : 0;\n  if (c.first_name) s += 1;\n  if (c.last_name) s += 1;\n  if (c.responsible_user_id) s += 1;\n  return s;\n}\n\n// ---- main ----\nconst out = [];\n\nfor (const item of $input.all()) {\n  const data = safeParse(item.json?.data) || safeParse(item.json) || item.json;\n  if (!data || typeof data !== 'object') continue;\n\n  const contacts = data._embedded?.contacts ?? [];\n  const leadRows = [];\n\n  for (const contact of contacts) {\n    const leads = contact._embedded?.leads ?? [];\n    for (const ld of leads) {\n      leadRows.push({\n        json: {\n          contact_id: contact.id ?? null,\n          contact_name: contact.name ?? null,\n          phone: getFirstPhone(contact.custom_fields_values) ?? null,\n          email: getFirstEmail(contact.custom_fields_values) ?? null, // sempre presente\n          contact_link: contact._links?.self?.href ?? null,\n          lead_id: ld?.id ?? null,\n          lead_link: ld?._links?.self?.href ?? null,\n        }\n      });\n    }\n  }\n\n  if (leadRows.length > 0) {\n    out.push(...leadRows);\n  } else {\n    if (contacts.length > 0) {\n      let best = contacts[0];\n      let bestScore = scoreContact(best);\n      for (let i = 1; i < contacts.length; i++) {\n        const sc = scoreContact(contacts[i]);\n        if (sc > bestScore) {\n          best = contacts[i];\n          bestScore = sc;\n        }\n      }\n      out.push({\n        json: {\n          contact_id: best.id ?? null,\n          contact_name: best.name ?? null,\n          phone: getFirstPhone(best.custom_fields_values) ?? null,\n          email: getFirstEmail(best.custom_fields_values) ?? null, // sempre presente\n          contact_link: best._links?.self?.href ?? null,\n          lead_id: null,\n          lead_link: null,\n          _note: \"Sem leads; retornado contato mais completo\"\n        }\n      });\n    }\n  }\n}\n\nreturn out;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -448,
+        240
+      ],
+      "id": "bda4a6cc-f0f3-41d6-adf8-7b58ac7a70d8",
+      "name": "Code25"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e0c834e3-6193-4aeb-9c11-046de160e6d9",
+              "leftValue": "={{ $('Code25').first().json.lead_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": false
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        240
+      ],
+      "id": "0240fa45-e002-48af-b36a-08eca6176cc5",
+      "name": "If9"
+    },
+    {
+      "parameters": {
+        "jsCode": "function parseMaybeJson(v) {\n  if (v == null) return null;\n  if (typeof v === 'object') return v;\n  try { return JSON.parse(String(v)); } catch { return null; }\n}\n\nfunction escapeJsonString(s) {\n  // Escapa \\ e \" para uso seguro dentro de aspas duplas\n  return String(s).replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"');\n}\n\nfunction extractTags(lead) {\n  const arr = lead?._embedded?.tags;\n  if (!Array.isArray(arr)) {\n    return {\n      tags_raw: [], tag_ids: [], tag_names: [],\n      tag_names_csv: \"\", tags_string: \"\"\n    };\n  }\n\n  const names = arr\n    .filter(t => t && (t.name != null || t.id != null))\n    .map(t => String(t.name ?? \"\").trim())\n    .filter(name => name.length > 0);\n\n  // dedup por nome (case-insensitive)\n  const seen = new Set();\n  const dedupNames = names.filter(name => {\n    const key = name.toLowerCase();\n    if (seen.has(key)) return false;\n    seen.add(key);\n    return true;\n  });\n\n  const tags_raw = dedupNames.map(name => ({ name }));\n  const tag_names = dedupNames;\n  const tag_ids = arr.map(t => t?.id).filter(v => v != null);\n\n  // Monta a string no formato { \"name\": \"X\" },{ \"name\": \"Y\" },  (com vírgula final)\n  let tags_string = \"\";\n  if (tag_names.length) {\n    const parts = tag_names.map(n => `{ \"name\": \"${escapeJsonString(n)}\" }`);\n    tags_string = parts.join(\",\") + \",\"; // vírgula no final\n  }\n\n  return {\n    tags_raw,\n    tag_ids,\n    tag_names,\n    tag_names_csv: tag_names.join(\", \"),\n    tags_string\n  };\n}\n\nconst pipelineTarget = $('Edit Fields12').first().json['pipeline - vendas'];\n\n// Converte cada item em objeto\nconst all = $input.all()\n  .map(it => parseMaybeJson(it.json?.data) || it.json)\n  .filter(o => o && typeof o === 'object');\n\n// Filtra abertos + não perdidos\nlet eligible = all.filter(l =>\n  l &&\n  l.id != null &&\n  l.closed_at == null &&\n  !l.is_deleted &&\n  l.loss_reason_id == null\n);\n\n// Prioriza pipeline alvo, se houver\nconst inTarget = eligible.filter(l => String(l.pipeline_id) === String(pipelineTarget));\nif (inTarget.length > 0) eligible = inTarget;\n\n// Ordena pelo updated_at (mais recente primeiro)\neligible.sort((a, b) => (Number(b.updated_at) || 0) - (Number(a.updated_at) || 0));\n\n// Sem elegíveis: retorna item “sentinela”\nif (!eligible.length) {\n  return [{\n    json: {\n      found: false,\n      id: null,\n      name: null,\n      pipeline_id: null,\n      status_id: null,\n      updated_at_unix: null,\n      link_self: null,\n      tags_raw: [],\n      tag_ids: [],\n      tag_names: [],\n      tag_names_csv: \"\",\n      tags_string: \"\"\n    }\n  }];\n}\n\nconst lead = eligible[0];\nconst tagsInfo = extractTags(lead);\n\nreturn [{\n  json: {\n    found: true,\n    id: lead.id,\n    name: lead.name ?? null,\n    pipeline_id: lead.pipeline_id ?? null,\n    status_id: lead.status_id ?? null,\n    updated_at_unix: Number(lead.updated_at) || null,\n    link_self: lead._links?.self?.href ?? null,\n    ...tagsInfo\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        144
+      ],
+      "id": "9ec8527c-9fdf-4b4d-af77-7d3b535d1412",
+      "name": "Code26"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Edit Fields12').first().json['URL'] }}/contacts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields12').first().json['Token'] }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"name\": \"{{ $('Edit Fields').first().json['Nome Completo'] }}\",\n    \"custom_fields_values\": [\n      {\n        \"field_code\": \"PHONE\",\n        \"values\": [\n          {\n            \"value\": \"{{ $('Edit Fields').first().json.Telefone }}\"\n          }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields14').first().json['Qual região do corpo você deseja tatuar?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Qual região do corpo você deseja tatuar?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields14').first().json['Você já tem tatuagens?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Você já tem tatuagens?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields14').first().json.utm_content }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json.utm_content }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields14').first().json.utm_medium }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json.utm_medium }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields14').first().json.utm_campaign }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json.utm_campaign }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields14').first().json.utm_source }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json.utm_source }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields14').first().json.utm_term }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json.utm_term }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields14').first().json['Qual sua motivação para fazer essa tatuagem agora?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Qual sua motivação para fazer essa tatuagem agora?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields14').first().json['Qual dessas opções melhor descreve seu momento atual?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Qual dessas opções melhor descreve seu momento atual?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields14').first().json['Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields14').first().json['Você tem disponibilidade para vir até o atelier no Rio de Janeiro?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Você tem disponibilidade para vir até o atelier no Rio de Janeiro?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields14').first().json['Como você conheceu o trabalho do especialista?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Como você conheceu o trabalho do especialista?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields14').first().json['Quanto tempo você já conhece o especialista?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Quanto tempo você já conhece o especialista?'] }}\" }\n        ]\n      },\n      {\n        \"field_code\": \"EMAIL\",\n        \"values\": [\n          {\n            \"value\": \"{{ $('Edit Fields').first().json.Email }}\"\n          }\n        ]\n      }\n    ]\n  }\n]\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -448,
+        432
+      ],
+      "id": "2b356f6d-b0ff-4fd6-baa6-36f0aae794b0",
+      "name": "HTTP Request28"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().flatMap(item => {\n  let data;\n  try {\n    data = JSON.parse(item.json.data);\n  } catch (err) {\n    return [];\n  }\n\n  const contacts = data._embedded?.contacts || [];\n\n  return contacts.map(contact => {\n    const result = { ...contact };\n\n    // Adiciona lead_id (do primeiro lead)\n    result.lead_id = contact._embedded?.leads?.[0]?.id || null;\n\n    // Adiciona link direto para o contato\n    result.contact_link = contact._links?.self?.href || null;\n\n    return result;\n  });\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -224,
+        432
+      ],
+      "id": "02ce7921-c49d-4b08-ac8a-b9dd93f5cffb",
+      "name": "Code27"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Edit Fields12').first().json.URL }}/leads/{{ $('Code25').first().json.lead_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields12').first().json.Token }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        224,
+        144
+      ],
+      "id": "b55753ad-6ad2-4be7-9d88-59f363cdfbfc",
+      "name": "HTTP Request33"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Edit Fields12').first().json.URL }}/leads",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields12').first().json.Token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"name\": \"{{ $('Edit Fields').first().json['Nome Completo'] }}\",\n    \"pipeline_id\": {{ $('Edit Fields12').first().json['pipeline - funil de vendas'] }},\n    \"status_id\": {{ $('Edit Fields12').first().json['Stage - Respondi'] }},\n    \"custom_fields_values\": [\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Qual região do corpo você deseja tatuar?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Qual região do corpo você deseja tatuar?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.utm_content }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json.utm_content }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.utm_medium }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json.utm_medium }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.utm_campaign }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json.utm_campaign }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.utm_source }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json.utm_source }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.utm_term }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json.utm_term }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Você já tem tatuagens?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Você já tem tatuagens?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Qual sua motivação para fazer essa tatuagem agora?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Qual sua motivação para fazer essa tatuagem agora?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Qual dessas opções melhor descreve seu momento atual?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Qual dessas opções melhor descreve seu momento atual?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Você tem disponibilidade para vir até o atelier no Rio de Janeiro?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Você tem disponibilidade para vir até o atelier no Rio de Janeiro?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Como você conheceu o trabalho do especialista?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Como você conheceu o trabalho do especialista?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Quanto tempo você já conhece o especialista?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Quanto tempo você já conhece o especialista?'] }}\" }\n        ]\n      }\n    ],\n    \"_embedded\": {\n      \"contacts\": [\n        { \"id\": {{ $('Code25').first().json.contact_id }} }\n      ]\n    }\n  }\n]\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        224,
+        336
+      ],
+      "id": "d6214a79-9145-490b-b62c-2b7d451e470e",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ $('Edit Fields12').first().json.URL }}/leads/{{ $json.id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields12').first().json.Token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=  {\n    \"name\": \"{{ $('Edit Fields').first().json['Nome Completo'] }}\",\n    \"custom_fields_values\": [\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Qual região do corpo você deseja tatuar?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Qual região do corpo você deseja tatuar?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Você já tem tatuagens?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Você já tem tatuagens?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Qual sua motivação para fazer essa tatuagem agora?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Qual sua motivação para fazer essa tatuagem agora?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Qual dessas opções melhor descreve seu momento atual?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Qual dessas opções melhor descreve seu momento atual?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Você tem disponibilidade para vir até o atelier no Rio de Janeiro?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Você tem disponibilidade para vir até o atelier no Rio de Janeiro?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Como você conheceu o trabalho do especialista?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Como você conheceu o trabalho do especialista?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.utm_content }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json.utm_content }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.utm_medium }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json.utm_medium }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.utm_campaign }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json.utm_campaign }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.utm_source }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json.utm_source }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.utm_term }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json.utm_term }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Quanto tempo você já conhece o especialista?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Quanto tempo você já conhece o especialista?'] }}\" }\n        ]\n      }\n    ],\n    \"_embedded\": {\n      \"contacts\": [\n        { \"id\": {{ $('Code25').first().json.contact_id }} }\n      ]\n    }\n  }",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        672,
+        144
+      ],
+      "id": "c56dc864-2b21-4e63-8749-a9ea64061311",
+      "name": "HTTP Request36"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.form.form_name }}",
+                    "rightValue": "Formulário de Captação",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "e7359ea1-32b0-45a3-815d-16f969ed6ada"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Formulário de Captação - PTBR"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "22f9004b-74c4-4374-a68c-9ebd17be8460",
+                    "leftValue": "={{ $json.body.form.form_name }}",
+                    "rightValue": "Formulário de Captação — Inglês",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Formulário de Captação — Inglês"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -3600,
+        848
+      ],
+      "id": "a8c7fc5b-2b81-4420-b5ff-982c2f1224ad",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1606022-b2fb-4c48-9bbe-0ae164c769ef",
+              "name": "URL",
+              "value": "https://SEU_SUBDOMINIO.kommo.com/api/v4",
+              "type": "string"
+            },
+            {
+              "id": "17b30a88-4979-4676-ae67-1542df20df54",
+              "name": "Token",
+              "value": "SEU_TOKEN_KOMMO_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "cd0bfe58-d404-4afd-82e8-fd0ad96f330a",
+              "name": "pipeline - funil de vendas",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "912aaaea-7b4e-42d1-8602-018bd291be45",
+              "name": "Stage - Respondi",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "dba626f5-edc4-4ec9-b65f-a7f8bdf1b648",
+              "name": "Qual região do corpo você deseja tatuar?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "150b9e84-1544-4d15-b05f-6db7e220752b",
+              "name": "Você já tem tatuagens?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "48d63f1f-074f-4919-a114-564bdb4e9892",
+              "name": "Qual sua motivação para fazer essa tatuagem agora?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "fb79bb0c-ef88-47fe-9763-98cafe6b397e",
+              "name": "Qual dessas opções melhor descreve seu momento atual?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "95a70ecb-81b0-41da-b9ee-8a74e51312f0",
+              "name": "Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "7b0470cb-4826-48b0-8146-0c8eb800df47",
+              "name": "Você tem disponibilidade para vir até o atelier no Rio de Janeiro?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "bd95a173-5366-407b-82f9-f2e2a0331b1e",
+              "name": "Como você conheceu o trabalho do especialista?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "f476ea21-5eb0-4229-b00d-c6d5665e407d",
+              "name": "Quanto tempo você já conhece o especialista?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "cfb6f7d9-f3a2-4cfa-9364-a00a696bbc34",
+              "name": "utm_source",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "83247cf6-7451-4513-b4d9-9486a4a6de2c",
+              "name": "utm_medium",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "0ecb3d04-cc39-46e0-b934-31cc6b409573",
+              "name": "utm_content",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "2a344a1a-1d1b-4c2a-aecc-83be9d4c80a6",
+              "name": "utm_term",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "9f2ed33c-b947-4301-bd79-4ddd0c624691",
+              "name": "utm_campaign",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1568,
+        720
+      ],
+      "id": "a0448813-2c9f-4d6e-8074-af6b05395112",
+      "name": "Edit Fields13"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Edit Fields13').item.json.URL }}/contacts?query={{ $('Code').item.json.TelefoneUltimos8 }}&with=leads",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields13').first().json.Token }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -896,
+        720
+      ],
+      "id": "fad68229-4683-4bf1-8caa-d2ff62987b6e",
+      "name": "HTTP Request30"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript)\n\n// Número original vindo do Edit Fields\nlet numeroOriginal = $('Edit Fields1').first().json.Telefone || \"\";\n\n// Limpa tudo que não for dígito\nlet numeroLimpo = numeroOriginal.replace(/\\D/g, \"\");\n\n// Se tiver 10 ou 11 dígitos, adiciona 55 na frente\nif (numeroLimpo.length === 10 || numeroLimpo.length === 11) {\n  numeroLimpo = \"55\" + numeroLimpo;\n}\n\n// Monta o número corrigido\nconst telefoneCorrigido = numeroLimpo;\n\n// Pega os últimos 8 dígitos\nconst telefoneUltimos8 = telefoneCorrigido.slice(-8);\n\nreturn [\n  {\n    json: {\n      TelefoneCorrigido: telefoneCorrigido,\n      TelefoneUltimos8: telefoneUltimos8\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1120,
+        720
+      ],
+      "id": "fd5ee462-d241-4127-90f2-0942c9f8ebad",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ebfdc0e7-0b15-45db-b0d8-d890e76d1d14",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "=",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -672,
+        720
+      ],
+      "id": "1d30f978-99e1-4168-8ee2-aaf1309aa46e",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript)\n\n// ---- helpers ----\nfunction safeParse(v) {\n  if (v == null) return null;\n  if (typeof v === 'object') return v;\n  try { return JSON.parse(String(v)); } catch { return null; }\n}\n\nfunction getFirstByField(cf = [], wanted = []) {\n  if (!Array.isArray(cf)) return null;\n  const f = cf.find(x =>\n    wanted.includes(x.field_code) ||\n    wanted.includes(x.field_name)\n  );\n  return f?.values?.[0]?.value ?? null;\n}\n\nfunction getFirstPhone(cf = []) {\n  return getFirstByField(cf, ['PHONE', 'Phone']);\n}\n\nfunction getFirstEmail(cf = []) {\n  return getFirstByField(cf, ['EMAIL', 'Email', 'E-mail']);\n}\n\nfunction scoreContact(c) {\n  if (!c || typeof c !== 'object') return -1;\n  let s = 0;\n  if (c.name) s += 2;\n  if (getFirstPhone(c.custom_fields_values)) s += 2;\n  s += Array.isArray(c.custom_fields_values) ? c.custom_fields_values.length : 0;\n  s += Array.isArray(c._embedded?.tags) ? c._embedded.tags.length : 0;\n  s += Array.isArray(c._embedded?.companies) ? c._embedded.companies.length : 0;\n  if (c.first_name) s += 1;\n  if (c.last_name) s += 1;\n  if (c.responsible_user_id) s += 1;\n  return s;\n}\n\n// ---- main ----\nconst out = [];\n\nfor (const item of $input.all()) {\n  const data = safeParse(item.json?.data) || safeParse(item.json) || item.json;\n  if (!data || typeof data !== 'object') continue;\n\n  const contacts = data._embedded?.contacts ?? [];\n  const leadRows = [];\n\n  for (const contact of contacts) {\n    const leads = contact._embedded?.leads ?? [];\n    for (const ld of leads) {\n      leadRows.push({\n        json: {\n          contact_id: contact.id ?? null,\n          contact_name: contact.name ?? null,\n          phone: getFirstPhone(contact.custom_fields_values) ?? null,\n          email: getFirstEmail(contact.custom_fields_values) ?? null, // sempre presente\n          contact_link: contact._links?.self?.href ?? null,\n          lead_id: ld?.id ?? null,\n          lead_link: ld?._links?.self?.href ?? null,\n        }\n      });\n    }\n  }\n\n  if (leadRows.length > 0) {\n    out.push(...leadRows);\n  } else {\n    if (contacts.length > 0) {\n      let best = contacts[0];\n      let bestScore = scoreContact(best);\n      for (let i = 1; i < contacts.length; i++) {\n        const sc = scoreContact(contacts[i]);\n        if (sc > bestScore) {\n          best = contacts[i];\n          bestScore = sc;\n        }\n      }\n      out.push({\n        json: {\n          contact_id: best.id ?? null,\n          contact_name: best.name ?? null,\n          phone: getFirstPhone(best.custom_fields_values) ?? null,\n          email: getFirstEmail(best.custom_fields_values) ?? null, // sempre presente\n          contact_link: best._links?.self?.href ?? null,\n          lead_id: null,\n          lead_link: null,\n          _note: \"Sem leads; retornado contato mais completo\"\n        }\n      });\n    }\n  }\n}\n\nreturn out;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -448,
+        624
+      ],
+      "id": "e5826daa-8c5b-4f99-b79c-6b1f0c0a75f7",
+      "name": "Code28"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e0c834e3-6193-4aeb-9c11-046de160e6d9",
+              "leftValue": "={{ $json.lead_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": false
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        624
+      ],
+      "id": "85d6bfad-db75-47b3-8a15-e31df1f9949a",
+      "name": "If10"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript) — retorna 1 lead aberto e não perdido\n// Mantém todos os campos anteriores + tags_string (com vírgula no final quando não-vazio)\n// Extrai \"agendamento {1..4}\" e AGORA também \"Token {1..4}\"\n\nfunction parseMaybeJson(v) {\n  if (v == null) return null;\n  if (typeof v === 'object') return v;\n  try { return JSON.parse(String(v)); } catch { return null; }\n}\n\nfunction escapeJsonString(s) {\n  // Escapa \\ e \" para uso seguro dentro de aspas duplas\n  return String(s).replace(/\\\\/g, '\\\\\\\\').replace(/\"/g, '\\\\\"');\n}\n\nfunction extractTags(lead) {\n  const arr = lead?._embedded?.tags;\n  if (!Array.isArray(arr)) {\n    return {\n      tags_raw: [], tag_ids: [], tag_names: [],\n      tag_names_csv: \"\", tags_string: \"\"\n    };\n  }\n\n  const names = arr\n    .filter(t => t && (t.name != null || t.id != null))\n    .map(t => String(t.name ?? \"\").trim())\n    .filter(name => name.length > 0);\n\n  // dedup por nome (case-insensitive)\n  const seen = new Set();\n  const dedupNames = names.filter(name => {\n    const key = name.toLowerCase();\n    if (seen.has(key)) return false;\n    seen.add(key);\n    return true;\n  });\n\n  const tags_raw = dedupNames.map(name => ({ name }));\n  const tag_names = dedupNames;\n  const tag_ids = arr.map(t => t?.id).filter(v => v != null);\n\n  // Monta a string no formato { \"name\": \"X\" },{ \"name\": \"Y\" },  (com vírgula final)\n  let tags_string = \"\";\n  if (tag_names.length) {\n    const parts = tag_names.map(n => `{ \"name\": \"${escapeJsonString(n)}\" }`);\n    tags_string = parts.join(\",\") + \",\"; // vírgula no final\n  }\n\n  return {\n    tags_raw,\n    tag_ids,\n    tag_names,\n    tag_names_csv: tag_names.join(\", \"),\n    tags_string\n  };\n}\n\n// --- IDs de campos conhecidos ---\nconst AGENDAMENTO_FIELD_IDS = {\n  agendamento1: 0 /* SEU_ID_AQUI */,\n  agendamento2: 0 /* SEU_ID_AQUI */,\n  agendamento3: 0 /* SEU_ID_AQUI */,\n  agendamento4: 0 /* SEU_ID_AQUI */,\n};\n\n// --- NOVO: IDs de Token ---\nconst TOKEN_FIELD_IDS = {\n  token1: 0 /* SEU_ID_AQUI */,\n  token2: 0 /* SEU_ID_AQUI */,\n  token3: 0 /* SEU_ID_AQUI */,\n  token4: 0 /* SEU_ID_AQUI */,\n};\n\nfunction extractAgendamentos(lead) {\n  const cfv = Array.isArray(lead?.custom_fields_values) ? lead.custom_fields_values : [];\n  const out = { agendamento1: null, agendamento2: null, agendamento3: null, agendamento4: null };\n\n  // indexa por field_id\n  const byId = new Map(cfv.map(f => [Number(f.field_id), f]));\n\n  for (const key of Object.keys(AGENDAMENTO_FIELD_IDS)) {\n    const id = AGENDAMENTO_FIELD_IDS[key];\n    const f = byId.get(Number(id));\n    const val = f?.values?.[0]?.value ?? null;\n    out[key] = (val !== undefined && val !== null && String(val).trim() !== \"\") ? String(val) : null;\n  }\n\n  // array em ordem 1..4, apenas com os existentes\n  const agendamentos = [out.agendamento1, out.agendamento2, out.agendamento3, out.agendamento4].filter(v => v != null);\n\n  return { ...out, agendamentos };\n}\n\n// --- NOVO: extrator de Tokens 1..4 ---\nfunction extractTokens(lead) {\n  const cfv = Array.isArray(lead?.custom_fields_values) ? lead.custom_fields_values : [];\n  const out = { token1: null, token2: null, token3: null, token4: null };\n\n  const byId = new Map(cfv.map(f => [Number(f.field_id), f]));\n\n  for (const key of Object.keys(TOKEN_FIELD_IDS)) {\n    const id = TOKEN_FIELD_IDS[key];\n    const f = byId.get(Number(id));\n    const val = f?.values?.[0]?.value ?? null;\n    out[key] = (val !== undefined && val !== null && String(val).trim() !== \"\") ? String(val) : null;\n  }\n\n  const tokens = [out.token1, out.token2, out.token3, out.token4].filter(v => v != null);\n\n  return { ...out, tokens };\n}\n\nconst pipelineTarget = $('Edit Fields13').first().json['pipeline - vendas'];\n\n// Converte cada item em objeto\nconst all = $input.all()\n  .map(it => parseMaybeJson(it.json?.data) || it.json)\n  .filter(o => o && typeof o === 'object');\n\n// Filtra abertos + não perdidos\nlet eligible = all.filter(l =>\n  l &&\n  l.id != null &&\n  l.closed_at == null &&\n  !l.is_deleted &&\n  l.loss_reason_id == null\n);\n\n// Prioriza pipeline alvo, se houver\nconst inTarget = eligible.filter(l => String(l.pipeline_id) === String(pipelineTarget));\nif (inTarget.length > 0) eligible = inTarget;\n\n// Ordena pelo updated_at (mais recente primeiro)\neligible.sort((a, b) => (Number(b.updated_at) || 0) - (Number(a.updated_at) || 0));\n\n// Sem elegíveis: retorna item “sentinela”\nif (!eligible.length) {\n  return [{\n    json: {\n      found: false,\n      id: null,\n      name: null,\n      pipeline_id: null,\n      status_id: null,\n      updated_at_unix: null,\n      link_self: null,\n      tags_raw: [],\n      tag_ids: [],\n      tag_names: [],\n      tag_names_csv: \"\",\n      tags_string: \"\",\n      agendamento1: null,\n      agendamento2: null,\n      agendamento3: null,\n      agendamento4: null,\n      agendamentos: [],\n      // NOVO: tokens\n      token1: null,\n      token2: null,\n      token3: null,\n      token4: null,\n      tokens: []\n    }\n  }];\n}\n\nconst lead = eligible[0];\nconst tagsInfo = extractTags(lead);\nconst agds = extractAgendamentos(lead);\nconst toks = extractTokens(lead);\n\nreturn [{\n  json: {\n    found: true,\n    id: lead.id,\n    name: lead.name ?? null,\n    pipeline_id: lead.pipeline_id ?? null,\n    status_id: lead.status_id ?? null,\n    updated_at_unix: Number(lead.updated_at) || null,\n    link_self: lead._links?.self?.href ?? null,\n    // tags\n    ...tagsInfo,\n    // agendamentos\n    ...agds,\n    // NOVO: tokens\n    ...toks\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        528
+      ],
+      "id": "e3f3812d-0dd8-4671-82e9-0ed97553bf46",
+      "name": "Code29"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Edit Fields13').first().json['URL'] }}/contacts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields13').first().json['Token'] }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"name\": \"{{ $('Edit Fields1').first().json['Nome Completo'] }}\",\n    \"custom_fields_values\": [\n      {\n        \"field_code\": \"PHONE\",\n        \"values\": [\n          {\n            \"value\": \"{{ $('Edit Fields1').first().json.Telefone }}\"\n          }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields15').first().json['Qual região do corpo você deseja tatuar?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Qual região do corpo você deseja tatuar?'] }}\" }\n        ]\n      },\n      {\n          \"field_id\": {{ $('Edit Fields15').first().json['Você já tem tatuagens?'] }},\n        \"values\": [\n            { \"value\": \"{{ $('Edit Fields1').first().json['Você já tem tatuagens?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields15').first().json.utm_content }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_content }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields15').first().json.utm_medium }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_medium }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields15').first().json.utm_campaign }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_campaign }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields15').first().json.utm_source }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_source }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields15').first().json.utm_term }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_term }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields15').first().json['Qual sua motivação para fazer essa tatuagem agora?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Qual sua motivação para fazer essa tatuagem agora?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields15').first().json['Qual dessas opções melhor descreve seu momento atual?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Qual dessas opções melhor descreve seu momento atual?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields15').first().json['Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields15').first().json['Você tem disponibilidade para vir até o atelier no Rio de Janeiro?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Você tem disponibilidade para vir até o atelier no Rio de Janeiro?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields15').first().json['Como você conheceu o trabalho do especialista?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Como você conheceu o trabalho do especialista?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields15').first().json['Quanto tempo você já conhece o especialista?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Quanto tempo você já conhece o especialista?'] }}\" }\n        ]\n      },\n      {\n        \"field_code\": \"EMAIL\",\n        \"values\": [\n          {\n            \"value\": \"{{ $('Edit Fields1').first().json.Email }}\"\n          }\n        ]\n      }\n    ]\n  }\n]\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -448,
+        816
+      ],
+      "id": "55460248-e2c2-4843-a298-d9cc040ec027",
+      "name": "HTTP Request31"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().flatMap(item => {\n  let data;\n  try {\n    data = JSON.parse(item.json.data);\n  } catch (err) {\n    return [];\n  }\n\n  const contacts = data._embedded?.contacts || [];\n\n  return contacts.map(contact => {\n    const result = { ...contact };\n\n    // Adiciona lead_id (do primeiro lead)\n    result.lead_id = contact._embedded?.leads?.[0]?.id || null;\n\n    // Adiciona link direto para o contato\n    result.contact_link = contact._links?.self?.href || null;\n\n    return result;\n  });\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -224,
+        816
+      ],
+      "id": "4497c38c-8062-4b12-9cd0-d37040c1a51a",
+      "name": "Code30"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Edit Fields13').item.json.URL }}/leads",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields13').item.json.Token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"name\": \"{{ $('Edit Fields1').first().json['Nome Completo'] }}\",\n    \"pipeline_id\": {{ $('Edit Fields13').first().json['pipeline - funil de vendas'] }},\n    \"status_id\": {{ $('Edit Fields13').first().json['Stage - Respondi'] }},\n    \"custom_fields_values\": [\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json['Qual região do corpo você deseja tatuar?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Qual região do corpo você deseja tatuar?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json['Você já tem tatuagens?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Você já tem tatuagens?'] }}\" }\n        ]\n      },\n      {\n  \"field_id\": {{ $('Edit Fields13').first().json.utm_content }},\n  \"values\": [\n    { \"value\": \"{{ $('Edit Fields1').first().json.utm_content }}\" }\n  ]\n      },\n      {\n  \"field_id\": {{ $('Edit Fields13').first().json.utm_medium }},\n  \"values\": [\n    { \"value\": \"{{ $('Edit Fields1').first().json.utm_medium }}\" }\n  ]\n      },\n      {\n  \"field_id\": {{ $('Edit Fields13').first().json.utm_campaign }},\n  \"values\": [\n    { \"value\": \"{{ $('Edit Fields1').first().json.utm_campaign }}\" }\n  ]\n      },\n      {\n  \"field_id\": {{ $('Edit Fields13').first().json.utm_source }},\n  \"values\": [\n    { \"value\": \"{{ $('Edit Fields1').first().json.utm_source }}\" }\n  ]\n      },\n      {\n  \"field_id\": {{ $('Edit Fields13').first().json.utm_term }},\n  \"values\": [\n    { \"value\": \"{{ $('Edit Fields1').first().json.utm_term }}\" }\n  ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json['Qual sua motivação para fazer essa tatuagem agora?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Qual sua motivação para fazer essa tatuagem agora?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json['Qual dessas opções melhor descreve seu momento atual?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Qual dessas opções melhor descreve seu momento atual?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json['Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json['Você tem disponibilidade para vir até o atelier no Rio de Janeiro?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Você tem disponibilidade para vir até o atelier no Rio de Janeiro?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json['Como você conheceu o trabalho do especialista?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Como você conheceu o trabalho do especialista?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json['Quanto tempo você já conhece o especialista?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Quanto tempo você já conhece o especialista?'] }}\" }\n        ]\n      }\n    ],\n    \"_embedded\": {\n      \"contacts\": [\n        { \"id\": {{ $json.id }} }\n      ]\n    }\n  }\n]\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        816
+      ],
+      "id": "37de5bef-c69c-4106-a254-441f74442587",
+      "name": "HTTP Request32"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Edit Fields13').item.json.URL }}/leads/{{ $json.lead_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields13').item.json.Token }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        224,
+        528
+      ],
+      "id": "f8c96c1c-0fbf-4179-bbff-b02c8048ed6b",
+      "name": "HTTP Request34"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Edit Fields13').first().json.URL }}/leads",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields13').first().json.Token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"name\": \"{{ $('Edit Fields1').first().json['Nome Completo'] }}\",\n    \"pipeline_id\": {{ $('Edit Fields13').first().json['pipeline - funil de vendas'] }},\n    \"status_id\": {{ $('Edit Fields13').first().json['Stage - Respondi'] }},\n    \"custom_fields_values\": [\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json['Qual região do corpo você deseja tatuar?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Qual região do corpo você deseja tatuar?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json['Você já tem tatuagens?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Você já tem tatuagens?'] }}\" }\n        ]\n      },\n     {\n  \"field_id\": {{ $('Edit Fields13').first().json.utm_content }},\n  \"values\": [\n    { \"value\": \"{{ $('Edit Fields1').first().json.utm_content }}\" }\n  ]\n      },\n      {\n  \"field_id\": {{ $('Edit Fields13').first().json.utm_medium }},\n  \"values\": [\n    { \"value\": \"{{ $('Edit Fields1').first().json.utm_medium }}\" }\n  ]\n      },\n      {\n  \"field_id\": {{ $('Edit Fields13').first().json.utm_campaign }},\n  \"values\": [\n    { \"value\": \"{{ $('Edit Fields1').first().json.utm_campaign }}\" }\n  ]\n      },\n      {\n  \"field_id\": {{ $('Edit Fields13').first().json.utm_source }},\n  \"values\": [\n    { \"value\": \"{{ $('Edit Fields1').first().json.utm_source }}\" }\n  ]\n      },\n      {\n  \"field_id\": {{ $('Edit Fields13').first().json.utm_term }},\n  \"values\": [\n    { \"value\": \"{{ $('Edit Fields1').first().json.utm_term }}\" }\n  ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json['Qual dessas opções melhor descreve seu momento atual?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Qual dessas opções melhor descreve seu momento atual?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json['Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json['Você tem disponibilidade para vir até o atelier no Rio de Janeiro?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Você tem disponibilidade para vir até o atelier no Rio de Janeiro?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json['Qual sua motivação para fazer essa tatuagem agora?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Qual sua motivação para fazer essa tatuagem agora?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json['Como você conheceu o trabalho do especialista?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Como você conheceu o trabalho do especialista?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json['Quanto tempo você já conhece o especialista?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Quanto tempo você já conhece o especialista?'] }}\" }\n        ]\n      }\n    ],\n    \"_embedded\": {\n      \"contacts\": [\n        { \"id\": {{ $('Code28').first().json.contact_id }} }\n      ]\n    }\n  }\n]\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        224,
+        720
+      ],
+      "id": "76c63ac8-7246-4641-98a8-3548574bbec0",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ $('Edit Fields13').first().json.URL }}/leads/{{ $json.id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields13').first().json.Token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=  {\n    \"name\": \"{{ $('Edit Fields1').first().json['Nome Completo'] }}\",\n    \"custom_fields_values\": [\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json['Qual região do corpo você deseja tatuar?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Qual região do corpo você deseja tatuar?'] }}\" }\n        ]\n      },\n     {\n  \"field_id\": {{ $('Edit Fields13').first().json.utm_content }},\n  \"values\": [\n    { \"value\": \"{{ $('Edit Fields1').first().json.utm_content }}\" }\n  ]\n      },\n      {\n  \"field_id\": {{ $('Edit Fields13').first().json.utm_medium }},\n  \"values\": [\n    { \"value\": \"{{ $('Edit Fields1').first().json.utm_medium }}\" }\n  ]\n      },\n      {\n  \"field_id\": {{ $('Edit Fields13').first().json.utm_campaign }},\n  \"values\": [\n    { \"value\": \"{{ $('Edit Fields1').first().json.utm_campaign }}\" }\n  ]\n      },\n      {\n  \"field_id\": {{ $('Edit Fields13').first().json.utm_source }},\n  \"values\": [\n    { \"value\": \"{{ $('Edit Fields1').first().json.utm_source }}\" }\n  ]\n      },\n      {\n  \"field_id\": {{ $('Edit Fields13').first().json.utm_term }},\n  \"values\": [\n    { \"value\": \"{{ $('Edit Fields1').first().json.utm_term }}\" }\n  ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json['Você já tem tatuagens?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Você já tem tatuagens?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json['Qual sua motivação para fazer essa tatuagem agora?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Qual sua motivação para fazer essa tatuagem agora?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json['Qual dessas opções melhor descreve seu momento atual?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Qual dessas opções melhor descreve seu momento atual?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json['Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json['Você tem disponibilidade para vir até o atelier no Rio de Janeiro?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Você tem disponibilidade para vir até o atelier no Rio de Janeiro?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json['Como você conheceu o trabalho do especialista?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Como você conheceu o trabalho do especialista?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields13').first().json['Quanto tempo você já conhece o especialista?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Quanto tempo você já conhece o especialista?'] }}\" }\n        ]\n      }\n    ],\n    \"_embedded\": {\n      \"contacts\": [\n        { \"id\": {{ $('Code28').first().json.contact_id }} }\n      ]\n    }\n  }",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        672,
+        528
+      ],
+      "id": "ecc60c9b-55f3-446e-aa8a-251040bfdd4c",
+      "name": "HTTP Request37"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "55bb007a-4f05-49e4-9974-9a84b24a82a5",
+              "name": "form_name",
+              "value": "={{ $json.body.form.form_name }}",
+              "type": "string"
+            },
+            {
+              "id": "52aa75b6-9d53-4325-8fde-1b4783c09860",
+              "name": "Nome Completo",
+              "value": "={{ $json.body.respondent.answers[\"Full name\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "e1885d4d-4a8f-430c-b8c8-10aaef287047",
+              "name": "Telefone",
+              "value": "={{ $json.body.respondent.answers[\"WhatsApp number\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "b62858ee-24ad-41fc-bc36-f426a714184d",
+              "name": "Email",
+              "value": "={{ $json.body.respondent.answers[\"E-mail address\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "ed15cebf-adfe-44a9-89b2-850eab9d58fc",
+              "name": "Qual região do corpo você deseja tatuar?",
+              "value": "={{ $json.body.respondent.answers[\"Which area of your body would you like to get tattooed?\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "a4812977-a547-47e7-9eb1-542139d50dd3",
+              "name": "Você já tem tatuagens?",
+              "value": "={{ $json.body.respondent.answers[\"Do you already have any tattoos?\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "d8079867-2a32-47a8-b426-251111f8a51a",
+              "name": "Qual sua motivação para fazer essa tatuagem agora?",
+              "value": "={{ String($json.body.respondent.answers[\"What’s your motivation for getting this tattoo now?\"] || \"\")\n  .replace(/[\\r\\n]+/g, \" \")\n  .replace(/[“”\"‘’']/g, \"\")\n  .replace(/\\s+/g, \" \")\n  .trim()\n}}",
+              "type": "string"
+            },
+            {
+              "id": "4f7407b9-9d04-4c9e-9270-4ea71c5766f5",
+              "name": "Qual dessas opções melhor descreve seu momento atual?",
+              "value": "={{ $json.body.respondent.answers[\"Which of these options best describes your current moment?\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "f1382038-411e-4610-9817-9e86ad6be7df",
+              "name": "Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?",
+              "value": "={{ $json.body.respondent.answers[\"Are you already familiar with the average cost of especialista’s creations, and do you feel it fits within your current reality?\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "1d2920ea-83bb-40b1-8f34-2c5d9a5b8dac",
+              "name": "Você tem disponibilidade para vir até o atelier no Rio de Janeiro?",
+              "value": "={{ $('Webhook').item.json.body.respondent.answers[\"Are you available to come to the studio in Rio de Janeiro?\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "20fef6f9-2e96-4375-b3d2-6eebe1027126",
+              "name": "Como você conheceu o trabalho do especialista?",
+              "value": "={{ $('Webhook').item.json.body.respondent.answers[\"How did you discover especialista’s work?\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "dba95d43-a88e-4618-82d9-b6eb65404e83",
+              "name": "Quanto tempo você já conhece o especialista?",
+              "value": "={{ $('Webhook').item.json.body.respondent.answers[\"How long have you known especialista?\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "2ee45272-d20b-486e-8413-70b97039297a",
+              "name": "utm_source",
+              "value": "={{ $json.body.respondent.respondent_utms.utm_source }}",
+              "type": "string"
+            },
+            {
+              "id": "c9f722ad-55f3-432b-9279-5b9b6bfaef99",
+              "name": "utm_medium",
+              "value": "={{ $json.body.respondent.respondent_utms.utm_medium }}",
+              "type": "string"
+            },
+            {
+              "id": "83a9a533-3780-49be-b618-e430ef98dafa",
+              "name": "utm_campaign",
+              "value": "={{ $json.body.respondent.respondent_utms.utm_campaign }}",
+              "type": "string"
+            },
+            {
+              "id": "ad029604-22bb-4775-85ef-e3e15ccc55d7",
+              "name": "utm_term",
+              "value": "={{ $json.body.respondent.respondent_utms.utm_term }}",
+              "type": "string"
+            },
+            {
+              "id": "d93959f1-f50a-461d-93eb-38fa3e37b178",
+              "name": "utm_content",
+              "value": "={{ $json.body.respondent.respondent_utms.utm_content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3040,
+        848
+      ],
+      "id": "041a1127-d2fd-4514-9ff4-b3064dd0c08e",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "SEU_ID_DA_PLANILHA_GOOGLE",
+          "mode": "list",
+          "cachedResultName": "Sua aba ou planilha",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA_GOOGLE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1036915010,
+          "mode": "list",
+          "cachedResultName": "Sua aba ou planilha",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA_GOOGLE/edit#gid=SEU_GID_DA_ABA"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Full Name": "={{ $json['Full name'] }}",
+            "WhatsApp number": "={{ $json['WhatsApp number'] }}",
+            "E-mail": "={{ $json['E-mail'] }}",
+            "Which area of your body would you like to get tattooed?": "={{ $json['Which area of your body would you like to get tattooed?'] }}",
+            "Do you already have any tattoos?": "={{ $json['Do you already have any tattoos?'] }}",
+            "What’s your motivation for getting this tattoo now?": "={{ $json['What’s your motivation for getting this tattoo now?'] }}",
+            "Which of these options best describes your current moment?": "={{ $json['Which of these options best describes your current moment?'] }}",
+            "Are you already familiar with the average cost of especialista’s creations, and do you feel it fits within your current reality?": "={{ $json['Are you already familiar with the average cost of especialista’s creations, and do you feel it fits within your current reality?'] }}",
+            "Are you available to come to the studio in Rio de Janeiro?": "={{ $json['Are you available to come to the studio in Rio de Janeiro?'] }}",
+            "How did you discover especialista’s work?": "={{ $json['How did you discover especialista’s work?'] }}",
+            "Date": "={{ $json.Date }}",
+            "Score": "={{ $json.Score }}",
+            "ID": "={{ $json.ID }}",
+            "utm_source": "={{ $json.utm_source }}",
+            "utm_medium": "={{ $json.utm_medium }}",
+            "utm_campaign": "={{ $json.utm_campaign }}",
+            "utm_term": "={{ $json.utm_term }}",
+            "utm_content": "={{ $json.utm_content }}",
+            "gclid": "={{ $json.gclid }}",
+            "fbclid": "={{ $json.fbclid }}"
+          },
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -3312,
+        1216
+      ],
+      "id": "9c3bbc9a-7bf9-4b6e-869a-b9caf6cedf62",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "85540639-5ac5-498b-9190-65817a7d315a",
+              "name": "Date",
+              "value": "={{ $json.body.respondent.date }}",
+              "type": "string"
+            },
+            {
+              "id": "4d67c058-5eb1-4d94-98be-5d3cce526f51",
+              "name": "Full name",
+              "value": "={{ $json.body.respondent.answers['Full name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "45ff65b6-3f79-4cf4-82e7-3e72752e418a",
+              "name": "E-mail",
+              "value": "={{ $json.body.respondent.answers['E-mail address'] }}",
+              "type": "string"
+            },
+            {
+              "id": "1781119d-ed1d-4ebe-b2fc-d8d413b4bf21",
+              "name": "WhatsApp number",
+              "value": "={{ $json.body.respondent.answers['WhatsApp number'] }}",
+              "type": "string"
+            },
+            {
+              "id": "afe7f974-16ff-4cef-af5a-520bd12556b8",
+              "name": "Which area of your body would you like to get tattooed?",
+              "value": "={{ $json.body.respondent.answers['Which area of your body would you like to get tattooed?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "a2a5d2b6-7bfb-468a-8bfe-466fe10fabb5",
+              "name": "Do you already have any tattoos?",
+              "value": "={{ $json.body.respondent.answers['Do you already have any tattoos?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "ee61b75a-10f1-424e-8990-f69afa49110c",
+              "name": "What’s your motivation for getting this tattoo now?",
+              "value": "={{ $json.body.respondent.answers['What’s your motivation for getting this tattoo now?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "322f0729-4c5d-4573-8b36-7b6139b0275c",
+              "name": "Which of these options best describes your current moment?",
+              "value": "={{ $json.body.respondent.answers['Which of these options best describes your current moment?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "b93ef5ca-25e3-4863-b382-2837952d79e2",
+              "name": "Are you already familiar with the average cost of especialista’s creations, and do you feel it fits within your current reality?",
+              "value": "={{ $json.body.respondent.answers['Are you already familiar with the average cost of especialista’s creations, and do you feel it fits within your current reality?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f638e5b2-57a1-4f3f-9c08-cd4808b16bda",
+              "name": "Are you available to come to the studio in Rio de Janeiro?",
+              "value": "={{ $json.body.respondent.answers['Are you available to come to the studio in Rio de Janeiro?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "d9c7059f-4306-4a22-9fce-14236f611199",
+              "name": "How did you discover especialista’s work?",
+              "value": "={{ $json.body.respondent.answers['How did you discover especialista’s work?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f67c80a2-6667-4b81-ac88-e51818977576",
+              "name": "utm_source",
+              "value": "={{ $json.body.respondent.respondent_utms.utm_source }}",
+              "type": "string"
+            },
+            {
+              "id": "facbb9e6-fa4f-408b-8fc5-60ea6f746741",
+              "name": "utm_medium",
+              "value": "={{ $json.body.respondent.respondent_utms.utm_medium }}",
+              "type": "string"
+            },
+            {
+              "id": "77c47f97-fae1-492a-94a7-8caf2d028da1",
+              "name": "utm_campaign",
+              "value": "={{ $json.body.respondent.respondent_utms.utm_campaign }}",
+              "type": "string"
+            },
+            {
+              "id": "48120f71-d3a4-4612-a875-6b56bc46ac2d",
+              "name": "utm_term",
+              "value": "={{ $json.body.respondent.respondent_utms.utm_term }}",
+              "type": "string"
+            },
+            {
+              "id": "12d1c07d-0e1b-4d3a-b821-a5de0f9768a5",
+              "name": "utm_content",
+              "value": "={{ $json.body.respondent.respondent_utms.utm_content }}",
+              "type": "string"
+            },
+            {
+              "id": "fb2adcc6-9336-4404-85e6-7ae1ce9c41e6",
+              "name": "ID",
+              "value": "={{ $json.body.respondent.respondent_id }}",
+              "type": "string"
+            },
+            {
+              "id": "4a54c45a-78a3-4215-841a-1d1bec71eb80",
+              "name": "Score",
+              "value": "={{ $json.body.respondent.score }}",
+              "type": "string"
+            },
+            {
+              "id": "f90c00b6-2f60-4f6e-a447-4ece6614e0ef",
+              "name": "gclid",
+              "value": "={{ $json.body.respondent.respondent_utms.gclid }}",
+              "type": "string"
+            },
+            {
+              "id": "29ddcc33-c26c-4296-94e8-8c14910d2dd6",
+              "name": "fbclid",
+              "value": "={{ $json.body.respondent.respondent_utms.fbclid }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3648,
+        1216
+      ],
+      "id": "9cd5f2c7-11af-46b6-841c-d757b52b97bb",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "SEU_ID_DA_PLANILHA_GOOGLE",
+          "mode": "list",
+          "cachedResultName": "Sua aba ou planilha",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA_GOOGLE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=SEU_GID_DA_ABA",
+          "mode": "list",
+          "cachedResultName": "Sua aba ou planilha",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA_GOOGLE/edit#gid=SEU_GID_DA_ABA"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "E-mail": "={{ $json['E-mail'] }}",
+            "ID": "={{ $json.ID }}",
+            "utm_source": "={{ $json.utm_source }}",
+            "utm_medium": "={{ $json.utm_medium }}",
+            "utm_campaign": "={{ $json.utm_campaign }}",
+            "utm_term": "={{ $json.utm_term }}",
+            "utm_content": "={{ $json.utm_content }}",
+            "gclid": "={{ $json.gclid }}",
+            "fbclid": "={{ $json.fbclid }}",
+            "Nome completo": "={{ $json['Nome completo'] }}",
+            "WhatsApp (com DDD)": "={{ $json['WhatsApp (com DDD)'] }}",
+            "Qual região do corpo você deseja tatuar?": "={{ $json['Qual região do corpo você deseja tatuar?'] }}",
+            "Você já tem tatuagens?": "={{ $json['Você já tem tatuagens?'] }}",
+            "Qual sua motivação para fazer essa tatuagem agora?": "={{ $json['Qual sua motivação para fazer essa tatuagem agora?'] }}",
+            "Qual dessas opções melhor descreve seu momento atual?": "={{ $json['Qual dessas opções melhor descreve seu momento atual?'] }}",
+            "Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?": "={{ $json['Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?'] }}",
+            "Você tem disponibilidade para vir até o atelier no Rio de Janeiro?": "={{ $json['Você tem disponibilidade para vir até o atelier no Rio de Janeiro?'] }}",
+            "Como você conheceu o trabalho do especialista?": "={{ $json['Como você conheceu o trabalho do especialista?'] }}",
+            "Pontuação": "={{ $json.utm_source }}",
+            "Data": "={{ $json.Date }}",
+            "Quanto tempo você já conhece o especialista?": "={{ $json['Quanto tempo você já conhece o especialista?'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -1552,
+        128
+      ],
+      "id": "a0f58e84-7da7-440f-845e-d006f7703ba2",
+      "name": "Google Sheets1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "85540639-5ac5-498b-9190-65817a7d315a",
+              "name": "Date",
+              "value": "={{ $json.body.respondent.date }}",
+              "type": "string"
+            },
+            {
+              "id": "4d67c058-5eb1-4d94-98be-5d3cce526f51",
+              "name": "Nome completo",
+              "value": "={{ $json.body.respondent.answers['Nome completo'] }}",
+              "type": "string"
+            },
+            {
+              "id": "45ff65b6-3f79-4cf4-82e7-3e72752e418a",
+              "name": "E-mail",
+              "value": "={{ $json.body.respondent.answers['E-mail'] }}",
+              "type": "string"
+            },
+            {
+              "id": "1781119d-ed1d-4ebe-b2fc-d8d413b4bf21",
+              "name": "WhatsApp (com DDD)",
+              "value": "={{ $json.body.respondent.answers['WhatsApp (com DDD)'] }}",
+              "type": "string"
+            },
+            {
+              "id": "afe7f974-16ff-4cef-af5a-520bd12556b8",
+              "name": "Qual região do corpo você deseja tatuar?",
+              "value": "={{ $json.body.respondent.answers['Qual região do corpo você deseja tatuar?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "a2a5d2b6-7bfb-468a-8bfe-466fe10fabb5",
+              "name": "Você já tem tatuagens?",
+              "value": "={{ $json.body.respondent.answers['Você já tem tatuagens?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "ee61b75a-10f1-424e-8990-f69afa49110c",
+              "name": "Qual sua motivação para fazer essa tatuagem agora?",
+              "value": "={{ $json.body.respondent.answers['Qual sua motivação para fazer essa tatuagem agora?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "322f0729-4c5d-4573-8b36-7b6139b0275c",
+              "name": "Qual dessas opções melhor descreve seu momento atual?",
+              "value": "={{ $json.body.respondent.answers['Qual dessas opções melhor descreve seu momento atual?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "b93ef5ca-25e3-4863-b382-2837952d79e2",
+              "name": "Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?",
+              "value": "={{ $json.body.respondent.answers['Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f638e5b2-57a1-4f3f-9c08-cd4808b16bda",
+              "name": "Você tem disponibilidade para vir até o atelier no Rio de Janeiro?",
+              "value": "={{ $json.body.respondent.answers['Você tem disponibilidade para vir até o atelier no Rio de Janeiro?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "d9c7059f-4306-4a22-9fce-14236f611199",
+              "name": "Como você conheceu o trabalho do especialista?",
+              "value": "={{ $json.body.respondent.answers['Como você conheceu o trabalho do especialista?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f67c80a2-6667-4b81-ac88-e51818977576",
+              "name": "utm_source",
+              "value": "={{ $json.body.respondent.respondent_utms.utm_source }}",
+              "type": "string"
+            },
+            {
+              "id": "facbb9e6-fa4f-408b-8fc5-60ea6f746741",
+              "name": "utm_medium",
+              "value": "={{ $json.body.respondent.respondent_utms.utm_medium }}",
+              "type": "string"
+            },
+            {
+              "id": "77c47f97-fae1-492a-94a7-8caf2d028da1",
+              "name": "utm_campaign",
+              "value": "={{ $json.body.respondent.respondent_utms.utm_campaign }}",
+              "type": "string"
+            },
+            {
+              "id": "48120f71-d3a4-4612-a875-6b56bc46ac2d",
+              "name": "utm_term",
+              "value": "={{ $json.body.respondent.respondent_utms.utm_term }}",
+              "type": "string"
+            },
+            {
+              "id": "12d1c07d-0e1b-4d3a-b821-a5de0f9768a5",
+              "name": "utm_content",
+              "value": "={{ $json.body.respondent.respondent_utms.utm_content }}",
+              "type": "string"
+            },
+            {
+              "id": "fb2adcc6-9336-4404-85e6-7ae1ce9c41e6",
+              "name": "ID",
+              "value": "={{ $json.body.respondent.respondent_id }}",
+              "type": "string"
+            },
+            {
+              "id": "4a54c45a-78a3-4215-841a-1d1bec71eb80",
+              "name": "Pontuação",
+              "value": "={{ $json.body.respondent.score }}",
+              "type": "string"
+            },
+            {
+              "id": "f90c00b6-2f60-4f6e-a447-4ece6614e0ef",
+              "name": "gclid",
+              "value": "={{ $json.body.respondent.respondent_utms.gclid }}",
+              "type": "string"
+            },
+            {
+              "id": "29ddcc33-c26c-4296-94e8-8c14910d2dd6",
+              "name": "fbclid",
+              "value": "={{ $json.body.respondent.respondent_utms.fbclid }}",
+              "type": "string"
+            },
+            {
+              "id": "87d18226-2704-45d3-a057-5f2be9620aea",
+              "name": "Quanto tempo você já conhece o especialista?",
+              "value": "={{ $json.body.respondent.answers['Quanto tempo você já conhece o especialista?'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1776,
+        128
+      ],
+      "id": "cb7e582b-962d-481e-adf7-c879551558d9",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "amount": 4,
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -3840,
+        512
+      ],
+      "id": "67b1285e-3b8e-46a2-bfa2-9fc1031d3316",
+      "name": "Wait",
+      "webhookId": "SEU_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Edit Fields3').first().json.URL }}/contacts/custom_fields",
+        "sendHeaders": true,
+        "specifyHeaders": "=json",
+        "headerParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "jsonHeaders": "={\n  \"Content-Type\": \"application/json\",\n  \"Authorization\": \"Bearer {{ $('Edit Fields3').first().json.Token }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        272,
+        -256
+      ],
+      "id": "3593bcc4-b551-4bee-9eac-9b792343b133",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript)\n// Entrada esperada (exemplo):\n// [\n//   { json: { data: \"<string JSON do /api/v4/leads/custom_fields>\" } }\n// ]\n// Saída: um item por custom field com informações úteis.\n\nfunction parseMaybeJson(v) {\n  if (v == null) return null;\n  if (typeof v === 'object') return v;\n  try { return JSON.parse(String(v)); } catch { return null; }\n}\n\nconst inputItems = $input.all();\nconst out = [];\n\nfor (const it of inputItems) {\n  const root = parseMaybeJson(it.json?.data);\n  if (!root) {\n    out.push({ json: { error: 'Não foi possível parsear json.data' } });\n    continue;\n  }\n\n  const fields = root?._embedded?.custom_fields || [];\n  if (!Array.isArray(fields) || fields.length === 0) {\n    out.push({ json: { warning: 'Nenhum custom field encontrado em _embedded.custom_fields' } });\n    continue;\n  }\n\n  for (const f of fields) {\n    const enumsArr = Array.isArray(f.enums)\n      ? f.enums.map(e => ({\n          id: e.id ?? null,\n          value: e.value ?? null,\n          sort: e.sort ?? null,\n        }))\n      : null;\n\n    const enum_values = enumsArr ? enumsArr.map(e => e.value).join(', ') : null;\n\n    out.push({\n      json: {\n        id: f.id ?? null,\n        name: f.name ?? null,\n        type: f.type ?? null,\n        code: f.code ?? null,\n        entity_type: f.entity_type ?? null,\n        group_id: f.group_id ?? null,\n        sort: f.sort ?? null,\n\n        is_api_only: !!f.is_api_only,\n        is_predefined: !!f.is_predefined,\n        is_deletable: !!f.is_deletable,\n\n        required_statuses: Array.isArray(f.required_statuses) ? f.required_statuses : [],\n        hidden_statuses: Array.isArray(f.hidden_statuses) ? f.hidden_statuses : [],\n        chained_lists: f.chained_lists ?? null,\n\n        link: f._links?.self?.href ?? null,\n\n        // enums já prontos para planilha\n        enums: enumsArr,\n        enum_values, // \"valor1, valor2, ...\"\n      }\n    });\n  }\n}\n\nreturn out;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        496,
+        -256
+      ],
+      "id": "bb8f365e-3a97-4ca7-a9a7-c9aa58cef598",
+      "name": "Code7"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1606022-b2fb-4c48-9bbe-0ae164c769ef",
+              "name": "utm_content",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "17b30a88-4979-4676-ae67-1542df20df54",
+              "name": "utm_medium",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "cd0bfe58-d404-4afd-82e8-fd0ad96f330a",
+              "name": "utm_campaign",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "912aaaea-7b4e-42d1-8602-018bd291be45",
+              "name": "utm_source",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "dba626f5-edc4-4ec9-b65f-a7f8bdf1b648",
+              "name": "utm_term",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "150b9e84-1544-4d15-b05f-6db7e220752b",
+              "name": "Qual região do corpo você deseja tatuar?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "48d63f1f-074f-4919-a114-564bdb4e9892",
+              "name": "Você já tem tatuagens?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "fb79bb0c-ef88-47fe-9763-98cafe6b397e",
+              "name": "Qual sua motivação para fazer essa tatuagem agora?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "95a70ecb-81b0-41da-b9ee-8a74e51312f0",
+              "name": "Qual dessas opções melhor descreve seu momento atual?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "7b0470cb-4826-48b0-8146-0c8eb800df47",
+              "name": "Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "bd95a173-5366-407b-82f9-f2e2a0331b1e",
+              "name": "Você tem disponibilidade para vir até o atelier no Rio de Janeiro?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "f476ea21-5eb0-4229-b00d-c6d5665e407d",
+              "name": "Como você conheceu o trabalho do especialista?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "e25b63dc-9065-4656-876f-4a4b473348f5",
+              "name": "Quanto tempo você já conhece o especialista?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1344,
+        336
+      ],
+      "id": "c5c7f4cb-f7b7-4ec5-9828-53d28cd0d5f4",
+      "name": "Edit Fields14"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ $('Edit Fields12').first().json['URL'] }}/contacts/{{ $json.contact_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields12').first().json['Token'] }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=  {\n    \"name\": \"{{ $('Edit Fields').item.json['Nome Completo'] }}\",\n    \"custom_fields_values\": [\n      {\n        \"field_code\": \"PHONE\",\n        \"values\": [\n          {\n            \"value\": \"{{ $('Edit Fields').item.json.Telefone }}\"\n          }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields14').first().json['Qual região do corpo você deseja tatuar?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Qual região do corpo você deseja tatuar?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields14').first().json['Você já tem tatuagens?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Você já tem tatuagens?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields14').first().json.utm_content }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json.utm_content }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields14').first().json.utm_medium }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json.utm_medium }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields14').first().json.utm_campaign }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json.utm_campaign }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields14').first().json.utm_source }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json.utm_source }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields14').first().json.utm_term }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json.utm_term }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields14').first().json['Qual sua motivação para fazer essa tatuagem agora?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Qual sua motivação para fazer essa tatuagem agora?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields14').first().json['Qual dessas opções melhor descreve seu momento atual?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Qual dessas opções melhor descreve seu momento atual?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields14').first().json['Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields14').first().json['Você tem disponibilidade para vir até o atelier no Rio de Janeiro?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Você tem disponibilidade para vir até o atelier no Rio de Janeiro?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields14').first().json['Como você conheceu o trabalho do especialista?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Como você conheceu o trabalho do especialista?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields14').first().json['Quanto tempo você já conhece o especialista?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Quanto tempo você já conhece o especialista?'] }}\" }\n        ]\n      },\n      {\n        \"field_code\": \"EMAIL\",\n        \"values\": [\n          {\n            \"value\": \"{{ $('Edit Fields').item.json.Email }}\"\n          }\n        ]\n      }\n    ]\n  }",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -224,
+        240
+      ],
+      "id": "34d52f1c-6ffd-4d99-bc29-07b10c49f010",
+      "name": "HTTP Request35"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1606022-b2fb-4c48-9bbe-0ae164c769ef",
+              "name": "utm_content",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "17b30a88-4979-4676-ae67-1542df20df54",
+              "name": "utm_medium",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "cd0bfe58-d404-4afd-82e8-fd0ad96f330a",
+              "name": "utm_campaign",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "912aaaea-7b4e-42d1-8602-018bd291be45",
+              "name": "utm_source",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "dba626f5-edc4-4ec9-b65f-a7f8bdf1b648",
+              "name": "utm_term",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "150b9e84-1544-4d15-b05f-6db7e220752b",
+              "name": "Qual região do corpo você deseja tatuar?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "48d63f1f-074f-4919-a114-564bdb4e9892",
+              "name": "Você já tem tatuagens?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "fb79bb0c-ef88-47fe-9763-98cafe6b397e",
+              "name": "Qual sua motivação para fazer essa tatuagem agora?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "95a70ecb-81b0-41da-b9ee-8a74e51312f0",
+              "name": "Qual dessas opções melhor descreve seu momento atual?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "7b0470cb-4826-48b0-8146-0c8eb800df47",
+              "name": "Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "bd95a173-5366-407b-82f9-f2e2a0331b1e",
+              "name": "Você tem disponibilidade para vir até o atelier no Rio de Janeiro?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "f476ea21-5eb0-4229-b00d-c6d5665e407d",
+              "name": "Como você conheceu o trabalho do especialista?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            },
+            {
+              "id": "e25b63dc-9065-4656-876f-4a4b473348f5",
+              "name": "Quanto tempo você já conhece o especialista?",
+              "value": "SEU_ID_AQUI",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1344,
+        720
+      ],
+      "id": "c418d134-fcb3-4297-8ef9-c8bd3ee14857",
+      "name": "Edit Fields15"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ $('Edit Fields13').first().json['URL'] }}/contacts/{{ $json.contact_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields13').first().json['Token'] }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=  {\n    \"name\": \"{{ $('Edit Fields1').first().json['Nome Completo'] }}\",\n    \"custom_fields_values\": [\n      {\n        \"field_code\": \"PHONE\",\n        \"values\": [\n          {\n            \"value\": \"{{ $('Edit Fields1').first().json.Telefone }}\"\n          }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields15').first().json['Qual região do corpo você deseja tatuar?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Qual região do corpo você deseja tatuar?'] }}\" }\n        ]\n      },\n      {\n          \"field_id\": {{ $('Edit Fields15').first().json['Você já tem tatuagens?'] }},\n        \"values\": [\n            { \"value\": \"{{ $('Edit Fields1').first().json['Você já tem tatuagens?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields15').first().json.utm_content }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_content }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields15').first().json.utm_medium }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_medium }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields15').first().json.utm_campaign }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_campaign }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields15').first().json.utm_source }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_source }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields15').first().json.utm_term }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json.utm_term }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields15').first().json['Qual sua motivação para fazer essa tatuagem agora?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Qual sua motivação para fazer essa tatuagem agora?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields15').first().json['Qual dessas opções melhor descreve seu momento atual?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Qual dessas opções melhor descreve seu momento atual?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields15').first().json['Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields15').first().json['Você tem disponibilidade para vir até o atelier no Rio de Janeiro?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Você tem disponibilidade para vir até o atelier no Rio de Janeiro?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields15').first().json['Como você conheceu o trabalho do especialista?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Como você conheceu o trabalho do especialista?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields15').first().json['Quanto tempo você já conhece o especialista?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields1').first().json['Quanto tempo você já conhece o especialista?'] }}\" }\n        ]\n      },\n      {\n        \"field_code\": \"EMAIL\",\n        \"values\": [\n          {\n            \"value\": \"{{ $('Edit Fields1').first().json.Email }}\"\n          }\n        ]\n      }\n    ]\n  }",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -224,
+        624
+      ],
+      "id": "3aebd35b-6220-4661-a120-71f2e362786c",
+      "name": "HTTP Request38"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Edit Fields12').first().json.URL }}/leads",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Edit Fields12').first().json.Token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"name\": \"{{ $('Edit Fields').first().json['Nome Completo'] }}\",\n    \"pipeline_id\": {{ $('Edit Fields12').first().json['pipeline - funil de vendas'] }},\n    \"status_id\": {{ $('Edit Fields12').first().json['Stage - Respondi'] }},\n    \"custom_fields_values\": [\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Qual região do corpo você deseja tatuar?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Qual região do corpo você deseja tatuar?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.utm_content }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json.utm_content }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.utm_medium }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json.utm_medium }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.utm_campaign }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json.utm_campaign }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.utm_source }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json.utm_source }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json.utm_term }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json.utm_term }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Você já tem tatuagens?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Você já tem tatuagens?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Qual sua motivação para fazer essa tatuagem agora?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Qual sua motivação para fazer essa tatuagem agora?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Qual dessas opções melhor descreve seu momento atual?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Qual dessas opções melhor descreve seu momento atual?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Você tem disponibilidade para vir até o atelier no Rio de Janeiro?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Você tem disponibilidade para vir até o atelier no Rio de Janeiro?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Como você conheceu o trabalho do especialista?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Como você conheceu o trabalho do especialista?'] }}\" }\n        ]\n      },\n      {\n        \"field_id\": {{ $('Edit Fields12').first().json['Quanto tempo você já conhece o especialista?'] }},\n        \"values\": [\n          { \"value\": \"{{ $('Edit Fields').first().json['Quanto tempo você já conhece o especialista?'] }}\" }\n        ]\n      }\n    ],\n    \"_embedded\": {\n      \"contacts\": [\n        { \"id\": {{ $json.id }} }\n      ]\n    }\n  }\n]\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -32,
+        432
+      ],
+      "id": "0abf6527-49cd-4212-bba6-24bd46040724",
+      "name": "HTTP Request4"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = items[0].json.body.respondent;\n\nfunction cleanText(text) {\n  if (!text) return \"\";\n  return String(text).replace(/\\n/g, \" \").replace(/\\s+/g, \" \").trim();\n}\n\nfunction formatAnswer(answer) {\n  if (typeof answer !== \"object\") return answer;\n\n  if (Array.isArray(answer)) return answer.join(\", \");\n\n  if (answer.phone) return `${answer.country}${answer.phone}`;\n\n  if (answer.street) {\n    return `${answer.street}, ${answer.number} - ${answer.neighborhood} - ${answer.city}/${answer.state} CEP:${answer.cep}`;\n  }\n\n  return JSON.stringify(answer);\n}\n\nlet result = {};\n\n// perguntas\ndata.raw_answers.forEach(item => {\n  const question = cleanText(item.question.question_title);\n  const answer = formatAnswer(item.answer);\n\n  result[question] = cleanText(answer);\n});\n\n// utms\nconst utm = data.respondent_utms;\n\nresult.utm_source = utm.utm_source || \"\";\nresult.utm_medium = utm.utm_medium || \"\";\nresult.utm_campaign = utm.utm_campaign || \"\";\nresult.utm_term = utm.utm_term || \"\";\nresult.utm_content = utm.utm_content || \"\";\n\n// transformar em STRING JSON\nreturn [\n  {\n    json: {\n      body: JSON.stringify(result)\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3264,
+        544
+      ],
+      "id": "3aae7480-753f-4944-87d5-00daf8e65f84",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/hooks/SEU_LOCATION_ID_GHL/webhook-trigger/SEU_HOOK_ID_1",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.body }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -3008,
+        208
+      ],
+      "id": "c949730e-d87b-474b-8b50-727f5ca56602",
+      "name": "HTTP Request7"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $('Webhook').item.json;\n\nlet data = input.body;\n\n// se vier como string\nif (typeof data === \"string\") {\n  data = JSON.parse(data);\n}\n\n// validação\nif (!data.respondent) {\n  throw new Error(\"Não encontrei data.respondent\");\n}\n\nconst answers = data.respondent.answers || {};\n\n// tradução dos campos\nconst fieldMap = {\n  \"Full name\": \"Nome completo\",\n  \"WhatsApp number\": \"WhatsApp (com DDD)\",\n  \"E-mail address\": \"E-mail\",\n  \"Which area of your body would you like to get tattooed?\":\n    \"Qual região do corpo você deseja tatuar?\",\n  \"Do you already have any tattoos?\":\n    \"Você já tem tatuagens?\",\n  \"What’s your motivation for getting this tattoo now?\":\n    \"Qual sua motivação para fazer essa tatuagem agora?\",\n  \"Which of these options best describes your current moment?\":\n    \"Qual dessas opções melhor descreve seu momento atual?\",\n  \"Are you already familiar with the average cost of especialista’s creations, and do you feel it fits within your current reality?\":\n    \"Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?\",\n  \"Are you available to come to the studio in Rio de Janeiro?\":\n    \"Você tem disponibilidade para vir até o atelier no Rio de Janeiro?\",\n  \"How did you discover especialista’s work?\":\n    \"Como você conheceu o trabalho do especialista?\",\n  \"How long have you known especialista?\":\n    \"Quanto tempo você já conhece o especialista?\"\n};\n\n// tradução das regiões\nconst regionMap = {\n  \"Arm – outer shoulder\": \"Braço\",\n  \"Back\": \"Costas\",\n  \"Chest\": \"Peito\",\n  \"Leg\": \"Perna\",\n  \"Outro\": \"Outro\"\n};\n\nconst newAnswers = {};\n\nfor (const key of Object.keys(answers)) {\n\n  const newKey = fieldMap[key] || key;\n\n  let value = answers[key];\n\n  // traduz região do corpo\n  if (newKey === \"Qual região do corpo você deseja tatuar?\") {\n    value = regionMap[value] || value;\n  }\n\n  newAnswers[newKey] = value;\n}\n\n// substitui answers\ndata.respondent.answers = newAnswers;\n\n// retorna resultado\nreturn [\n  {\n    json: {\n      body: data\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2784,
+        880
+      ],
+      "id": "5998b793-30fa-49f2-a412-71d18fbfe33e",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/hooks/SEU_LOCATION_ID_GHL/webhook-trigger/SEU_HOOK_ID_2",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.body }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -2464,
+        912
+      ],
+      "id": "505be7f6-5ba6-4b39-8e9b-a32499386a1c",
+      "name": "HTTP Request8"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "SEU_ID_DA_PLANILHA_GOOGLE",
+          "mode": "list",
+          "cachedResultName": "Sua aba ou planilha",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA_GOOGLE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=SEU_GID_DA_ABA",
+          "mode": "list",
+          "cachedResultName": "Sua aba ou planilha",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA_GOOGLE/edit#gid=SEU_GID_DA_ABA"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Nome completo": "={{ $json['Full name'] }}",
+            "WhatsApp (com DDD)": "={{ $json['WhatsApp number'] }}",
+            "E-mail": "={{ $json['E-mail'] }}",
+            "Qual região do corpo você deseja tatuar?": "={{ $json['Which area of your body would you like to get tattooed?'] }}",
+            "Você já tem tatuagens?": "={{ $json['Do you already have any tattoos?'] }}",
+            "Qual sua motivação para fazer essa tatuagem agora?": "={{ $json['What’s your motivation for getting this tattoo now?'] }}",
+            "Qual dessas opções melhor descreve seu momento atual?": "={{ $json['Which of these options best describes your current moment?'] }}",
+            "Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?": "={{ $json['Are you already familiar with the average cost of especialista’s creations, and do you feel it fits within your current reality?'] }}",
+            "Você tem disponibilidade para vir até o atelier no Rio de Janeiro?": "={{ $json['Are you available to come to the studio in Rio de Janeiro?'] }}",
+            "Como você conheceu o trabalho do especialista?": "={{ $json['How did you discover especialista’s work?'] }}",
+            "utm_source": "={{ $json.utm_source }}",
+            "utm_medium": "={{ $json.utm_medium }}",
+            "utm_campaign": "={{ $json.utm_campaign }}",
+            "utm_term": "={{ $json.utm_term }}",
+            "utm_content": "={{ $json.utm_content }}",
+            "gclid": "={{ $json.gclid }}",
+            "fbclid": "={{ $json.fbclid }}",
+            "Quanto tempo você já conhece o especialista?": "={{ $json['Quanto tempo você conhece o especialista'] }}",
+            "Data": "={{ $json.Date }}",
+            "ID": "={{ $('Webhook').item.json.body.respondent.respondent_id }}",
+            "Pontuação": "0"
+          },
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -3136,
+        112
+      ],
+      "id": "0a59e5ae-1f1f-48db-b01c-95f3568f49f3",
+      "name": "Google Sheets2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SUA_CREDENCIAL_ID",
+          "name": "[Reconfigurar] Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "85540639-5ac5-498b-9190-65817a7d315a",
+              "name": "Date",
+              "value": "={{ $json.body.respondent.date }}",
+              "type": "string"
+            },
+            {
+              "id": "4d67c058-5eb1-4d94-98be-5d3cce526f51",
+              "name": "Full name",
+              "value": "={{ $json.body.respondent.answers['Nome completo'] }}",
+              "type": "string"
+            },
+            {
+              "id": "45ff65b6-3f79-4cf4-82e7-3e72752e418a",
+              "name": "E-mail",
+              "value": "={{ $json.body.respondent.answers['E-mail'] }}",
+              "type": "string"
+            },
+            {
+              "id": "1781119d-ed1d-4ebe-b2fc-d8d413b4bf21",
+              "name": "WhatsApp number",
+              "value": "={{ $json.body.respondent.answers['WhatsApp (com DDD)'] }}",
+              "type": "string"
+            },
+            {
+              "id": "afe7f974-16ff-4cef-af5a-520bd12556b8",
+              "name": "Which area of your body would you like to get tattooed?",
+              "value": "={{ $json.body.respondent.answers['Qual região do corpo você deseja tatuar?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "a2a5d2b6-7bfb-468a-8bfe-466fe10fabb5",
+              "name": "Do you already have any tattoos?",
+              "value": "={{ $json.body.respondent.answers['Você já tem tatuagens?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "ee61b75a-10f1-424e-8990-f69afa49110c",
+              "name": "What’s your motivation for getting this tattoo now?",
+              "value": "={{ $json.body.respondent.answers['Qual sua motivação para fazer essa tatuagem agora?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "322f0729-4c5d-4573-8b36-7b6139b0275c",
+              "name": "Which of these options best describes your current moment?",
+              "value": "={{ $json.body.respondent.answers['Qual dessas opções melhor descreve seu momento atual?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "b93ef5ca-25e3-4863-b382-2837952d79e2",
+              "name": "Are you already familiar with the average cost of especialista’s creations, and do you feel it fits within your current reality?",
+              "value": "={{ $json.body.respondent.answers['Você já conhece o valor médio das criações com o especialista e considera que isso está dentro da sua realidade hoje?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f638e5b2-57a1-4f3f-9c08-cd4808b16bda",
+              "name": "Are you available to come to the studio in Rio de Janeiro?",
+              "value": "={{ $json.body.respondent.answers['Você tem disponibilidade para vir até o atelier no Rio de Janeiro?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "d9c7059f-4306-4a22-9fce-14236f611199",
+              "name": "How did you discover especialista’s work?",
+              "value": "={{ $json.body.respondent.answers['Como você conheceu o trabalho do especialista?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f67c80a2-6667-4b81-ac88-e51818977576",
+              "name": "utm_source",
+              "value": "={{ $json.body.respondent.respondent_utms.utm_source }}",
+              "type": "string"
+            },
+            {
+              "id": "facbb9e6-fa4f-408b-8fc5-60ea6f746741",
+              "name": "utm_medium",
+              "value": "={{ $json.body.respondent.respondent_utms.utm_medium }}",
+              "type": "string"
+            },
+            {
+              "id": "77c47f97-fae1-492a-94a7-8caf2d028da1",
+              "name": "utm_campaign",
+              "value": "={{ $json.body.respondent.respondent_utms.utm_campaign }}",
+              "type": "string"
+            },
+            {
+              "id": "48120f71-d3a4-4612-a875-6b56bc46ac2d",
+              "name": "utm_term",
+              "value": "={{ $json.body.respondent.respondent_utms.utm_term }}",
+              "type": "string"
+            },
+            {
+              "id": "12d1c07d-0e1b-4d3a-b821-a5de0f9768a5",
+              "name": "utm_content",
+              "value": "={{ $json.body.respondent.respondent_utms.utm_content }}",
+              "type": "string"
+            },
+            {
+              "id": "fb2adcc6-9336-4404-85e6-7ae1ce9c41e6",
+              "name": "ID",
+              "value": "={{ $json.body.respondent.respondent_id }}",
+              "type": "string"
+            },
+            {
+              "id": "4a54c45a-78a3-4215-841a-1d1bec71eb80",
+              "name": "Score",
+              "value": "={{ $json.body.respondent.score }}",
+              "type": "string"
+            },
+            {
+              "id": "f90c00b6-2f60-4f6e-a447-4ece6614e0ef",
+              "name": "gclid",
+              "value": "={{ $json.body.respondent.respondent_utms.gclid }}",
+              "type": "string"
+            },
+            {
+              "id": "29ddcc33-c26c-4296-94e8-8c14910d2dd6",
+              "name": "fbclid",
+              "value": "={{ $json.body.respondent.respondent_utms.fbclid }}",
+              "type": "string"
+            },
+            {
+              "id": "c25ba6fc-ae34-4e9d-9d94-408d0cecbae6",
+              "name": "Quanto tempo você conhece o especialista",
+              "value": "={{ $json.body.respondent.answers['Quanto tempo você já conhece o especialista?'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3392,
+        256
+      ],
+      "id": "95c8f776-e3ae-464a-93d5-721e5899c0f2",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.datacrazy.io/v1/crm/api/crm/flows/webhooks/SEU_FLOW_ID/SEU_WEBHOOK_TOKEN_DATACRAZY",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($('Webhook').item.json.body) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -2752,
+        160
+      ],
+      "id": "c7547400-d75e-47e4-b75b-33aaf1a5ab95",
+      "name": "HTTP Request9"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.datacrazy.io/v1/crm/api/crm/flows/webhooks/SEU_FLOW_ID/SEU_WEBHOOK_TOKEN_DATACRAZY",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $('Code in JavaScript').item.json.body }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -2224,
+        896
+      ],
+      "id": "4895dc14-69d0-444a-8f4c-ee1ad0fc4893",
+      "name": "HTTP Request10"
+    },
+    {
+      "parameters": {
+        "content": "## README_SETUP — Respondi -> Vendas (Kommo + Datacrazy + GoHighLevel)\n\nFluxo de qualificacao/distribuicao de leads: recebe respostas de um formulario (Respondi)\npor webhook, registra no Google Sheets, cria/atualiza o lead no CRM Kommo e dispara\nwebhooks para Datacrazy e GoHighLevel (LeadConnector) conforme a rota (switch/if).\n\n**1. Credencial**\n- Google Sheets: reconfigure `[Reconfigurar] Google Sheets` (OAuth2) com a sua conta.\n\n**2. Autenticacao Kommo**\n- `SEU_SUBDOMINIO.kommo.com` -> URL da sua conta (nos Edit Fields3/12/13).\n- `SEU_TOKEN_KOMMO_AQUI` -> token de API (campo Token dos mesmos Edit Fields).\n\n**3. Webhooks de saida (trocar na URL de cada HTTP Request)**\n- Datacrazy: `SEU_FLOW_ID` + `SEU_WEBHOOK_TOKEN_DATACRAZY`.\n- GoHighLevel/LeadConnector: `SEU_LOCATION_ID_GHL` + `SEU_HOOK_ID_1` / `SEU_HOOK_ID_2`.\n\n**4. Outros placeholders**\n- `SEU_ID_DA_PLANILHA_GOOGLE` -> planilha (3 nos Sheets).\n- `SEU_WEBHOOK_PATH` / `SEU_WEBHOOK_ID` -> regerados ao salvar; cadastre no Respondi.\n- `SEU_ERROR_WORKFLOW_ID` (settings) -> seu workflow de erro, ou remova.\n\n**5. Ativar**\n- Teste com uma resposta real e so entao mude `active` para true.\n\nIMPORTANTE: token do Kommo, webhook tokens do Datacrazy e do GoHighLevel e a credencial\nGoogle que ja circularam devem ser REVOGADOS/REGERADOS nas plataformas. Placeholder NAO\ninvalida o segredo antigo.",
+        "height": 460,
+        "width": 620,
+        "color": 5
+      },
+      "name": "README_SETUP",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3944,
+        -776
+      ],
+      "id": "readme_setup"
+    },
+    {
+      "parameters": {
+        "content": "### ENTRADA — Webhook (Respondi)\nRecebe as respostas do formulario. Ajuste `SEU_WEBHOOK_PATH` e cadastre a URL no Respondi.",
+        "height": 180,
+        "width": 420,
+        "color": 4
+      },
+      "name": "Nota - Entrada",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3944,
+        -296
+      ],
+      "id": "nota_-_entrada"
+    },
+    {
+      "parameters": {
+        "content": "### KOMMO — Config + Contato/Lead\nNos Edit Fields3/12/13 guardam URL + Token do Kommo. Os HTTP Request buscam/criam\ncontatos e leads na API v4 com `Bearer {{ Token }}`. Troque subdominio e token.",
+        "height": 220,
+        "width": 460,
+        "color": 6
+      },
+      "name": "Nota - Kommo",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3484,
+        -296
+      ],
+      "id": "nota_-_kommo"
+    },
+    {
+      "parameters": {
+        "content": "### ROTEAMENTO — Switch / If\nDecide o destino do lead conforme a resposta (ex.: aluno x nao-aluno, faixa, interesse).\nAjuste as regras conforme sua operacao de vendas.",
+        "height": 200,
+        "width": 440,
+        "color": 3
+      },
+      "name": "Nota - Roteamento",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2984,
+        -296
+      ],
+      "id": "nota_-_roteamento"
+    },
+    {
+      "parameters": {
+        "content": "### SAIDAS — Datacrazy + GoHighLevel + Sheets\n- Google Sheets: registra a resposta (troque SEU_ID_DA_PLANILHA_GOOGLE).\n- Datacrazy: HTTP para o webhook do fluxo (SEU_FLOW_ID / SEU_WEBHOOK_TOKEN_DATACRAZY).\n- GoHighLevel (LeadConnector): HTTP para os hooks (SEU_LOCATION_ID_GHL / SEU_HOOK_ID_*).",
+        "height": 240,
+        "width": 460,
+        "color": 7
+      },
+      "name": "Nota - Saidas",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2504,
+        -296
+      ],
+      "id": "nota_-_saidas"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields12": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code24": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request27",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request5": {
+      "main": [
+        [
+          {
+            "node": "Code5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code5": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code6": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request6": {
+      "main": [
+        [
+          {
+            "node": "Code6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code25",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request28",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code25": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request35",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If9": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request33",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code26": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request36",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request28": {
+      "main": [
+        [
+          {
+            "node": "Code27",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code27": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request33": {
+      "main": [
+        [
+          {
+            "node": "Code26",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request27": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields13": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request30": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request30",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Code28",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request31",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code28": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request38",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If10": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request34",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code29": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request37",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request31": {
+      "main": [
+        [
+          {
+            "node": "Code30",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code30": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request32",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request34": {
+      "main": [
+        [
+          {
+            "node": "Code29",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        []
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields14": {
+      "main": [
+        [
+          {
+            "node": "Code24",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request35": {
+      "main": [
+        [
+          {
+            "node": "If9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields15": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request38": {
+      "main": [
+        [
+          {
+            "node": "If10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request7": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request8": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "SEU_ERROR_WORKFLOW_ID"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [],
+  "pinData": {}
+}
