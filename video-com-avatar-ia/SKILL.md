@@ -1,8 +1,8 @@
 ---
-name: ai-avatar-video
+name: video-com-avatar-ia
 description: Produce vertical 9:16 talking-head and UGC product reels of a REAL person's AI avatar ("yap content", AI influencer, mentor or founder videos) that speak with that person's own cloned voice (ElevenLabs), with a locked identity, one consistent scene, five camera angles, natural-paced voice synced to the lips, lower-third cards (chat print, steps, quote), an end card with the CTA and low background music. Use when someone sends their photos/video + voice files + scripts and asks for avatar/influencer videos, UGC/product videos with a coupon, a batch of reels, a character sheet for a consistent AI face, or fixes to such videos: face not matching, eyebrows/glasses/earrings wrong, aged look or wrinkles, background swap, voice out of sync or speeding up/slowing down, mispronounced words, clicks, cut-off CTA.
 ---
-# AI Avatar Video
+# Vídeo com Avatar de IA
 
 Entrega: **um MP4 por roteiro**, 9:16, 720×1280, 24 fps, voz ORIGINAL da pessoa no ritmo dela, na boca do avatar.
 Siga as etapas na ordem. Leia o arquivo de `references/` indicado em cada etapa ANTES de executá-la.

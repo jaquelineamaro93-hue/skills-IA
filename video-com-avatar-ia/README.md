@@ -1,4 +1,4 @@
-# AI Avatar Video — skill para Claude Code e Codex
+# Vídeo com Avatar de IA — skill para Claude Code e Codex
 
 Transforme roteiros em reels verticais e vídeos UGC de produto com o **seu avatar de IA falando com a sua própria voz clonada**:
 rosto travado, 5 ângulos de câmera, cenário único, a sua voz original no seu ritmo e na boca do avatar,
@@ -43,9 +43,9 @@ Marque tudo antes de rodar a skill. Contas e créditos de terceiros são pagos �
 - [ ] **ffmpeg** — `brew install ffmpeg` (Mac) · `sudo apt install ffmpeg` (Linux) · `winget install ffmpeg` (Windows)
 - [ ] **Rubber Band** (linha de comando) — `brew install rubberband` · `sudo apt install rubberband-cli`
 - [ ] **Fontes Noto** (opcional; sem elas a skill usa uma fonte reserva) — `sudo apt install fonts-noto-core`
-- [ ] **Pacotes Python** — `pip install -r ai-avatar-video/requirements.txt`
+- [ ] **Pacotes Python** — `pip install -r video-com-avatar-ia/requirements.txt`
 - [ ] **~2 GB livres** (modelo de transcrição de ~460 MB, baixado uma vez, e os vídeos de trabalho)
-- [ ] Rodar `python3 ai-avatar-video/scripts/check_env.py --download-model` e ver **READY**
+- [ ] Rodar `python3 video-com-avatar-ia/scripts/check_env.py --download-model` e ver **READY**
 
 ### Materiais da pessoa
 - [ ] **4 a 10 fotos reais** e recentes do rosto: frente, 3/4 dos dois lados, perfil, sorrindo e séria, luz natural, sem filtro
@@ -59,16 +59,16 @@ Marque tudo antes de rodar a skill. Contas e créditos de terceiros são pagos �
 ## Instalação
 ```bash
 # Claude Code (pessoal, todos os projetos)
-cp -r ai-avatar-video ~/.claude/skills/
+cp -r video-com-avatar-ia ~/.claude/skills/
 # ou só num projeto
-cp -r ai-avatar-video <seu-projeto>/.claude/skills/
+cp -r video-com-avatar-ia <seu-projeto>/.claude/skills/
 # Codex
-cp -r ai-avatar-video <seu-projeto>/.agents/skills/
+cp -r video-com-avatar-ia <seu-projeto>/.agents/skills/
 
 # dependências
 sudo apt install ffmpeg rubberband-cli fonts-noto-core     # macOS: brew install ffmpeg rubberband
-pip install -r ai-avatar-video/requirements.txt
-python3 ai-avatar-video/scripts/check_env.py --download-model
+pip install -r video-com-avatar-ia/requirements.txt
+python3 video-com-avatar-ia/scripts/check_env.py --download-model
 ```
 Gerar pelo Claude com o Artlist: Configurações → Conectores → Adicionar conector personalizado → `https://mcp.artlist.io/mcp`.
 

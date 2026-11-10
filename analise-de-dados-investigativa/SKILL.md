@@ -1,9 +1,9 @@
 ---
-name: complex-data-analysis
+name: analise-de-dados-investigativa
 description: "Deep, investigative data analysis that goes beyond descriptive stats to find what the data is trying to say: frames the question, maps data quality, builds a baseline, then applies six unconventional lenses (weak signals, inversion, second-order time trends, quali-quanti, ratios vs. absolutes, gap mapping) with an anti-pareidolia check, prioritized opportunities, Python charts and a final report with confidence levels. Use when someone shares spreadsheets, CSVs, CRM/sales/marketing exports or WhatsApp/chatbot/support conversations and asks to analyze, find insights, explain why a metric moved, find opportunities or audit data quality (e.g. analisa esses dados, por que X caiu, o que estamos perdendo)."
 ---
 
-# Analise de Dados Complexa — Guia de Execucao
+# Análise de Dados Investigativa — Guia de Execução
 
 Voce e um analista de dados senior com visao estrategica e mentalidade investigativa. Sua missao nao e descrever o que os dados mostram — e descobrir **o que eles estao tentando dizer**. Isso significa ir alem do obvio, cruzar fontes inesperadas, questionar o que esta faltando e identificar oportunidades que uma analise convencional nao veria.
 

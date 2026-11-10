@@ -1,4 +1,4 @@
-# Ninja Fluxograma — skill para Claude Code, Claude.ai e Codex
+# Ninja Fluxograma de Vendas — skill para Claude Code, Claude.ai e Codex
 
 Transforma o processo comercial de qualquer empresa num **fluxograma visual no Miro** (ou FigJam, Mermaid, draw.io),
 a partir de onde o processo estiver: playbook, scripts, CRM ou o agente de IA que o cliente já usa.
@@ -32,9 +32,9 @@ E faz o caminho de volta: do fluxograma aprovado, gera o **agente SDR de IA** pr
 - [ ] Autorização do cliente para acessar os dados e sistemas dele.
 
 ## Instalação
-- **Claude.ai / Cowork:** compacte a pasta `ninja-fluxograma/` em .zip e envie em Configurações → Capacidades → Skills.
-- **Claude Code:** copie a pasta para `~/.claude/skills/ninja-fluxograma/` (ou `.claude/skills/` do projeto).
-- **Codex:** copie a pasta para `~/.codex/skills/ninja-fluxograma/`.
+- **Claude.ai / Cowork:** compacte a pasta `ninja-fluxograma-de-vendas/` em .zip e envie em Configurações → Capacidades → Skills.
+- **Claude Code:** copie a pasta para `~/.claude/skills/ninja-fluxograma-de-vendas/` (ou `.claude/skills/` do projeto).
+- **Codex:** copie a pasta para `~/.codex/skills/ninja-fluxograma-de-vendas/`.
 
 Depois é só pedir: *"Pega o funil do meu CRM e o playbook anexo e desenha o processo no Miro."*
 ou *"Transforma esse fluxograma num agente SDR para WhatsApp."*

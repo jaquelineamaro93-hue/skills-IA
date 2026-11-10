@@ -1,4 +1,4 @@
-# Sales Plugin
+# Plugin Vendas
 
 A sales plugin designed for Claude Cowork and Claude Code. It helps with the whole sales day: prepping calls, summarizing and following up, researching accounts, working deals, reviewing pipeline and writing the forecast. It works with the tools your team already uses (your CRM, email, calendar, chat and call recorder) or with files you upload when nothing is connected.
 
@@ -6,7 +6,7 @@ A sales plugin designed for Claude Cowork and Claude Code. It helps with the who
 
 ```bash
 claude plugin marketplace add jaquelineamaro93-hue/skills-IA
-claude plugin install sales@skills-ia
+claude plugin install vendas@skills-ia
 ```
 
 ## What's new in 2.0
@@ -20,7 +20,7 @@ claude plugin install sales@skills-ia
 
 ## Skills
 
-Skills run when your request matches, or directly by name (for example `/sales:call-summary`).
+Skills run when your request matches, or directly by name (for example `/vendas:call-summary`).
 
 ### Your day
 
@@ -88,7 +88,7 @@ Skills run when your request matches, or directly by name (for example `/sales:c
 ### After a call
 
 ```
-/sales:call-summary
+/vendas:call-summary
 ```
 
 Paste your notes or transcript, or name the call if your call recorder is connected. You get a summary, a follow-up email draft, a team summary and proposed CRM updates. Nothing is written to the CRM or sent until you say so.

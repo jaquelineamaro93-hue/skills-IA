@@ -1,4 +1,4 @@
-# WhatsApp Utility Templates — skill para Claude Code, Claude.ai e Codex
+# Templates de WhatsApp Aprovados — skill para Claude Code, Claude.ai e Codex
 
 Templates **UTILITY** da WhatsApp Business Platform (Meta) feitos para serem **aprovados na primeira submissão**:
 confirmação de pedido, envio, agendamento, pagamento, boleto, resultado de exame, acesso a plataforma e mais.
@@ -23,9 +23,9 @@ confirmação de pedido, envio, agendamento, pagamento, boleto, resultado de exa
 - [ ] O evento que dispara a mensagem, os dados que mudam por cliente e o nome do negócio.
 
 ## Instalação
-- **Claude.ai / Cowork:** compacte a pasta `whatsapp-utility-templates/` em .zip e envie em Configurações → Capacidades → Skills.
-- **Claude Code:** copie a pasta para `~/.claude/skills/whatsapp-utility-templates/` (ou `.claude/skills/` do projeto).
-- **Codex:** copie a pasta para `~/.codex/skills/whatsapp-utility-templates/`.
+- **Claude.ai / Cowork:** compacte a pasta `templates-whatsapp-aprovados/` em .zip e envie em Configurações → Capacidades → Skills.
+- **Claude Code:** copie a pasta para `~/.claude/skills/templates-whatsapp-aprovados/` (ou `.claude/skills/` do projeto).
+- **Codex:** copie a pasta para `~/.codex/skills/templates-whatsapp-aprovados/`.
 
 Depois é só pedir: *"Cria um template de confirmação de consulta com botões confirmar e remarcar."*
 

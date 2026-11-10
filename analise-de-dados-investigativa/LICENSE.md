@@ -1,4 +1,4 @@
-# Licença de uso — Complex Data Analysis
+# Licença de uso — Análise de Dados Investigativa
 
 Copyright (c) 2026 Jaqueline Amaro. Todos os direitos reservados.
 

@@ -1,9 +1,9 @@
 ---
-name: ninja-fluxograma
+name: ninja-fluxograma-de-vendas
 description: "Turns any company's sales process into a visual flowchart board (Miro, FigJam, Mermaid or draw.io) and, when asked, into a ready-to-configure AI SDR agent. Reads the process from wherever it lives: sales documents (playbook, deck, scripts, call transcripts), CRM pipeline exports or connectors (stages, fields, loss reasons), or an existing chatbot/AI agent exported as JSON or read from its API. Maps stages, questions, decisions, data captured, hand-offs and outcomes, draws them with consistent shapes, flags gaps and bottlenecks, and can do the reverse: turn the approved flowchart into stage-by-stage agent instructions, agent prompt, fields and test conversations. Use when someone asks to map, draw, diagram or document a sales/qualification/pre-sales process, CRM pipeline, WhatsApp bot or AI agent flow (e.g. desenha o processo de vendas no Miro, transforma o funil do CRM em fluxograma, mapeia o fluxo do meu agente, cria um agente SDR a partir desse fluxo, audita meu bot)."
 ---
 
-# Ninja Fluxograma
+# Ninja Fluxograma de Vendas
 
 Entrega: **o processo comercial do cliente desenhado num quadro** (Miro, FigJam, Mermaid ou draw.io), com cada etapa,
 pergunta, decisão, dado capturado, transbordo e resultado. Opcional: o **agente SDR de IA** gerado a partir do fluxo.
@@ -67,7 +67,7 @@ Cada forma do quadro vira uma linha do Objetivo, na mesma ordem dos conectores.
 
 ## Fase 6 — Entregar
 ```
-# Ninja Fluxograma — [Empresa / Processo]
+# Ninja Fluxograma de Vendas — [Empresa / Processo]
 ## Link do quadro (ou imagem + código Mermaid / draw.io)
 ## Resumo do processo (antes, depois, etapas, cortes, resultados)
 ## Gargalos e melhorias sugeridas

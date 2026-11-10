@@ -1,4 +1,4 @@
-# Engineering Plugin
+# Plugin Engenharia
 
 A software engineering plugin designed for Claude Cowork and Claude Code. Helps with standups, code review, architecture decisions, incident response, debugging, and technical documentation. Works with any engineering team — standalone with your input, supercharged when you connect your source control, project tracker, and monitoring tools.
 
@@ -6,7 +6,7 @@ A software engineering plugin designed for Claude Cowork and Claude Code. Helps 
 
 ```bash
 claude plugin marketplace add jaquelineamaro93-hue/skills-IA
-claude plugin install engineering@skills-ia
+claude plugin install engenharia@skills-ia
 ```
 
 ## Commands

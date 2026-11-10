@@ -1,4 +1,4 @@
-# Licença de uso — WhatsApp Utility Templates
+# Licença de uso — Ninja Fluxograma de Vendas
 
 Copyright (c) 2026 Jaqueline Amaro. Todos os direitos reservados.
 
@@ -7,7 +7,7 @@ Copyright (c) 2026 Jaqueline Amaro. Todos os direitos reservados.
 2. **Proibido:** revender, sublicenciar, redistribuir, publicar ou compartilhar o pacote ou partes dele (inclusive
    em repositórios públicos, cursos ou outras skills), no todo ou modificado.
 3. **Resultados.** O que for produzido com a skill pertence a quem produziu, que responde pelo seu conteúdo e pelo
-   cumprimento das regras das plataformas usadas, incluindo as políticas da Meta para a WhatsApp Business Platform. A aprovação final de cada template é decisão da Meta.
+   cumprimento das regras das plataformas usadas, pelo acesso autorizado aos dados, sistemas e APIs dos seus clientes e pelo tratamento de dados pessoais conforme a LGPD.
 4. **Serviços de terceiros.** Ferramentas, APIs e plataformas citadas são contratadas à parte, sob os termos de cada
    fornecedor.
 5. **Garantia.** A skill é fornecida "no estado em que se encontra". Os resultados dependem dos modelos de IA e das

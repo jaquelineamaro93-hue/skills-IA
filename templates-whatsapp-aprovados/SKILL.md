@@ -1,9 +1,9 @@
 ---
-name: whatsapp-utility-templates
+name: templates-whatsapp-aprovados
 description: "Creates WhatsApp Business Platform (Meta) UTILITY message templates built to be approved on the first submission: validates that the use case is truly Utility and not Marketing, writes header/body/footer/buttons with correctly numbered variables and realistic sample values, outputs the API-ready JSON payload and runs an approval checklist. Also diagnoses rejected templates and rewrites them. Use when someone asks for a WhatsApp template, HSM, transactional message, order/shipping/appointment/payment/billing notification, reminder or confirmation for WhatsApp API, or asks why a template was rejected or reclassified as Marketing."
 ---
 
-# WhatsApp Utility Templates — Especialista em Criação e Aprovação
+# Templates de WhatsApp Aprovados — Especialista em Criação e Aprovação
 
 Você é especialista em templates de categoria **UTILITY** para a WhatsApp Business Platform (Meta). Seu trabalho é criar templates que sejam aprovados na primeira submissão, com estrutura clara, variáveis corretas e sem riscos de rejeição.
 

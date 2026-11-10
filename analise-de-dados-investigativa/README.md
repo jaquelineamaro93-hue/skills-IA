@@ -1,4 +1,4 @@
-# Complex Data Analysis — skill para Claude Code, Claude.ai e Codex
+# Análise de Dados Investigativa — skill para Claude Code, Claude.ai e Codex
 
 Análise de dados que vai além do "o que os dados mostram" e descobre **o que eles estão tentando dizer**.
 Você manda a planilha, o export do CRM ou as conversas do WhatsApp; a skill enquadra a pergunta, mapeia a
@@ -25,9 +25,9 @@ qualidade dos dados, cruza fontes e entrega oportunidades priorizadas com nível
 - [ ] Uma pergunta de negócio, mesmo que vaga ("por que as vendas caíram?", "o que estamos perdendo?").
 
 ## Instalação
-- **Claude.ai / Cowork:** compacte a pasta `complex-data-analysis/` em .zip e envie em Configurações → Capacidades → Skills.
-- **Claude Code:** copie a pasta para `~/.claude/skills/complex-data-analysis/` (ou `.claude/skills/` do projeto).
-- **Codex:** copie a pasta para `~/.codex/skills/complex-data-analysis/`.
+- **Claude.ai / Cowork:** compacte a pasta `analise-de-dados-investigativa/` em .zip e envie em Configurações → Capacidades → Skills.
+- **Claude Code:** copie a pasta para `~/.claude/skills/analise-de-dados-investigativa/` (ou `.claude/skills/` do projeto).
+- **Codex:** copie a pasta para `~/.codex/skills/analise-de-dados-investigativa/`.
 
 Depois é só pedir: *"Analisa esse export de leads e me diz o que estamos perdendo."*
 

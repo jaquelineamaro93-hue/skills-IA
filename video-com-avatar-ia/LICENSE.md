@@ -1,4 +1,4 @@
-# Licença de uso — AI Avatar Video
+# Licença de uso — Vídeo com Avatar de IA
 
 Copyright (c) 2026 Jaqueline Amaro. Todos os direitos reservados.
 
