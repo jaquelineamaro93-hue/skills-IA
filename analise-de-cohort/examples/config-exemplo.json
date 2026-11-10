@@ -1,0 +1,111 @@
+{
+  "empresa": "Empresa Exemplo (fictícia)",
+  "tipo": "recorrente",
+  "base": "examples/base-exemplo.csv",
+  "colunas": {
+    "cliente": "id_cliente",
+    "data": "mes",
+    "receita": "valor_mensal",
+    "quantidade": "conversas"
+  },
+  "dia_primeiro": false,
+  "segmentos": {
+    "canal": "canal",
+    "plano": "plano"
+  },
+  "faixas_ticket": [
+    {
+      "nome": "Até R$ 1.500",
+      "ate": 1500
+    },
+    {
+      "nome": "R$ 1.500 a R$ 4.000",
+      "ate": 4000
+    },
+    {
+      "nome": "R$ 4.000 a R$ 10.000",
+      "ate": 10000
+    },
+    {
+      "nome": "Acima de R$ 10.000",
+      "ate": null
+    }
+  ],
+  "margem": 0.7,
+  "meta_ltv_cac": 3,
+  "investimento": {
+    "2025-03-01": 18000,
+    "2025-04-01": 22000,
+    "2025-05-01": 15000,
+    "2025-06-01": 25000
+  },
+  "fontes": [
+    "Receita mensal por cliente: exportação do sistema de cobrança.",
+    "Canal e plano: CRM."
+  ],
+  "limitacoes": [
+    "Investimento de aquisição preenchido só para os 4 primeiros meses."
+  ],
+  "insights": [
+    {
+      "titulo": "Exemplo de insight",
+      "o_numero": "Retenção no mês 6: X%.",
+      "o_que_significa": "Explique em linguagem simples.",
+      "o_que_fazer": "Ação concreta."
+    }
+  ],
+  "metricas": {
+    "conversas": "conversas"
+  },
+  "definicao_ativo": "Cliente com mensalidade paga no mês.",
+  "jornada": {
+    "titulo": "Jornada do cliente depois da compra (exemplo)",
+    "etapas": [
+      {
+        "nome": "Boas-vindas e kickoff",
+        "periodo": "Semana 0",
+        "ciclo": "ASSINOU",
+        "campos": {
+          "Pontos de contato": "E-mail de boas-vindas, reunião de kickoff",
+          "Momento da verdade": "A primeira reunião acontecer na data prometida",
+          "Métrica": "Dias entre assinatura e kickoff"
+        }
+      },
+      {
+        "nome": "Configuração",
+        "periodo": "Semanas 1 a 4",
+        "ciclo": "ATIVOU",
+        "campos": {
+          "Dor principal": "Não saber por onde começar",
+          "Métrica": "% que concluiu a configuração"
+        }
+      },
+      {
+        "nome": "Primeiro resultado",
+        "periodo": "Mês 1 a 2",
+        "ciclo": "USANDO",
+        "campos": {
+          "Momento da verdade": "Mostrar um número para o chefe",
+          "Métrica": "% com primeiro resultado em 60 dias"
+        }
+      },
+      {
+        "nome": "Uso recorrente",
+        "periodo": "Mês 3 a 5",
+        "ciclo": "EM RISCO",
+        "campos": {
+          "Dor principal": "Troca de responsável no cliente",
+          "Métrica": "Retenção no mês 6"
+        }
+      },
+      {
+        "nome": "Renovação e expansão",
+        "periodo": "Mês 6 em diante",
+        "ciclo": "EXPANDE",
+        "campos": {
+          "Métrica": "Receita de expansão"
+        }
+      }
+    ]
+  }
+}

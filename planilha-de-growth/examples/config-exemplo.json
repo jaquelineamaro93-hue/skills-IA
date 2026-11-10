@@ -1,0 +1,22 @@
+{
+  "empresa": "Marca Exemplo (fictícia)",
+  "ano": 2027,
+  "responsaveis": ["Growth", "Conteúdo", "Mídia", "CRM", "Comercial"],
+  "imposto": 0.08,
+  "margem_minima": 0.5,
+  "espaco_cupom": 0.2,
+  "cupom_padrao": 0.15,
+  "produtos": [
+    {"nome": "Granola Tradicional 300g", "materia_prima": 6.10, "embalagem": 2.40, "mao_de_obra": 1.80, "frete": 0.60, "preco_final": 34.90},
+    {"nome": "Granola Cacau 300g", "materia_prima": 7.30, "embalagem": 2.40, "mao_de_obra": 1.80, "frete": 0.60, "preco_final": 29.90},
+    {"nome": "Kit 3 Granolas", "materia_prima": 20.10, "embalagem": 5.20, "mao_de_obra": 4.50, "frete": 1.50, "preco_final": 94.90}
+  ],
+  "concorrentes": [
+    {"marca": "Concorrente A", "produto": "Granola tradicional", "tamanho": 250, "unidade": "g", "preco": 26.90},
+    {"marca": "Concorrente B", "produto": "Granola zero açúcar", "tamanho": 400, "unidade": "g", "preco": 39.90}
+  ],
+  "eventos_internos": [
+    {"data": "2027-03-01", "nome": "Lançamento da linha nova"},
+    {"data": "2027-08-20", "nome": "Aniversário da marca"}
+  ]
+}
