@@ -1,0 +1,8 @@
+{
+  "name": "skills-ia",
+  "owner": { "name": "Jaqueline Amaro" },
+  "plugins": [
+    { "name": "sales", "source": "./sales-plugin", "description": "Vendas: prep de calls, follow-up, contas, deals, pipeline e forecast com o seu CRM, e-mail e agenda." },
+    { "name": "engineering", "source": "./engineering-plugin", "description": "Engenharia: standup, code review, arquitetura, debug, incidentes e documentação técnica." }
+  ]
+}
