@@ -1,4 +1,4 @@
-# Licença de uso — Ninja Fluxograma de Vendas
+# Licença de uso — Ninja Fluxograma
 
 Copyright (c) 2026 Jaqueline Amaro. Todos os direitos reservados.
 

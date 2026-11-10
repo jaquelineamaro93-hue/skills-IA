@@ -1,10 +1,42 @@
-# Briefing para construir o agente SDR
+# Briefing para mapear um processo
 
-Entregue este questionário quando a pessoa ainda não tem material, ou para o time da empresa preencher.
-Adapte os exemplos ao setor dela. Avise que pode mandar materiais prontos (deck, playbook, scripts, gravações de
-calls) em vez de redigitar.
+Entregue este questionário quando a pessoa ainda não tem o processo documentado. Comece pela **Parte A** (vale para
+qualquer processo). Use a **Parte B** só se o objetivo for criar um agente SDR de vendas.
+Avise que pode mandar materiais prontos (planilhas, prints da ferramenta, manuais, gravações) em vez de redigitar.
 
 ---
+
+# Parte A — Qualquer processo
+
+## A1. O processo
+- Nome do processo e área responsável.
+- O que dispara o processo (um evento, uma data, um pedido)?
+- Qual é o resultado esperado? Quais outros finais existem (cancelamento, perda, escalonamento)?
+
+## A2. Quem participa
+- Pessoas, times e sistemas envolvidos, e o papel de cada um.
+
+## A3. Passo a passo de hoje
+- Liste as etapas na ordem, como acontecem de verdade (não como deveriam).
+- Em cada etapa: quem faz, em qual ferramenta, quanto tempo leva.
+
+## A4. Decisões e exceções
+- Onde alguém decide algo? Com qual critério?
+- O que acontece quando a pessoa não responde, o prazo estoura ou dá erro?
+
+## A5. Comunicação
+- O que o cliente ou colaborador recebe em cada etapa (mensagem, e-mail, ligação) e por qual canal.
+- Lifecycle: quais réguas existem, com que gatilho, espera e regra de saída.
+
+## A6. Medição
+- Quais números vocês acompanham? Onde mais gente para ou desiste?
+
+## A7. Dores
+- O que mais incomoda hoje nesse processo? O que você mudaria primeiro?
+
+---
+
+# Parte B — Agente SDR de vendas
 
 ## 1. Empresa (obrigatório)
 - Nome fantasia, site, setor, região atendida.

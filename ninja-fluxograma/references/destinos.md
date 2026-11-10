@@ -14,6 +14,8 @@
 | Ponto a confirmar / gargalo | Nota adesiva | amarelo claro | `%% texto` |
 
 Layout:
+- Processo com várias áreas ou canais: uma **raia** (faixa horizontal) por participante (cliente, time, sistema) ou por canal (e-mail, WhatsApp, push). No Mermaid, use um `subgraph` por raia.
+- Espera ou prazo: forma de relógio/nota com o tempo escrito ("espera 24h").
 - Da esquerda para a direita, na ordem do funil. Caminho feliz em linha reta no alto.
 - Desvios e desqualificações descem a partir do ponto que os originou.
 - Etapas reativas (sem ordem fixa): um assunto por coluna, de cima para baixo.

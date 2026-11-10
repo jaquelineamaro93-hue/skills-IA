@@ -1,6 +1,6 @@
 # Fontes de dados
 
-O processo comercial do cliente costuma estar espalhado. Use todas as fontes disponíveis e cruze: quando duas fontes
+O processo do cliente costuma estar espalhado. Use todas as fontes disponíveis e cruze: quando duas fontes
 discordam (o playbook diz 5 etapas, o CRM tem 7), isso é um achado para o quadro.
 
 ## 1. Documentos
@@ -26,6 +26,23 @@ Como obter:
 - **Export** (CSV/XLSX) de negócios e da configuração do funil: peça para a pessoa exportar.
 - **Prints** da configuração do funil também servem.
 - Com export de negócios, calcule por etapa: volume, conversão para a próxima e tempo médio. Gargalo vira nota no quadro.
+
+## 2b. Ferramenta de automação e lifecycle
+HubSpot, RD Station, Salesforce Marketing Cloud, Braze, Customer.io, ActiveCampaign e parecidas.
+| Na ferramenta | Vira no quadro |
+|---|---|
+| Jornadas / workflows / réguas | Um quadro por jornada, com raias por canal |
+| Gatilhos e condições de entrada | O começo do fluxo |
+| Esperas (delays) | Formas de espera com o prazo escrito |
+| Ramos (if/else, testes A/B) | Losangos com todas as saídas |
+| Mensagens | Retângulos com o nome da mensagem e o canal |
+| Regras de saída e metas | Resultados e linhas de saída |
+Com relatório de envios e conversões, anote em cada mensagem a taxa de abertura ou de conversão e marque os gargalos.
+
+## 2c. Sistema de chamados e operação
+Zendesk, Freshdesk, Jira Service Management, ClickUp, planilhas de processo, fluxos de aprovação.
+Procure: filas, categorias, prioridades, SLAs por nível, regras de escalonamento, aprovadores e prazos.
+Com dados de chamados, calcule tempo médio por etapa e onde mais estoura o prazo.
 
 ## 3. Agente de IA ou chatbot que já existe
 - **Export JSON** da plataforma (fluxo, etapas, prompts, campos, ferramentas): é a melhor fonte.
