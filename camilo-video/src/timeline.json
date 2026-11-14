@@ -1,0 +1,87 @@
+{
+  "fps": 30,
+  "duration": 60.5,
+  "bpm": 120,
+  "voiceClips": {
+    "N1": { "file": "narrador_will.mp3", "in": 0.0, "out": 3.86, "speaker": "narrador", "text": "Dizem que na Colômbia todo mundo nasce com o ritmo nos pés." },
+    "N2": { "file": "narrador_will.mp3", "in": 4.3, "out": 8.42, "speaker": "narrador", "text": "Mas o Camilo encontrou o ritmo dele nas pancadas de um saco de boxe." },
+    "N3": { "file": "narrador_will.mp3", "in": 8.78, "out": 11.85, "speaker": "narrador", "text": "Sem luxo, sem treinador famoso," },
+    "N4": { "file": "narrador_will.mp3", "in": 12.16, "out": 14.85, "speaker": "narrador", "text": "aos 10 anos ele ainda não tem medalhas." },
+    "N5": { "file": "narrador_will.mp3", "in": 15.0, "out": 18.66, "speaker": "narrador", "text": "Mas tem uma coragem que não cabe no peito." },
+    "N6": { "file": "narrador_will.mp3", "in": 18.98, "out": 21.37, "speaker": "narrador", "text": "O cinturão ainda é grande demais pra ele." },
+    "N7": { "file": "narrador_will.mp3", "in": 21.66, "out": 24.6, "speaker": "narrador", "text": "E o sonho? Esse já é do tamanho certo!" },
+    "A1": { "file": "camilo_take_pt.mp3", "in": 1.02, "out": 2.87, "speaker": "camilo", "text": "Hoje eu vou conseguir." },
+    "A2": { "file": "camilo_take_pt.mp3", "in": 3.24, "out": 5.2, "speaker": "camilo", "text": "Um dia vão saber meu nome." },
+    "A4": { "file": "camilo_take_pt.mp3", "in": 8.29, "out": 10.06, "speaker": "camilo", "text": "Mais rápido, Camilo! Vai!" },
+    "A5": { "file": "camilo_take_pt.mp3", "in": 10.15, "out": 11.48, "speaker": "camilo", "text": "Só mais um!" },
+    "A6": { "file": "camilo_take_pt.mp3", "in": 11.48, "out": 13.19, "speaker": "camilo", "text": "Eu não vou desistir!" },
+    "B1": { "file": "camilo_take_es.mp3", "in": 0.0, "out": 2.16, "speaker": "camilo", "lang": "es", "text": "¡Eso, parce! ¡Conseguí!" },
+    "B2": { "file": "camilo_take_es.mp3", "in": 2.31, "out": 4.54, "speaker": "camilo", "lang": "es", "text": "¡Uy, no! ¿Otra vez?" },
+    "B3": { "file": "camilo_take_es.mp3", "in": 4.75, "out": 5.68, "speaker": "camilo", "lang": "es", "text": "¡Yo puedo!" },
+    "B5": { "file": "camilo_take_es.mp3", "in": 7.55, "out": 10.63, "speaker": "camilo", "lang": "es", "text": "Algún día... voy a ser campeón." }
+  },
+  "voiceEvents": [
+    { "id": "N1", "at": 0.7 },
+    { "id": "A1", "at": 5.1 },
+    { "id": "N2", "at": 7.9 },
+    { "id": "A2", "at": 12.6 },
+    { "id": "B2", "at": 18.5 },
+    { "id": "B3", "at": 20.95 },
+    { "id": "N3", "at": 22.6 },
+    { "id": "A4", "at": 26.0 },
+    { "id": "A5", "at": 28.0 },
+    { "id": "N4", "at": 30.1 },
+    { "id": "N5", "at": 33.2 },
+    { "id": "A6", "at": 37.7 },
+    { "id": "B1", "at": 41.0 },
+    { "id": "N6", "at": 44.0 },
+    { "id": "B5", "at": 47.0 },
+    { "id": "N7", "at": 50.8 }
+  ],
+  "scenes": [
+    { "id": "S1", "title": "O começo de um sonho", "start": 0.0, "end": 7.4, "image": "cena1" },
+    { "id": "S2", "title": "O menino do bairro", "start": 7.4, "end": 15.0, "image": "cena2" },
+    { "id": "S3", "title": "Treinar também é cair", "start": 15.0, "end": 22.2, "image": "cena5" },
+    { "id": "S4", "title": "O espelho rachado", "start": 22.2, "end": 29.7, "image": "cena5" },
+    { "id": "S5", "title": "A força de continuar", "start": 29.7, "end": 37.3, "image": "cena4" },
+    { "id": "S6", "title": "O golpe", "start": 37.3, "end": 43.5, "image": "cena3" },
+    { "id": "S7", "title": "O tamanho do sonho", "start": 43.5, "end": 55.0, "image": "cena2" },
+    { "id": "S8", "title": "Encerramento", "start": 55.0, "end": 60.5, "image": null }
+  ],
+  "beats": {
+    "ropeStart": 15.5,
+    "ropeEnd": 17.5,
+    "stumble": 18.0,
+    "airPunches": [23.0, 23.5, 26.3, 26.8, 27.3, 28.2],
+    "weaves": [24.0, 24.8, 25.6],
+    "punchWindup": 39.55,
+    "punchImpact": 40.2,
+    "musicCutStart": 40.05,
+    "musicResume": 40.75,
+    "gong": 55.6
+  },
+  "subtitles": [
+    { "voice": "N1", "lines": ["Dizem que na Colômbia todo mundo", "nasce com o *ritmo* nos pés."] },
+    { "voice": "A1", "lines": ["Hoje eu vou conseguir."] },
+    { "voice": "N2", "split": 1.9, "parts": [
+      { "lines": ["Mas o Camilo encontrou", "o *ritmo* dele"] },
+      { "lines": ["nas pancadas", "de um saco de boxe."] }
+    ] },
+    { "voice": "A2", "lines": ["Um dia vão saber", "meu *nome*."] },
+    { "voice": "B2", "lines": ["Ai, não! De novo?"] },
+    { "voice": "B3", "lines": ["Eu *consigo*!"] },
+    { "voice": "N3", "lines": ["Sem luxo,", "sem treinador famoso,"] },
+    { "voice": "A4", "lines": ["Mais rápido, Camilo! Vai!"] },
+    { "voice": "A5", "lines": ["Só mais um!"] },
+    { "voice": "N4", "lines": ["aos 10 anos ele ainda", "não tem medalhas."] },
+    { "voice": "N5", "lines": ["Mas tem uma *coragem*", "que não cabe no peito."] },
+    { "voice": "A6", "lines": ["Eu não vou *desistir*!"] },
+    { "voice": "B1", "lines": ["Isso, parceiro!", "*Consegui*!"] },
+    { "voice": "N6", "lines": ["O cinturão ainda é", "grande demais pra ele."] },
+    { "voice": "B5", "lines": ["Um dia...", "vou ser *campeão*."] },
+    { "voice": "N7", "split": 0.95, "parts": [
+      { "lines": ["E o sonho?"] },
+      { "lines": ["Esse já é do", "*tamanho certo*!"] }
+    ] }
+  ]
+}

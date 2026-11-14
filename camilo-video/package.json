@@ -1,0 +1,25 @@
+{
+  "name": "camilo-video",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Camilo | Episódio 1: O Tamanho do Sonho — produção em Remotion",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "render": "remotion render src/index.ts Camilo-Ep1-Vertical output/camilo-ep01-o-tamanho-do-sonho-1080x1920.mp4",
+    "render:horizontal": "remotion render src/index.ts Camilo-Ep1-Horizontal output/camilo-ep01-o-tamanho-do-sonho-1920x1080.mp4",
+    "thumb": "remotion still src/index.ts Camilo-Thumbnail output/camilo-ep01-thumbnail-1080x1920.png"
+  },
+  "dependencies": {
+    "@fontsource/anton": "^5.2.5",
+    "@fontsource/montserrat": "^5.2.5",
+    "@remotion/cli": "^4.0.543",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "remotion": "^4.0.543"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "typescript": "^5.6.3"
+  }
+}

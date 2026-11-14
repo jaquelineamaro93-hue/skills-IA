@@ -1,0 +1,4 @@
+node_modules/
+public/mix/stem_*.wav
+public/music/trilha_original.wav
+output/frames/

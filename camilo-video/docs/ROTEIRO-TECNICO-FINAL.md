@@ -1,0 +1,18 @@
+# Camilo | Episódio 1: O Tamanho do Sonho — roteiro técnico final (tempos reais)
+
+Vertical 1080×1920 · 30 fps · **60,5 s** (1815 quadros) · H.264 + AAC.
+Os tempos vêm das gravações reais (`src/timeline.json` é a fonte única para áudio, vídeo e legendas).
+Falas entre aspas = **o que está gravado**; o texto do roteiro original aparece quando a gravação é diferente.
+
+| Cena | Tempo | Imagem | Áudio (fala gravada) | Movimento / efeitos |
+|---|---|---|---|---|
+| 01 O começo de um sonho | 00:00.0–00:07.4 | cena1 (ataduras) | NARRADOR 00:00.7 "Dizem que na Colômbia todo mundo nasce com o ritmo nos pés." · CAMILO 00:05.1 "Hoje eu vou conseguir." *(roteiro: "¡Vamos, Camilo! Hoje vai dar certo.")* | Abertura do preto; travelling lento do close nas ataduras até o rosto concentrado; puxões da atadura sincronizados ao som do tecido; dedos e respiração; raios de sol e poeira. SFX: tecido, madeira rangendo, respiração, rua distante. |
+| 02 O menino do bairro | 00:07.4–00:15.0 | cena2 | NARRADOR 00:07.9 "Mas o Camilo encontrou o ritmo dele nas pancadas de um saco de boxe." · CAMILO 00:12.6 "Um dia vão saber meu nome." | Fusão com vazamento de luz; a câmera parte das casas coloridas na janela e desliza até Camilo (parallax real entre fundo e personagem); orelha mexe; rosto se ergue; aproximação no sorriso. SFX: passarinhos, vento, motos distantes, passos. |
+| 03 Treinar também é cair | 00:15.0–00:22.2 | cena5 (recorte) | CAMILO 00:18.5 "¡Uy, no! ¿Otra vez?" · 00:20.95 "¡Yo puedo!" *(roteiro: "¡Ay, caramba! De novo não!")* | Chicote de câmera; plano fechado nas pernas; 5 pulos no tempo da música com a corda em rastro de movimento; tropeço (corda enrosca, corpo inclina, tremor); câmera sobe para a reação; guarda volta a subir. SFX: corda, batida no chão, tênis deslizando, suspiro. |
+| 04 O espelho rachado | 00:22.2–00:29.7 | cena5 | NARRADOR 00:22.6 "Sem luxo, sem treinador famoso," · CAMILO 00:26.0 "Mais rápido, Camilo! Vai!" · 00:28.0 "Só mais um!" *(roteiro: narrador "A academia era pequena…" e Camilo "¡Dale, dale!…")* | Travelling lateral; 3 esquivas e 6 socos no ar com rastro; o reflexo no espelho acompanha a esquiva. SFX: socos no ar, passos, esquivas. Percussão. |
+| 05 A força de continuar | 00:29.7–00:37.3 | cena4 | NARRADOR 00:30.1 "aos 10 anos ele ainda não tem medalhas." · 00:33.2 "Mas tem uma coragem que não cabe no peito." | Mergulho no preto; câmera sobe do peito aos olhos; respiração cansada no peito; gota de suor escorrendo. Música reduz a pad + violão. |
+| 06 O golpe | 00:37.3–00:43.5 | cena3 | CAMILO 00:37.7 "Eu não vou desistir!" · **golpe 00:40.2** · CAMILO 00:41.0 "¡Eso, parce! ¡Conseguí!" | Corte seco; contra-plongée; respiração, recuo, preparação (39.55), soco acelerado com rastro, clarão, onda de choque, poeira, tremor, saco afunda e balança. Música corta de 40.05 a 40.75 e volta com acorde. SFX: impacto no couro, corrente. |
+| 07 O tamanho do sonho | 00:43.5–00:55.0 | cena2 | NARRADOR 00:44.0 "O cinturão ainda é grande demais pra ele." · CAMILO 00:47.0 "Algún día… voy a ser campeón." · NARRADOR 00:50.8 "E o sonho? Esse já é do tamanho certo!" *(roteiro: "…Mas não para o tamanho do seu sonho.")* | Fusão lenta; luz dourada, reflexo de sol, aproximação lenta até os olhos; guarda ajustada (48.9); brilho nos olhos; orelha mexe. Violão + pad + percussão leve, cadência final. |
+| 08 Encerramento | 00:55.0–00:60.5 | — | Gongo distante 00:55.6 | Fusão ao preto; "CAMILO" em dourado com abertura de espaçamento; "EPISÓDIO 1 \| O TAMANHO DO SONHO"; saída ao preto. |
+
+Trilha: original, composta e sintetizada pelo próprio projeto (`scripts/build_audio.py`), Ré maior, 120 bpm, violão dedilhado, pad, baixo e percussão inspirada em cumbia (shaker, guacharaca, tambora). Sem música de terceiros.
