@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Central de Mídia na Prática</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: painel de mídia — cabeçalho com abas, cada aba é uma tela de trabalho: resumo em cima, detalhe embaixo */
+:root{
+  --bg:#f3f5f9; --surface:#ffffff; --sunk:#e9edf4; --fg:#151b2b; --muted:#5b6478; --line:#d7dde8;
+  --accent:#2f5bea; --accent-soft:#e3e9fd; --accent-fg:#ffffff;
+  --good:#1f8a5b; --good-soft:#dff3ea; --warn:#a86a00; --warn-soft:#fbefd6; --bad:#c23a32; --bad-soft:#fbe3e1; --wait:#5b6478; --wait-soft:#e9edf4;
+  --f-display:'Space Grotesk',ui-sans-serif,system-ui,sans-serif;
+  --f-body:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-data:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f131c; --surface:#171d2a; --sunk:#1f2737; --fg:#e7ebf3; --muted:#9aa4b8; --line:#2b3446;
+  --accent:#7d9bff; --accent-soft:#1f2b4d; --accent-fg:#0f131c;
+  --good:#5fd09a; --good-soft:#16352a; --warn:#f0b54f; --warn-soft:#3a2d12; --bad:#ff8a80; --bad-soft:#3d1d1c; --wait:#9aa4b8; --wait-soft:#232b3b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f131c; --surface:#171d2a; --sunk:#1f2737; --fg:#e7ebf3; --muted:#9aa4b8; --line:#2b3446;
+  --accent:#7d9bff; --accent-soft:#1f2b4d; --accent-fg:#0f131c;
+  --good:#5fd09a; --good-soft:#16352a; --warn:#f0b54f; --warn-soft:#3a2d12; --bad:#ff8a80; --bad-soft:#3d1d1c; --wait:#9aa4b8; --wait-soft:#232b3b; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 var(--f-body)}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.1}
+h2{font-size:22px;line-height:1.2}
+h3{font-size:16px}
+p{margin:0}
+.eyebrow{font:600 11px/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.lead{color:var(--muted);max-width:68ch;margin-top:8px}
+header.top{display:flex;flex-direction:column;gap:6px;margin-bottom:18px}
+nav.tabs{display:flex;gap:6px;flex-wrap:wrap;background:var(--sunk);padding:5px;border-radius:12px;margin-bottom:20px;width:fit-content;max-width:100%}
+nav.tabs a{padding:9px 14px;border-radius:9px;text-decoration:none;color:var(--muted);font-weight:600;font-size:14px}
+nav.tabs a[aria-current="page"]{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.panel{display:flex;flex-direction:column;gap:18px}
+.sec{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.sec-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline}
+.note{font-size:13px;color:var(--muted)}
+.tag-ex{display:inline-block;font:600 11px var(--f-body);letter-spacing:.06em;text-transform:uppercase;background:var(--warn-soft);color:var(--warn);border-radius:99px;padding:4px 9px}
+/* KPIs */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.kpi{background:var(--sunk);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.kpi span{font-size:12px;color:var(--muted)}
+.kpi b{font:600 22px/1.2 var(--f-data);font-variant-numeric:tabular-nums}
+.kpi small{font-size:12px;color:var(--muted)}
+/* funil */
+.funnel{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:6px}
+.step{position:relative;background:var(--accent-soft);border-radius:10px;padding:10px 12px;min-width:0}
+.step span{display:block;font-size:12px;color:var(--muted)}
+.step b{font:600 14.5px var(--f-data);font-variant-numeric:tabular-nums;white-space:nowrap}
+.step.money{background:var(--accent);color:var(--accent-fg)}
+.step.money span{color:var(--accent-fg);opacity:.85}
+/* tabela */
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;min-width:880px;font-size:13.5px}
+th{background:var(--sunk);text-align:left;font:600 11.5px var(--f-body);letter-spacing:.04em;text-transform:uppercase;color:var(--muted);padding:9px 10px;white-space:nowrap}
+td{padding:10px;border-top:1px solid var(--line);vertical-align:top}
+td.n{font-family:var(--f-data);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+th.n{text-align:right}
+td .why{display:block;font-size:12.5px;color:var(--muted);margin-top:3px;max-width:34ch}
+.chip{display:inline-block;font:700 11px var(--f-body);letter-spacing:.05em;border-radius:99px;padding:4px 9px;white-space:nowrap}
+.c-escalar{background:var(--good-soft);color:var(--good)}
+.c-manter{background:var(--accent-soft);color:var(--accent)}
+.c-ajustar{background:var(--warn-soft);color:var(--warn)}
+.c-cortar{background:var(--bad-soft);color:var(--bad)}
+.c-aguardar{background:var(--wait-soft);color:var(--wait)}
+tr.flag td:first-child{box-shadow:inset 3px 0 0 var(--bad)}
+/* insights */
+.ins{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.insight{border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.insight .what{font-weight:600}
+.insight .do{font-size:13.5px;color:var(--good);font-weight:600}
+.insight .lvl{align-self:flex-start}
+/* calculadoras */
+.calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600;color:var(--muted);min-width:0}
+input,select{font:500 15px var(--f-data);color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px 10px;width:100%}
+.out{background:var(--sunk);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.row{display:flex;justify-content:space-between;gap:10px;font-size:14px;align-items:baseline}
+.row b{font:600 18px var(--f-data);font-variant-numeric:tabular-nums}
+.verdict{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.verdict p{font-size:14px}
+/* árvore de leitura */
+.tree{display:flex;flex-direction:column;gap:8px;counter-reset:q}
+.q{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.q::before{counter-increment:q;content:counter(q);display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-fg);font:600 13px var(--f-data)}
+.q p{font-size:14px;color:var(--muted);margin-top:2px}
+.q b{color:var(--fg)}
+/* integração */
+.path{display:flex;flex-direction:column;gap:10px}
+.stage{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.stage>summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:14px}
+.stage>summary::-webkit-details-marker{display:none}
+.stage>summary .num{font:600 13px var(--f-data);background:var(--sunk);border-radius:8px;padding:4px 8px}
+.stage>summary .t{font-weight:600}
+.stage>summary .t small{display:block;font-weight:400;color:var(--muted);font-size:13px}
+.stage>summary::after{content:"+";font:400 20px var(--f-data);color:var(--muted)}
+.stage[open]>summary::after{content:"–"}
+.stage .body{padding:0 14px 14px 14px;display:flex;flex-direction:column;gap:10px;font-size:14px}
+.stage ul{margin:0;padding-left:18px}
+.stage li{margin:3px 0}
+.done-when{background:var(--good-soft);color:var(--fg);border-radius:10px;padding:10px 12px;font-size:13.5px}
+.done-when b{color:var(--good)}
+.risk{background:var(--warn-soft);border-radius:10px;padding:10px 12px;font-size:13.5px}
+.check{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)}
+.check input{width:18px;height:18px;accent-color:var(--good)}
+pre{margin:0;background:var(--sunk);border-radius:10px;padding:10px 12px;font:12.5px/1.6 var(--f-data);white-space:pre-wrap;word-break:break-word}
+.copy{align-self:flex-start;font:600 12px var(--f-body);background:var(--surface);border:1px solid var(--line);color:var(--fg);border-radius:8px;padding:6px 10px;cursor:pointer}
+.progress{display:flex;gap:10px;align-items:center;font-size:13px;color:var(--muted)}
+.bar{flex:1;height:8px;background:var(--sunk);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--good);width:0;transition:width .3s}
+.arch{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.node{border:1px dashed var(--line);border-radius:10px;padding:10px;font-size:13px}
+.node b{display:block;font-size:13.5px;margin-bottom:2px}
+.node.core{border-style:solid;border-color:var(--accent);background:var(--accent-soft)}
+@media (max-width:520px){.form{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header class="top">
+  <span class="eyebrow">Central de mídia · guia prático</span>
+  <h1>Do clique à venda, com decisão no final</h1>
+  <p class="lead">Três telas: como fica o resultado pronto, como ler os números para decidir, e o caminho para integrar tudo no seu produto.</p>
+</header>
+
+<nav class="tabs" aria-label="Seções">
+  <a href="#exemplo" data-tab="exemplo">1. Resultado final</a>
+  <a href="#insights" data-tab="insights">2. Ler os insights</a>
+  <a href="#integracao" data-tab="integracao">3. Caminho de integração</a>
+</nav>
+
+<!-- ============ 1. EXEMPLO ============ -->
+<section class="panel" id="p-exemplo" data-panel="exemplo">
+  <div class="sec">
+    <div class="sec-head"><h2>Últimos 30 dias · Marca Exemplo</h2><span class="tag-ex">Dados fictícios</span></div>
+    <p class="note">Curso online de R$ 497, margem de 60%. CPA máximo definido: R$ 150 por venda. Gasto vindo das plataformas de anúncio; vendas vindas do pagamento confirmado, ligadas à campanha pela UTM.</p>
+    <div class="kpis" id="kpis"></div>
+  </div>
+
+  <div class="sec">
+    <h2>Funil consolidado</h2>
+    <div class="funnel" id="funnel"></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-head"><h2>Decisão por campanha</h2><span class="note">Ordenado por urgência</span></div>
+    <div class="scroll"><table>
+      <thead><tr><th>Campanha</th><th>Decisão</th><th class="n">Investimento</th><th class="n">CPC</th><th class="n">CTR</th><th class="n">Leads</th><th class="n">Vendas</th><th class="n">Receita</th><th class="n">CPA</th><th class="n">ROAS</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table></div>
+  </div>
+
+  <div class="sec">
+    <h2>Insights da semana</h2>
+    <div class="ins" id="insightsBox"></div>
+  </div>
+</section>
+
+<!-- ============ 2. INSIGHTS ============ -->
+<section class="panel" id="p-insights" data-panel="insights" hidden>
+  <div class="sec">
+    <h2>Antes de tudo: quanto você pode pagar por uma venda</h2>
+    <p class="note">Sem esse número, a conta compara anúncio com anúncio e nunca diz se dá lucro. Preencha com os dados do seu produto.</p>
+    <div class="calc">
+      <div class="form">
+        <label for="c-preco">Preço (R$)<input id="c-preco" type="number" min="0" step="1" value="497"></label>
+        <label for="c-margem">Margem (%)<input id="c-margem" type="number" min="1" max="100" step="1" value="60"></label>
+        <label for="c-frac">Da margem, quanto aceita investir (%)<input id="c-frac" type="number" min="1" max="100" step="1" value="50"></label>
+        <label for="c-conv">Leads que viram venda (%)<input id="c-conv" type="number" min="0.1" max="100" step="0.1" value="8"></label>
+        <label for="c-ltv">Compras por cliente em 12 meses<input id="c-ltv" type="number" min="1" step="0.1" value="1"></label>
+      </div>
+      <div class="out" aria-live="polite">
+        <div class="row"><span>CPA máximo por venda</span><b id="o-cpa">–</b></div>
+        <div class="row"><span>Custo máximo por lead</span><b id="o-cpl">–</b></div>
+        <div class="row"><span>ROAS mínimo para empatar</span><b id="o-roas">–</b></div>
+        <div class="row"><span>CPA máximo contando recompra</span><b id="o-ltv">–</b></div>
+        <p class="note">CPA máximo = preço × margem × fração aceita. Custo por lead = CPA máximo × taxa de conversão. ROAS de empate = 1 ÷ margem.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>Testar uma campanha</h2>
+    <p class="note">Coloque os números de uma campanha. As regras são as mesmas da skill Meta Ads.</p>
+    <div class="calc">
+      <div class="form">
+        <label for="t-gasto">Investimento (R$)<input id="t-gasto" type="number" min="0" step="1" value="900"></label>
+        <label for="t-res">Vendas (ou leads)<input id="t-res" type="number" min="0" step="1" value="4"></label>
+        <label for="t-alvo">CPA alvo (R$)<input id="t-alvo" type="number" min="1" step="1" value="150"></label>
+        <label for="t-freq">Frequência<input id="t-freq" type="number" min="0" step="0.1" value="2.1"></label>
+        <label for="t-ctr">CTR de link (%)<input id="t-ctr" type="number" min="0" step="0.01" value="1.2"></label>
+        <label for="t-tipo">Tipo de público<select id="t-tipo"><option value="p">Prospecção (gente nova)</option><option value="r">Remarketing (já conhece)</option></select></label>
+      </div>
+      <div class="out" aria-live="polite">
+        <div class="row"><span>CPA desta campanha</span><b id="t-cpa">–</b></div>
+        <div class="verdict"><span class="chip" id="t-chip">–</span><p id="t-why"></p></div>
+        <ul id="t-alerts" class="note" style="margin:0;padding-left:18px"></ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>Roteiro de leitura, toda segunda</h2>
+    <p class="note">Leia nessa ordem. Cada pergunta só faz sentido se a anterior estiver resolvida.</p>
+    <div class="tree">
+      <div class="q"><div><b>A medição está de pé?</b><p>Compare as vendas da plataforma de anúncios com as vendas confirmadas no pagamento. Diferença grande ou campanha com muito clique e zero conversão: conserte isso antes de mexer em verba.</p></div></div>
+      <div class="q"><div><b>Quanto da verba está em "cortar"?</b><p>É o número que abre a conversa. Itens que gastaram 3 vezes o CPA alvo sem nenhuma venda são dinheiro que pode ir para quem vende.</p></div></div>
+      <div class="q"><div><b>O problema está antes ou depois do clique?</b><p>CTR baixo: o criativo não para o dedo. CTR bom e CPA ruim: a página, a oferta ou o preço não convencem. São consertos diferentes.</p></div></div>
+      <div class="q"><div><b>Quem pode escalar sem quebrar?</b><p>CPA abaixo de 80% do alvo, com 5 ou mais vendas e frequência sob controle. Suba a verba aos poucos, cerca de 20% a cada 2 ou 3 dias, para não reiniciar o aprendizado.</p></div></div>
+      <div class="q"><div><b>O lead barato vira cliente?</b><p>Cruze com o CRM: custo por lead qualificado e por venda. A campanha com o lead mais barato às vezes é a mais cara da conta.</p></div></div>
+      <div class="q"><div><b>Qual é o único teste da semana?</b><p>Um ângulo ou uma oferta por vez, com hipótese escrita. Com pouca verba, testar detalhe (cor de botão) não chega a conclusão nenhuma.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. INTEGRAÇÃO ============ -->
+<section class="panel" id="p-integracao" data-panel="integracao" hidden>
+  <div class="sec">
+    <h2>Como as peças se encaixam</h2>
+    <div class="arch">
+      <div class="node"><b>Plataformas de anúncio</b>Meta, Google e outras: gasto, impressões, cliques.</div>
+      <div class="node"><b>Conector de dados</b>Puxa o gasto por dia e por anúncio, sem planilha manual.</div>
+      <div class="node core"><b>Banco do produto</b>Gasto ao lado das vendas e da origem de cada uma.</div>
+      <div class="node"><b>Pagamento</b>Confirma a venda. É a fonte da receita.</div>
+      <div class="node"><b>Painel</b>O funil e a decisão por campanha.</div>
+      <div class="node"><b>Agente</b>Lê o painel, propõe. Uma pessoa aprova.</div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-head"><h2>Caminho em 7 etapas</h2><div class="progress" style="min-width:220px"><span id="prog-t">0 de 7</span><div class="bar"><i id="prog-b"></i></div></div></div>
+    <p class="note">Faça em ordem. Marque o que já está pronto: fica salvo só neste navegador.</p>
+    <div class="path" id="path"></div>
+  </div>
+</section>
+</div>
+
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id)};
+var brl=function(v){return v==null||!isFinite(v)?'–':'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})};
+var int=function(v){return v.toLocaleString('pt-BR')};
+var pct=function(v){return v==null||!isFinite(v)?'–':v.toLocaleString('pt-BR',{maximumFractionDigits:2})+'%'};
+var x2=function(v){return v==null||!isFinite(v)?'–':v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})};
+var esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+
+/* ---------- regras (as mesmas da skill) ---------- */
+function decide(o){ // o: gasto, vendas, alvo, freq, ctr, remkt
+  var fmax=o.remkt?6:3, alerts=[];
+  if(o.freq>fmax)alerts.push('Fadiga: frequência '+x2(o.freq)+' (limite '+fmax+').');
+  if(o.ctr!=null&&o.ctr<0.8)alerts.push('Criativo fraco: CTR de link '+pct(o.ctr)+', abaixo de 0,8%.');
+  var cpa=o.vendas>0?o.gasto/o.vendas:null, fat=alerts.some(function(a){return a.indexOf('Fadiga')===0});
+  if(o.vendas===0&&o.gasto>=3*o.alvo)return{d:'CORTAR',why:'Gastou '+brl(o.gasto)+', 3 vezes o CPA alvo, sem nenhuma venda.',cpa:cpa,alerts:alerts};
+  if(o.gasto<2*o.alvo&&o.vendas<3)return{d:'AGUARDAR',why:'Pouco gasto e menos de 3 vendas: ainda não dá para julgar.',cpa:cpa,alerts:alerts};
+  if(cpa==null)return{d:'AGUARDAR',why:'Sem vendas ainda.',cpa:cpa,alerts:alerts};
+  var r=cpa/o.alvo, base='CPA '+brl(cpa)+' contra alvo de '+brl(o.alvo)+' ('+Math.round(r*100)+'%).';
+  if(r<=0.8&&o.vendas>=5&&!fat)return{d:'ESCALAR',why:base+' Abaixo de 80% do alvo, com volume.',cpa:cpa,alerts:alerts};
+  if(r<=0.8&&fat)return{d:'MANTER',why:base+' Daria para escalar, mas o público está cansado: troque criativos antes.',cpa:cpa,alerts:alerts};
+  if(r<=1.2)return{d:'MANTER',why:base+' Dentro da faixa.',cpa:cpa,alerts:alerts};
+  if(r<=1.5)return{d:'AJUSTAR',why:base+' Troque criativo ou público antes de cortar.',cpa:cpa,alerts:alerts};
+  return{d:'CORTAR',why:base+' Mais de 50% acima do alvo.',cpa:cpa,alerts:alerts};
+}
+var CHIP={ESCALAR:'c-escalar',MANTER:'c-manter',AJUSTAR:'c-ajustar',CORTAR:'c-cortar',AGUARDAR:'c-aguardar'};
+var ORDER={CORTAR:0,AJUSTAR:1,ESCALAR:2,MANTER:3,AGUARDAR:4};
+
+/* ---------- 1. exemplo (fictício) ---------- */
+var ALVO=150, PRECO=497;
+var CAMPS=[
+ {n:'Prospecção · Depoimentos em vídeo',g:2840,imp:182000,cl:2730,fr:1.9,ld:96,v:24},
+ {n:'Prospecção · Público amplo (Advantage+)',g:3610,imp:251000,cl:3920,fr:1.7,ld:118,v:21},
+ {n:'Remarketing · Visitou a página 14d',g:980,imp:31500,cl:640,fr:4.6,ld:41,v:11},
+ {n:'Prospecção · Carrossel institucional',g:1260,imp:142000,cl:820,fr:2.4,ld:22,v:4},
+ {n:'Teste · Ângulo "mudança de carreira"',g:240,imp:16800,cl:310,fr:1.2,ld:9,v:1},
+ {n:'Captação · Formulário da aula grátis',g:620,imp:38400,cl:1180,fr:1.6,ld:0,v:0,flag:true},
+ {n:'Prospecção · Interesses sobrepostos',g:1150,imp:88600,cl:610,fr:3.4,ld:14,v:3}
+];
+CAMPS.forEach(function(c){c.ctr=c.cl*100/c.imp;c.cpc=c.g/c.cl;c.rec=c.v*PRECO;c.roas=c.rec/c.g;
+  var r=decide({gasto:c.g,vendas:c.v,alvo:ALVO,freq:c.fr,ctr:c.ctr,remkt:/^Remarketing/.test(c.n)});c.dec=r.d;c.why=r.why;c.cpa=r.cpa;c.alerts=r.alerts});
+var T=CAMPS.reduce(function(a,c){a.g+=c.g;a.imp+=c.imp;a.cl+=c.cl;a.ld+=c.ld;a.v+=c.v;a.rec+=c.rec;return a},{g:0,imp:0,cl:0,ld:0,v:0,rec:0});
+var gCortar=CAMPS.filter(function(c){return c.dec==='CORTAR'}).reduce(function(s,c){return s+c.g},0);
+$('kpis').innerHTML=[
+ ['Investimento',brl(T.g),'30 dias, 7 campanhas'],
+ ['Vendas atribuídas',int(T.v),'pagamento confirmado'],
+ ['CPA por venda',brl(T.g/T.v),'alvo '+brl(ALVO)],
+ ['ROAS de vendas',x2(T.rec/T.g)+'x','empate em '+x2(1/0.6)+'x'],
+ ['Verba em "cortar"',brl(gCortar),Math.round(gCortar*100/T.g)+'% do total']
+].map(function(k){return'<div class="kpi"><span>'+k[0]+'</span><b>'+k[1]+'</b><small>'+k[2]+'</small></div>'}).join('');
+$('funnel').innerHTML=[
+ ['Investimento',brl(T.g)],['Impressões',int(T.imp)],['Cliques',int(T.cl)+' · CPC '+brl(T.g/T.cl).replace('R$ ','')],['Leads',int(T.ld)],['Vendas',int(T.v)],['Receita',brl(T.rec)]
+].map(function(s,i){return'<div class="step'+(i===5?' money':'')+'"><span>'+s[0]+'</span><b>'+s[1]+'</b></div>'}).join('');
+CAMPS.sort(function(a,b){return ORDER[a.dec]-ORDER[b.dec]||b.g-a.g});
+$('rows').innerHTML=CAMPS.map(function(c){
+  var why=c.why+(c.alerts.length?' '+c.alerts.join(' '):'')+(c.flag?' 1.180 cliques e zero leads: confira o formulário antes de cortar.':'');
+  return'<tr'+(c.flag?' class="flag"':'')+'><td>'+esc(c.n)+'<span class="why">'+esc(why)+'</span></td><td><span class="chip '+CHIP[c.dec]+'">'+c.dec+'</span></td><td class="n">'+brl(c.g)+'</td><td class="n">'+brl(c.cpc)+'</td><td class="n">'+pct(c.ctr)+'</td><td class="n">'+int(c.ld)+'</td><td class="n">'+int(c.v)+'</td><td class="n">'+brl(c.rec)+'</td><td class="n">'+brl(c.cpa)+'</td><td class="n">'+x2(c.roas)+'x</td></tr>'}).join('');
+var INS=[
+ {l:'CORTAR',w:'Medição quebrada na captação',t:'A campanha do formulário teve o maior CTR da conta e nenhum lead. Interesse alto com zero resultado é formulário ou evento com defeito, não público errado.',d:'Teste o formulário hoje; pause só se o defeito não aparecer.'},
+ {l:'ESCALAR',w:'Depoimentos vendem mais barato',t:'Os vídeos de depoimento têm o menor CPA e o maior volume. É o ângulo para repetir em novos formatos.',d:'Suba a verba cerca de 20% a cada 2 ou 3 dias e grave mais 3 depoimentos.'},
+ {l:'CORTAR',w:'Dois públicos que não param o dedo',t:'O carrossel institucional e os interesses sobrepostos têm CTR abaixo de 0,8% e CPA mais que o dobro do alvo. O problema está antes do clique.',d:'Pause os dois e passe a verba para os depoimentos.'},
+ {l:'MANTER',w:'Público amplo perto do alvo',t:'O Advantage+ está 15% acima do alvo, dentro da faixa, e é o que mais traz leads. Ele melhora com criativo bom.',d:'Mantenha a verba e coloque os vídeos de depoimento nele.'}
+];
+$('insightsBox').innerHTML=INS.map(function(i){return'<div class="insight"><span class="chip lvl '+CHIP[i.l]+'">'+i.l+'</span><span class="what">'+esc(i.w)+'</span><p class="note">'+esc(i.t)+'</p><span class="do">'+esc(i.d)+'</span></div>'}).join('');
+
+/* ---------- 2. calculadoras ---------- */
+function num(id){var v=parseFloat($(id).value);return isFinite(v)?v:0}
+function calcMax(){var p=num('c-preco'),m=num('c-margem')/100,f=num('c-frac')/100,c=num('c-conv')/100,l=Math.max(1,num('c-ltv'));
+  var cpa=p*m*f;$('o-cpa').textContent=brl(cpa);$('o-cpl').textContent=brl(cpa*c);$('o-roas').textContent=m>0?x2(1/m)+'x':'–';$('o-ltv').textContent=brl(cpa*l);
+  if(document.activeElement&&document.activeElement.id&&document.activeElement.id.indexOf('c-')===0){$('t-alvo').value=Math.round(cpa);calcTest()}}
+function calcTest(){var r=decide({gasto:num('t-gasto'),vendas:Math.round(num('t-res')),alvo:Math.max(1,num('t-alvo')),freq:num('t-freq'),ctr:num('t-ctr'),remkt:$('t-tipo').value==='r'});
+  $('t-cpa').textContent=brl(r.cpa);var ch=$('t-chip');ch.textContent=r.d;ch.className='chip '+CHIP[r.d];$('t-why').textContent=r.why;
+  $('t-alerts').innerHTML=r.alerts.map(function(a){return'<li>'+esc(a)+'</li>'}).join('')}
+['c-preco','c-margem','c-frac','c-conv','c-ltv'].forEach(function(id){$(id).addEventListener('input',calcMax)});
+['t-gasto','t-res','t-alvo','t-freq','t-ctr','t-tipo'].forEach(function(id){$(id).addEventListener('input',calcTest)});
+calcMax();calcTest();
+
+/* ---------- 3. integração ---------- */
+var UTM='utm_source=meta&utm_medium=paid&utm_campaign={{campaign.name}}&utm_term={{adset.name}}&utm_content={{ad.name}}';
+var SQL='-- gasto por anúncio e período, ao lado das vendas\ncreate table ads_gasto (\n  plataforma text, periodo_inicio date, periodo_fim date,\n  campanha_id text, campanha text, anuncio_id text, anuncio text,\n  gasto numeric, impressoes bigint, cliques bigint,\n  leads_plataforma int, compras_plataforma int\n);\n-- ligue venda e campanha pela utm_campaign gravada no checkout\n-- e deixe a tabela sem acesso público (só o servidor lê)';
+var STAGES=[
+ {t:'Etiquetar cada clique',s:'UTMs em todos os anúncios',b:'<p>Cole no campo "Parâmetros de URL" de cada anúncio. Assim toda venda carrega o nome da campanha que a trouxe.</p><pre id="utm">'+UTM+'</pre><button type="button" class="copy" data-copy="utm">Copiar UTMs</button>',done:'Um pedido de teste aparece no banco com a utm_campaign preenchida.'},
+ {t:'Guardar a origem na compra',s:'O checkout grava as UTMs',b:'<p>Ao criar o pedido, salve as UTMs da sessão junto com ele. Peça consentimento de cookies antes, como manda a LGPD.</p>',done:'Todo pedido aprovado tem origem ou fica marcado como "sem utm".',risk:'Venda fechada no WhatsApp ou na ligação não passa pelo checkout. Gere um link de pagamento com as UTMs da conversa.'},
+ {t:'Avisar o Meta da venda',s:'API de Conversões, do servidor',b:'<p>Quando o pagamento é confirmado, o servidor envia o evento de compra ao Meta, com um id único para não contar duas vezes. Sem isso, a campanha de vendas otimiza no escuro.</p>',done:'O Gerenciador mostra as compras chegando com qualidade de correspondência boa.'},
+ {t:'Trazer o gasto para o banco',s:'Conector de anúncios, uma vez por dia',b:'<p>Um conector (Windsor, Supermetrics ou a API do Meta) grava o gasto do dia anterior por anúncio. Regra de ouro: um período por linha, sem sobreposição, para não somar duas vezes.</p><pre id="sql">'+SQL+'</pre><button type="button" class="copy" data-copy="sql">Copiar modelo</button>',done:'O gasto de ontem aparece no banco às 8h, sem ninguém exportar planilha.',risk:'O token do conector fica no servidor ou no cofre de segredos. Nunca no código nem no repositório.'},
+ {t:'Montar o funil',s:'Uma visão que junta gasto e venda',b:'<p>Some gasto, impressões e cliques por campanha e encontre as vendas confirmadas pela utm_campaign. Calcule CPC, CPM, CTR, CPA e ROAS ali mesmo, para todo mundo ler o mesmo número.</p>',done:'A soma do gasto bate com o Gerenciador, e a de vendas bate com o pagamento.'},
+ {t:'Mostrar no painel',s:'A tela da aba 1, no admin',b:'<p>Indicadores no topo, funil, tabela com a decisão por campanha e os insights da semana. Só para quem administra.</p>',done:'Na segunda de manhã, em 5 minutos, você sabe o que cortar e o que escalar.'},
+ {t:'Ligar o agente',s:'Propõe sozinho, publica com aprovação',b:'<p>O agente lê o funil, busca tendências, escreve criativos e monta a agenda. Mudança de verba e publicação esperam o seu "sim", com teto de gasto diário.</p><ul><li>Para a IA de terceiros vão só números agregados, nunca dados de cliente.</li><li>Cada teste A/B tem hipótese, prazo e amostra mínima antes de declarar vencedor.</li><li>Meta única: CAC caindo e LTV subindo.</li></ul>',done:'Toda semana chega uma proposta com o número que a sustenta, e nada foi publicado sem aprovação.'}
+];
+var saved={};try{saved=JSON.parse(localStorage.getItem('cm-etapas')||'{}')}catch(e){}
+$('path').innerHTML=STAGES.map(function(s,i){return'<details class="stage"'+(i===0?' open':'')+'><summary><span class="num">'+(i+1)+'</span><span class="t">'+s.t+'<small>'+s.s+'</small></span></summary><div class="body">'+s.b+'<div class="done-when"><b>Pronto quando:</b> '+s.done+'</div>'+(s.risk?'<div class="risk"><b>Atenção:</b> '+s.risk+'</div>':'')+'<label class="check" for="st'+i+'"><input type="checkbox" id="st'+i+'"'+(saved[i]?' checked':'')+'> Já está pronto</label></div></details>'}).join('');
+function prog(){var n=STAGES.filter(function(_,i){return $('st'+i).checked}).length;$('prog-t').textContent=n+' de '+STAGES.length;$('prog-b').style.width=(n*100/STAGES.length)+'%'}
+STAGES.forEach(function(_,i){$('st'+i).addEventListener('change',function(e){saved[i]=e.target.checked;try{localStorage.setItem('cm-etapas',JSON.stringify(saved))}catch(err){}prog()})});prog();
+document.querySelectorAll('[data-copy]').forEach(function(b){b.addEventListener('click',function(){var el=$(b.dataset.copy),txt=el.textContent;
+  function sel(){var r=document.createRange();r.selectNodeContents(el);var s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent='Selecionado: use Ctrl+C'}
+  try{navigator.clipboard.writeText(txt).then(function(){b.textContent='Copiado'},sel)}catch(e){sel()}})});
+
+/* ---------- abas por hash ---------- */
+var TABS=['exemplo','insights','integracao'];
+function show(){var h=(location.hash||'').slice(1);if(TABS.indexOf(h)<0)h='exemplo';
+  document.querySelectorAll('[data-panel]').forEach(function(p){p.hidden=p.dataset.panel!==h});
+  document.querySelectorAll('[data-tab]').forEach(function(a){if(a.dataset.tab===h)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')})}
+window.addEventListener('hashchange',show);show();
+})();
+</script>
+</body>
+</html>
