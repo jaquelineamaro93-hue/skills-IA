@@ -33,12 +33,14 @@ import unicodedata
 
 SINONIMOS = {
     "nome": ["nome do anuncio", "nome do conjunto de anuncios", "nome da campanha",
-             "ad name", "ad set name", "campaign name", "nome", "name"],
+             "ad name", "ad set name", "campaign name", "anuncio", "conjunto", "campanha",
+             "nome", "name"],
     "gasto": ["valor usado", "amount spent", "gasto", "spend", "investimento"],
     "impressoes": ["impressoes", "impressions"],
     "frequencia": ["frequencia", "frequency"],
     "cliques": ["cliques no link", "link clicks", "cliques", "clicks"],
-    "resultados": ["resultados", "results", "compras", "purchases", "leads", "conversoes"],
+    "resultados": ["resultados", "results", "compras", "purchases", "leads", "conversoes",
+                   "leads reportados", "compras reportadas"],
     "receita": ["valor de conversao de compras", "purchases conversion value",
                 "valor de conversao", "conversion value", "receita", "revenue"],
 }
@@ -53,6 +55,9 @@ def normalizar(texto):
 def mapear_colunas(cabecalho):
     normal = {normalizar(c): c for c in cabecalho}
     mapa = {}
+    extras = [normal[o] for o in ("leads reportados", "compras reportadas") if o in normal]
+    if len(extras) > 1 and not any(o in normal for o in SINONIMOS["resultados"][:6]):
+        mapa["resultados_somar"] = extras
     for campo, opcoes in SINONIMOS.items():
         for opcao in opcoes:  # ordem importa: o mais específico primeiro
             if opcao in normal:
@@ -139,16 +144,23 @@ def main():
     if "nome" not in mapa or "gasto" not in mapa:
         sys.exit("Não achei as colunas de nome e de valor usado. Exporte de novo com elas.")
     faltando = [c for c in SINONIMOS if c not in mapa]
-    print("Colunas usadas: " + ", ".join(f"{k} = '{v}'" for k, v in mapa.items()))
+    print("Colunas usadas: " + ", ".join(f"{k} = '{v}'" for k, v in mapa.items() if k != "resultados_somar"))
+    if "resultados_somar" in mapa:
+        print("Resultados = soma de: " + ", ".join(mapa["resultados_somar"]))
     if faltando:
         print("Sem dado para: " + ", ".join(faltando))
 
     metricas = []
     for linha in linhas:
         m = {c: (numero(linha.get(mapa[c])) if c in mapa else None) for c in SINONIMOS if c != "nome"}
+        if "resultados_somar" in mapa:
+            valores = [numero(linha.get(c)) for c in mapa["resultados_somar"]]
+            m["resultados"] = sum(v for v in valores if v) if any(v is not None for v in valores) else None
         m["nome"] = (linha.get(mapa["nome"]) or "").strip()
         if not m["nome"] or normalizar(m["nome"]).startswith(("total", "resultados de")):
             continue  # pula a linha de total que o Gerenciador inclui
+        if m["gasto"] is None and m["impressoes"] is None:
+            continue  # item sem nenhuma métrica no período (ex.: campanha antiga pausada)
         m["cpa"] = div(m["gasto"], m["resultados"])
         m["roas"] = div(m["receita"], m["gasto"])
         m["ctr"] = div((m["cliques"] or 0) * 100, m["impressoes"]) if m["cliques"] is not None else None
