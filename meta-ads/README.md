@@ -27,6 +27,12 @@ python3 -I scripts/diagnosticar_campanhas.py examples/export_exemplo.csv diagnos
 python3 -I scripts/cac_por_lead.py examples/export_exemplo.csv examples/leads_crm_exemplo.csv cac.csv
 ```
 
+## Guia visual
+Abra `guia/central-de-midia.html` no navegador (dois cliques no arquivo). São três telas, com dados fictícios:
+1. **Resultado final:** indicadores, funil e a decisão por campanha (cortar, ajustar, manter, escalar), com os insights da semana.
+2. **Ler os insights:** calculadora do CPA máximo a partir do preço e da margem, teste de uma campanha com as mesmas regras do script e o roteiro de leitura de toda segunda.
+3. **Caminho de integração:** as 7 etapas para ligar o gasto dos anúncios às vendas do seu produto, cada uma com o critério de "pronto quando".
+
 ## Instalação no Claude Code
 Copie a pasta `meta-ads` para `~/.claude/skills/` (para todos os projetos) ou para `.claude/skills/` dentro do projeto.
 

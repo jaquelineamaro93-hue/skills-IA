@@ -75,3 +75,4 @@ Sem alvo informado, o diagnóstico usa a **mediana da conta** como referência e
 | `scripts/diagnosticar_campanhas.py` | Modo 3: classificação sem dependências |
 | `scripts/cac_por_lead.py` | Modo 4: cruzamento gasto x CRM sem dependências |
 | `examples/` | Modelos de exportação do Gerenciador e do CRM |
+| `guia/central-de-midia.html` | Página para abrir no navegador: exemplo do resultado final, calculadora de CPA máximo, teste de campanha e caminho de integração em 7 etapas. Use para mostrar à pessoa como fica o resultado e o que integrar |
