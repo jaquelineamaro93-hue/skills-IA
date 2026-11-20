@@ -5,37 +5,17 @@ description: Monta um agente que busca vagas todo dia a partir do currículo da 
 
 # Agente buscador de vagas
 
-## Como começar (faça isto antes de qualquer texto)
-Quando a pessoa pedir para montar o agente, atue como um **construtor guiado**: não mande os textos de cara. Siga estas etapas, uma de cada vez, e espere a resposta antes de avançar.
+## Como começar (para qualquer nível)
+Quando a pessoa pedir para montar o agente, faça assim, em uma conversa só:
 
-**Etapa 0: o que você vai construir.** Diga em duas frases: "Vamos montar um agente que busca vagas todo dia, filtra pelo seu perfil e acompanha as candidaturas. São quatro passos e um teste. Leva cerca de 30 minutos."
+1. **Diga o que vai acontecer**, em duas frases: "Vamos deixar um agente que procura vagas todo dia por você. Eu preparo tudo; você só cola e confere."
+2. **Peça um texto livre.** Não faça perguntas separadas. Diga: "Me conta em um parágrafo: seu cargo atual, o cargo que quer, cidade, se prefere remoto ou presencial, o que não quer e, se quiser, sua faixa salarial." Use a resposta para preencher tudo.
+3. **Confira só três coisas**, em uma lista curta: currículo em PDF, a ferramenta que vai usar (com busca na web e tarefa agendada) e uma planilha. Se faltar, eu ajudo a resolver antes de seguir.
+4. **Entregue tudo pronto**, já preenchido: os quatro textos de `references/passos-prontos.md`, na ordem.
+5. **Teste uma vez, sem agendar.** Peça: "Confira se as vagas têm link, se não há repetição e se cada uma tem match." Se estiver certo, agende o passo 3.
+6. **Feche com o que muda na semana:** a planilha de candidaturas e a revisão de conversão a cada sete dias.
 
-**Etapa 1: o que você precisa ter.** Confira item por item, perguntando:
-1. Você tem o currículo em PDF atualizado? Se não, ajudamos a atualizar antes.
-2. Qual ferramenta você vai usar? (ChatGPT, Claude, Gemini, Grok, OpenBot, Rerun ou Zapia.) Confirme que ela tem busca na web e tarefas agendadas. Se não tiver, sugira outra.
-3. Você tem uma planilha para as candidaturas? Se não, crie uma com as colunas de `references/acompanhamento.md`.
-4. Quer usar pisos salariais de CLT e PJ? Se sim, peça os valores.
-
-Se algum item faltar, pare aqui e resolva antes de seguir.
-
-**Etapa 2: os seus critérios.** Pergunte, uma de cada vez: cargos que quer, senioridade (ex.: coordenação, gerência, especialista), modelo (remoto, híbrido ou presencial), cidade e região, idioma (inglês fluente é um filtro?), o que **não** quer, e a porcentagem mínima de match para receber a vaga. Só monte os textos depois de ter essas respostas.
-
-**Etapa 3: os textos.** Gere os quatro passos de `references/passos-prontos.md` com os critérios preenchidos. Entregue um por vez.
-
-**Etapa 4: guie cada passo.** Para cada passo: diga o que fazer, peça para colar o texto, e espere a pessoa contar o que apareceu. Se a resposta não bater com o esperado (sem link, sem match, lista repetida), ajude a corrigir antes de seguir.
-
-**Etapa 5: teste de ponta a ponta.** Antes de agendar, peça uma rodada manual (sem agendar). Confira com a pessoa:
-- as vagas têm link que abre;
-- nenhuma vaga está repetida;
-- cada vaga tem match e pontos de conexão;
-- vagas sem salário não foram descartadas;
-- a planilha recebeu o primeiro registro (ou a instrução de como registrar).
-
-Se os cinco itens passarem, siga para o agendamento. Se algum falhar, ajuste e teste de novo.
-
-**Etapa 6: agendar.** Só agora peça para agendar a rotina no horário escolhido, com o passo 3. Confirme que a primeira execução agendada foi criada.
-
-**Critério de pronto.** O agente está pronto quando: o teste manual passou nos cinco itens, o agendamento existe, e a pessoa sabe onde registrar as candidaturas e quando revisar a conversão (a cada semana). Diga isso explicitamente no fim e pergunte se ficou algo sem resposta.
+Pronto quando: o teste manual está certo e o agendamento foi criado. Se a pessoa travar em qualquer passo, volte para o passo 3 e ofereça um exemplo preenchido.
 
 ## O que você entrega
 Um agente que, todo dia no horário escolhido:
