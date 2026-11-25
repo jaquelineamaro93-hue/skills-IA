@@ -22,6 +22,19 @@ Em uma conversa só:
 
 Pronto quando: a pessoa tem pelo menos uma ficha preenchida, o índice gerado e a rotina marcada.
 
+## Ver o cérebro em 3D (e gerar um GIF)
+Quando a pessoa quiser ver o cérebro, comece pela **entrevista de cores** (`references/entrevista-de-cores.md`): quatro perguntas numa mensagem só. Diga em uma frase a paleta escolhida antes de gerar.
+
+1. **Gerar a página:** `python3 -I scripts/gerar_cerebro_3d.py <pasta_do_cerebro> cerebro.html --paleta neon`
+   (ou `--cores cores.json` com as cores da marca). Paletas prontas: neon, oceano, floresta, por-do-sol e areia (fundo claro).
+2. **Abrir no navegador:** o cérebro gira, cada tema vira um ponto de luz, e um clique abre as fichas daquele tema. Fichas com `sensivel: sim` aparecem com o selo PRIVADO.
+3. **GIF (opcional, precisa de Node, Playwright e ffmpeg):**
+   `node scripts/gravar_gif.js cerebro.html quadros/` e depois o comando de ffmpeg que está no topo do script. Sai um GIF de cerca de 4,5 segundos que repete sem emenda.
+
+Para testar antes de usar as próprias fichas: `python3 -I scripts/gerar_cerebro_3d.py examples cerebro-exemplo.html`.
+
+A página e o GIF mostram nomes de temas e títulos de fichas. Antes de postar, confira se não tem nada privado à vista.
+
 ## Quatro movimentos
 - **Capturar:** cole a transcrição, a nota ou o link. Não precisa ser perfeito: depois a ficha organiza.
 - **Organizar:** cada ficha tem tema, fonte, data e nível de confiança (fonte primária, comentário, opinião).
@@ -41,3 +54,8 @@ Pronto quando: a pessoa tem pelo menos uma ficha preenchida, o índice gerado e 
 | `references/estrutura.md` | Montar as pastas e os temas |
 | `references/ficha-modelo.md` | Preencher cada ficha |
 | `scripts/gerar_indice.py` | Gerar o índice a partir das fichas e das skills |
+| `references/entrevista-de-cores.md` | Escolher as cores antes do 3D |
+| `references/paletas.json` | Cinco paletas prontas |
+| `scripts/gerar_cerebro_3d.py` | Gerar a página do cérebro em 3D |
+| `scripts/gravar_gif.js` | Gravar o GIF do cérebro girando |
+| `examples/fichas/` | Fichas de exemplo para testar |

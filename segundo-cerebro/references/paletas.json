@@ -1,0 +1,7 @@
+{
+  "neon": {"descricao": "Roxo, rosa e verde-limão em fundo escuro. Energia e tecnologia.", "fundo": "#0a0612", "texto": "#f4efff", "texto_suave": "#a497bf", "destaque1": "#8b5cf6", "destaque2": "#ff4fa3", "destaque3": "#c6ff3d", "pontos": "#cdb9ff", "cerebelo": "#ff78be"},
+  "oceano": {"descricao": "Azul e ciano em fundo escuro. Calma e precisão.", "fundo": "#04060c", "texto": "#eaf0ff", "texto_suave": "#8a97b8", "destaque1": "#3d7bff", "destaque2": "#5ee7ff", "destaque3": "#ff4fa3", "pontos": "#96d7ff", "cerebelo": "#a08cff"},
+  "floresta": {"descricao": "Verde e amarelo em fundo escuro. Crescimento e natureza.", "fundo": "#06100a", "texto": "#eefbe9", "texto_suave": "#93a991", "destaque1": "#2fbf71", "destaque2": "#f5d547", "destaque3": "#9dfc5c", "pontos": "#b8f5c9", "cerebelo": "#f5d547"},
+  "por-do-sol": {"descricao": "Laranja, coral e dourado em fundo escuro. Calor e criatividade.", "fundo": "#120806", "texto": "#fff1ea", "texto_suave": "#b8988c", "destaque1": "#ff7a45", "destaque2": "#ff4d6d", "destaque3": "#ffd166", "pontos": "#ffc2a8", "cerebelo": "#ffd166"},
+  "areia": {"descricao": "Bege, marrom e azul claro em fundo claro. Acolhedor e elegante.", "fundo": "#fff8e9", "texto": "#342720", "texto_suave": "#756359", "destaque1": "#4b342c", "destaque2": "#789db5", "destaque3": "#c9a227", "pontos": "#4b342c", "cerebelo": "#789db5", "claro": true}
+}
